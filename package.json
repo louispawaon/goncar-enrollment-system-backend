@@ -1,0 +1,24 @@
+{
+  "name": "goncar-enrollment-system-backend",
+  "version": "1.0.0",
+  "description": "backend work for gsta enrollment system",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "serve": "nodemon app.js"
+  },
+  "keywords": [
+    "gsta",
+    "backend"
+  ],
+  "author": "Louis Miguel Pawaon",
+  "license": "MIT",
+  "dependencies": {
+    "body-parser": "^1.20.0",
+    "dotenv": "^16.0.1",
+    "express": "^4.18.1",
+    "nodemon": "^2.0.19",
+    "pg": "^8.7.3",
+    "sequelize": "^6.21.3"
+  }
+}
