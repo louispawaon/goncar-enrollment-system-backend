@@ -1,7 +1,7 @@
 const {Pool} = require('pg');
-const dotenv = require('dotenv');
+require('dotenv').config();
 
-dotenv.config();
+const {DB_USER, DB_HOST, DB_DATABASE, DB_PASSWORD, DB_PORT} = process.env;
 
 /*const pool=new Pool({
     connectionString: process.env.DATABASE_URL
@@ -11,7 +11,7 @@ dotenv.config();
 
 const pool = new Pool({
     user: 'postgres',
-    host: 'localhost',
+    host: '127.0.0.1',
     database: 'gsta-enrollment-system-backend',
     password: 'chimy123Changas',
     port: 2009
