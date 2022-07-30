@@ -1,0 +1,131 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+//trainee enrollment module
+
+model Trainees{
+  traineeId Int @id @default(autoincrement())
+  firstName String
+  middleName String
+  lastName String
+  birthDay DateTime
+  sex String
+  address String
+  emailAdd String @unique
+  cpNum String
+  educationalAttainment String
+  yearGrad DateTime
+  SSSNum String
+  TINNum String
+  SGLicense String
+  expiryDate String
+
+}
+
+model Registrations{
+  registrationNumber Int @unique @default(autoincrement())
+  traineeId Int @id 
+  courseId Int
+  batchId Int
+  trainingYearSpan Int
+  dateEnrolled DateTime
+  registrationStatus String
+}
+
+model Registrations_Batch{
+  registrationNumber Int
+  batchId Int @unique
+}
+
+//training module
+
+model batch{
+  batchId Int @id @default(autoincrement())
+  trainingYearId Int
+  courseId Int 
+  employeeId Int
+  laNumber String
+  batchName String
+  startDate DateTime
+  endDate DateTime
+  maxStudents Int
+}
+
+model tuitionview{
+  trainingYearId Int @id
+  CourseId Int 
+  tuition Float 
+}
+
+model trainingYears{
+  trainingYearId Int @id
+  trainingYearSpan String
+}
+
+model courses{
+  courseId Int @unique
+  courseName String
+  courseDescription String
+  requiredHours Float
+  units Float
+}
+
+
+//finance module
+
+model transactions{
+  transactionId Int
+  registraionNumber Int
+  payableId Int @unique
+  payableCost Float
+  paymentMethod String
+}
+
+model payables{
+  payableId Int @unique
+  trainingYearId Int
+  courseId Int 
+  payableName String 
+  payableCost Float 
+}
+
+model payableNames{
+  payableName String @unique
+  courseId Int 
+}
+
+//administrative module
+
+model employees{
+  employeeId Int @id @default(autoincrement())
+  roleId Int
+  firstName String
+  middleName String
+  lastName String
+  birthDay DateTime
+  sex String
+  emailAdd String
+  cpNum String
+  employeeStatus String
+  dateHired DateTime
+}
+
+model roles{
+  roleId Int @id @default(autoincrement())
+  roleName String
+}
+
+enum Role{
+  BASIC
+  ADMIN
+  EDITOR
+}
