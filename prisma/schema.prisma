@@ -32,15 +32,16 @@ model Trainees {
 }
 
 model Registrations {
-  registrationNumber Int      @unique @default(autoincrement())
-  courseId           Int
-  trainingYearSpan   Int
-  dateEnrolled       DateTime
-  registrationStatus String
-  Trainees           Trainees @relation(fields: [traineeId], references: [traineeId])
-  traineeId          Int
-  batch              batch    @relation(fields: [batchId], references: [batchId])
-  batchId            Int
+  registrationNumber      Int            @unique @default(autoincrement())
+  courseId                Int
+  trainingYearSpan        Int
+  dateEnrolled            DateTime
+  registrationStatus      String
+  Trainees                Trainees       @relation(fields: [traineeId], references: [traineeId])
+  traineeId               Int
+  batch                   batch          @relation(fields: [batchId], references: [batchId])
+  batchId                 Int
+  registrationTransaction transactions[]
 }
 
 //to be removed
@@ -87,18 +88,21 @@ model courses {
 
 model transactions {
   transactionId     Int
-  registraionNumber Int
-  payableId         Int    @unique
   payableCost       Float
   paymentMethod     String
+  Registrations     Registrations @relation(fields: [registraionNumber], references: [registrationNumber])
+  registraionNumber Int
+  payables          payables      @relation(fields: [payableId], references: [payableId])
+  payableId         Int           @unique
 }
 
 model payables {
-  payableId      Int    @unique
-  trainingYearId Int
-  courseId       Int
-  payableName    String
-  payableCost    Float
+  payableId          Int            @unique
+  trainingYearId     Int
+  courseId           Int
+  payableName        String
+  payableCost        Float
+  payableTransaction transactions[]
 }
 
 model payableNames {
