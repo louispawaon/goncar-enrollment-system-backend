@@ -1,0 +1,3 @@
+-- AlterTable
+ALTER TABLE "Trainees" ALTER COLUMN "birthDay" SET DATA TYPE TEXT,
+ALTER COLUMN "yearGrad" SET DATA TYPE TEXT;
