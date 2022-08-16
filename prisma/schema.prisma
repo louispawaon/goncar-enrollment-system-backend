@@ -11,19 +11,19 @@ datasource db {
 }
 
 //trainee enrollment module
-
+//temporary fix ang datetime kay wtf
 model Trainees {
   traineeId             Int             @id @default(autoincrement())
   firstName             String
   middleName            String
   lastName              String
-  birthDay              DateTime
+  birthDay              String
   sex                   String
   address               String
   emailAdd              String          @unique
   cpNum                 String
   educationalAttainment String
-  yearGrad              DateTime
+  yearGrad              String
   SSSNum                String
   TINNum                String
   SGLicense             String
