@@ -12,119 +12,122 @@ datasource db {
 
 //trainee enrollment module
 
-model Trainees{
-  traineeId Int @id @default(autoincrement())
-  firstName String
-  middleName String
-  lastName String
-  birthDay DateTime
-  sex String
-  address String
-  emailAdd String @unique
-  cpNum String
+model Trainees {
+  traineeId             Int             @id @default(autoincrement())
+  firstName             String
+  middleName            String
+  lastName              String
+  birthDay              DateTime
+  sex                   String
+  address               String
+  emailAdd              String          @unique
+  cpNum                 String
   educationalAttainment String
-  yearGrad DateTime
-  SSSNum String
-  TINNum String
-  SGLicense String
-  expiryDate String
-
+  yearGrad              DateTime
+  SSSNum                String
+  TINNum                String
+  SGLicense             String
+  expiryDate            String
+  traineeRegistration   Registrations[]
 }
 
-model Registrations{
-  registrationNumber Int @unique @default(autoincrement())
-  traineeId Int @id 
-  courseId Int
-  batchId Int
-  trainingYearSpan Int
-  dateEnrolled DateTime
+model Registrations {
+  registrationNumber Int      @unique @default(autoincrement())
+  courseId           Int
+  trainingYearSpan   Int
+  dateEnrolled       DateTime
   registrationStatus String
+  Trainees           Trainees @relation(fields: [traineeId], references: [traineeId])
+  traineeId          Int
+  batch              batch   @relation(fields: [batchId], references: [batchId])
+  batchId            Int
 }
 
-model Registrations_Batch{
+//to be removed
+model Registrations_Batch {
   registrationNumber Int
-  batchId Int @unique
+  batchId            Int @unique
 }
 
 //training module
 
-model batch{
-  batchId Int @id @default(autoincrement())
-  trainingYearId Int
-  courseId Int 
-  employeeId Int
-  laNumber String
-  batchName String
-  startDate DateTime
-  endDate DateTime
-  maxStudents Int
+model batch {
+  batchId           Int             @id @default(autoincrement())
+  trainingYearId    Int
+  courseId          Int
+  employeeId        Int
+  laNumber          String
+  batchName         String
+  startDate         DateTime
+  endDate           DateTime
+  maxStudents       Int
+  batchRegistration Registrations[]
 }
 
-model tuitionview{
-  trainingYearId Int @id
-  CourseId Int 
-  tuition Float 
+model tuitionview {
+  trainingYearId Int   @id
+  CourseId       Int
+  tuition        Float
 }
 
-model trainingYears{
-  trainingYearId Int @id
+model trainingYears {
+  trainingYearId   Int    @id
   trainingYearSpan String
 }
 
-model courses{
-  courseId Int @unique
-  courseName String
+model courses {
+  courseId          Int    @unique
+  courseName        String
   courseDescription String
-  requiredHours Float
-  units Float
+  requiredHours     Float
+  units             Float
 }
-
 
 //finance module
 
-model transactions{
-  transactionId Int
+model transactions {
+  transactionId     Int
   registraionNumber Int
-  payableId Int @unique
-  payableCost Float
-  paymentMethod String
+  payableId         Int    @unique
+  payableCost       Float
+  paymentMethod     String
 }
 
-model payables{
-  payableId Int @unique
+model payables {
+  payableId      Int    @unique
   trainingYearId Int
-  courseId Int 
-  payableName String 
-  payableCost Float 
+  courseId       Int
+  payableName    String
+  payableCost    Float
 }
 
-model payableNames{
+model payableNames {
   payableName String @unique
-  courseId Int 
+  courseId    Int
 }
 
 //administrative module
 
-model employees{
-  employeeId Int @id @default(autoincrement())
-  roleId Int
-  firstName String
-  middleName String
-  lastName String
-  birthDay DateTime
-  sex String
-  emailAdd String
-  cpNum String
+model employees {
+  employeeId     Int      @id @default(autoincrement())
+  roleId         Int
+  firstName      String
+  middleName     String
+  lastName       String
+  birthDay       DateTime
+  sex            String
+  emailAdd       String
+  cpNum          String
   employeeStatus String
-  dateHired DateTime
+  dateHired      DateTime
 }
 
-model roles{
-  roleId Int @id @default(autoincrement())
+model roles {
+  roleId   Int    @id @default(autoincrement())
   roleName String
 }
 
-enum Role{
+enum Role {
   BASIC
   ADMIN
   EDITOR
