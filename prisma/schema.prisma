@@ -39,7 +39,7 @@ model Registrations {
   registrationStatus String
   Trainees           Trainees @relation(fields: [traineeId], references: [traineeId])
   traineeId          Int
-  batch              batch   @relation(fields: [batchId], references: [batchId])
+  batch              batch    @relation(fields: [batchId], references: [batchId])
   batchId            Int
 }
 
