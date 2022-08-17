@@ -28,20 +28,20 @@ model Trainees {
   TINNum                String
   SGLicense             String
   expiryDate            String
-  traineeRegistration   Registrations[]
+  traineeRegistration   Registrations[] @relation("trainees")
 }
 
 model Registrations {
   registrationNumber      Int            @unique @default(autoincrement())
   courseId                Int
   trainingYearSpan        Int
-  dateEnrolled            DateTime
+  dateEnrolled            String
   registrationStatus      String
-  Trainees                Trainees       @relation(fields: [traineeId], references: [traineeId])
+  Trainees                Trainees       @relation("trainees", fields: [traineeId], references: [traineeId])
   traineeId               Int
-  batch                   batch          @relation(fields: [batchId], references: [batchId])
+  batch                   batch          @relation("batches", fields: [batchId], references: [batchId])
   batchId                 Int
-  registrationTransaction transactions[]
+  registrationTransaction transactions[] @relation("registration")
 }
 
 //to be removed
@@ -62,7 +62,7 @@ model batch {
   startDate         DateTime
   endDate           DateTime
   maxStudents       Int
-  batchRegistration Registrations[]
+  batchRegistration Registrations[] @relation("batches")
 }
 
 model tuitionview {
@@ -90,9 +90,9 @@ model transactions {
   transactionId     Int
   payableCost       Float
   paymentMethod     String
-  Registrations     Registrations @relation(fields: [registraionNumber], references: [registrationNumber])
+  Registrations     Registrations @relation("registration", fields: [registraionNumber], references: [registrationNumber])
   registraionNumber Int
-  payables          payables      @relation(fields: [payableId], references: [payableId])
+  payables          payables      @relation("payable", fields: [payableId], references: [payableId])
   payableId         Int           @unique
 }
 
@@ -102,7 +102,7 @@ model payables {
   courseId           Int
   payableName        String
   payableCost        Float
-  payableTransaction transactions[]
+  payableTransaction transactions[] @relation("payable")
 }
 
 model payableNames {
