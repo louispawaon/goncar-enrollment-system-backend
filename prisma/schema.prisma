@@ -10,8 +10,9 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-//trainee enrollment module
-//temporary fix ang datetime kay wtf
+//TRAINEE ENROLLMENT MODULE
+
+//TODO: revert necessary date reqs from String to Date or DateTime- temporary fix ang datetime kay wtf
 model Trainees {
   traineeId             Int             @id @default(autoincrement())
   firstName             String
@@ -33,8 +34,6 @@ model Trainees {
 
 model Registrations {
   registrationNumber      Int            @unique @default(autoincrement())
-  courseId                Int
-  trainingYearSpan        Int
   dateEnrolled            String
   registrationStatus      String
   Trainees                Trainees       @relation("trainees", fields: [traineeId], references: [traineeId])
@@ -42,52 +41,71 @@ model Registrations {
   batch                   batch          @relation("batches", fields: [batchId], references: [batchId])
   batchId                 Int
   registrationTransaction transactions[] @relation("registration")
+  courses                 courses        @relation("course", fields: [courseId], references: [courseId])
+  courseId                Int
+  trainingYears           trainingYears  @relation(fields: [trainingYearId], references: [trainingYearId])
+  trainingYearId          Int
 }
 
-//to be removed
+//TODO: remove this - not really necessary anymore i think
 model Registrations_Batch {
   registrationNumber Int
   batchId            Int @unique
 }
 
-//training module
+//TRAINING MODULE
 
 model batch {
   batchId           Int             @id @default(autoincrement())
-  trainingYearId    Int
-  courseId          Int
-  employeeId        Int
   laNumber          String
   batchName         String
   startDate         DateTime
   endDate           DateTime
   maxStudents       Int
   batchRegistration Registrations[] @relation("batches")
+  courses           courses         @relation("course", fields: [courseId], references: [courseId])
+  courseId          Int
+  trainingYears     trainingYears   @relation(fields: [trainingYearId], references: [trainingYearId])
+  trainingYearId    Int
+  employees         employees       @relation(fields: [employeeId], references: [employeeId])
+  employeeId        Int
 }
 
 model tuitionview {
-  trainingYearId Int   @id
-  CourseId       Int
+  tuitionViewId  Int           @id @default(autoincrement())
   tuition        Float
+  courses        courses       @relation("course", fields: [courseId], references: [courseId])
+  courseId       Int
+  trainingYears  trainingYears @relation(fields: [trainingYearId], references: [trainingYearId])
+  trainingYearId Int
 }
 
 model trainingYears {
-  trainingYearId   Int    @id
+  trainingYearId   Int             @id @default(autoincrement()) //TODO: change or revise - temporary ra nang autoinc
   trainingYearSpan String
+  tuitionview      tuitionview[]
+  batch            batch[]
+  payables         payables[]
+  registration     Registrations[]
 }
 
 model courses {
-  courseId          Int    @unique
+  courseId          Int             @unique
   courseName        String
   courseDescription String
   requiredHours     Float
   units             Float
+  registration      Registrations[] @relation("course")
+  batch             batch[]         @relation("course")
+  tuitionview       tuitionview[]   @relation("course")
+  payables          payables[]      @relation("course")
+  payableName       payableNames[]  @relation("course")
 }
 
 //finance module
 
 model transactions {
-  transactionId     Int
+  transactionId     Int           @id
   payableCost       Float
   paymentMethod     String
   Registrations     Registrations @relation("registration", fields: [registraionNumber], references: [registrationNumber])
@@ -97,16 +115,20 @@ model transactions {
 }
 
 model payables {
-  payableId          Int            @unique
-  trainingYearId     Int
-  courseId           Int
+  payableId          Int            @id @unique
   payableName        String
   payableCost        Float
   payableTransaction transactions[] @relation("payable")
+  courses            courses        @relation("course", fields: [courseId], references: [courseId])
+  courseId           Int
+  trainingYears      trainingYears  @relation(fields: [trainingYearId], references: [trainingYearId])
+  trainingYearId     Int
 }
 
 model payableNames {
-  payableName String @unique
+  payableID   Int     @id @default(autoincrement()) //TODO: change or revise - temporary ra sa nang autoinc
+  payableName String  @unique
+  courses     courses @relation("course", fields: [courseId], references: [courseId])
   courseId    Int
 }
 
@@ -124,6 +146,7 @@ model employees {
   cpNum          String
   employeeStatus String
   dateHired      DateTime
+  batch          batch[]
 }
 
 model roles {
