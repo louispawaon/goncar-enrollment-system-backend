@@ -19,6 +19,10 @@ async function main(){
 
   //trainees
   await prisma.trainees.deleteMany();
+  await prisma.batch.deleteMany();
+  await prisma.registrations.deleteMany();
+  await prisma.employees.deleteMany();
+  /*
   const traineeTestdate = new Date('2015-02-02')
   const trainee = await prisma.trainees.create({
     data:{
@@ -181,7 +185,7 @@ async function main(){
       });
       console.log(roles);
 
-
+*/
 }
 
 main()
