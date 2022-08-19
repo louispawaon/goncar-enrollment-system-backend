@@ -12,13 +12,15 @@ datasource db {
 
 //TRAINEE ENROLLMENT MODULE
 
-//TODO: revert necessary date reqs from String to Date or DateTime- temporary fix ang datetime kay wtf
+//TODO: create ug @unique na samting - either i unique nato ang id or mangita tag entry na pwede ma unique para mao to ang pwede i use for connect to other relations
+//TODO: recheck if tanan original DateTime entries kay na revert ko to DateTime (if wala i ganito mo nalang - DateTime  @db.Date, para ma specify na date lang kunin, atleast thats how i understood prisma docs)
+
 model Trainees {
   traineeId             Int             @id @default(autoincrement())
   firstName             String
   middleName            String
   lastName              String
-  birthDay              String
+  birthDay              DateTime        @db.Date
   sex                   String
   address               String
   emailAdd              String          @unique
@@ -28,13 +30,13 @@ model Trainees {
   SSSNum                String
   TINNum                String
   SGLicense             String
-  expiryDate            String
+  expiryDate            DateTime        @db.Date
   traineeRegistration   Registrations[] @relation("trainees")
 }
 
 model Registrations {
   registrationNumber      Int            @unique @default(autoincrement())
-  dateEnrolled            String
+  dateEnrolled            DateTime       @db.Date
   registrationStatus      String
   Trainees                Trainees       @relation("trainees", fields: [traineeId], references: [traineeId])
   traineeId               Int
@@ -47,20 +49,14 @@ model Registrations {
   trainingYearId          Int
 }
 
-//TODO: remove this - not really necessary anymore i think
-model Registrations_Batch {
-  registrationNumber Int
-  batchId            Int @unique
-}
-
 //TRAINING MODULE
 
 model batch {
   batchId           Int             @id @default(autoincrement())
   laNumber          String
   batchName         String
-  startDate         DateTime
-  endDate           DateTime
+  startDate         DateTime        @db.Date
+  endDate           DateTime        @db.Date
   maxStudents       Int
   batchRegistration Registrations[] @relation("batches")
   courses           courses         @relation("course", fields: [courseId], references: [courseId])
@@ -140,7 +136,7 @@ model employees {
   firstName      String
   middleName     String
   lastName       String
-  birthDay       DateTime
+  birthDay       DateTime @db.Date
   sex            String
   emailAdd       String
   cpNum          String
