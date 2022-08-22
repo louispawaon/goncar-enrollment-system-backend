@@ -38,15 +38,15 @@ model Registrations {
   registrationNumber Int            @unique @default(autoincrement())
   dateEnrolled       DateTime       @db.Date
   registrationStatus String
-  trainees           Trainees       @relation("trainees", fields: [traineeId], references: [traineeId])
-  traineeId          Int
-  batch              batch          @relation("batches", fields: [batchId], references: [batchId])
-  batchId            Int
+  trainees           Trainees?      @relation("trainees", fields: [traineeId], references: [traineeId])
+  traineeId          Int?
+  batch              batch?         @relation("batches", fields: [batchId], references: [batchId])
+  batchId            Int?
   transactions       transactions[] @relation("registration")
-  courses            courses        @relation("course", fields: [courseId], references: [courseId])
-  courseId           Int
-  trainingYears      trainingYears  @relation(fields: [trainingYearId], references: [trainingYearId])
-  trainingYearId     Int
+  courses            courses?       @relation("course", fields: [courseId], references: [courseId])
+  courseId           Int?
+  trainingYears      trainingYears? @relation(fields: [trainingYearId], references: [trainingYearId])
+  trainingYearId     Int?
 }
 
 //TRAINING MODULE
@@ -59,21 +59,21 @@ model batch {
   endDate        DateTime        @db.Date
   maxStudents    Int
   registrations  Registrations[] @relation("batches")
-  courses        courses         @relation("course", fields: [courseId], references: [courseId])
-  courseId       Int
-  trainingYears  trainingYears   @relation(fields: [trainingYearId], references: [trainingYearId])
-  trainingYearId Int
-  employees      employees       @relation(fields: [employeeId], references: [employeeId])
-  employeeId     Int
+  courses        courses?        @relation("course", fields: [courseId], references: [courseId])
+  courseId       Int?
+  trainingYears  trainingYears?  @relation(fields: [trainingYearId], references: [trainingYearId])
+  trainingYearId Int?
+  employees      employees?      @relation(fields: [employeeId], references: [employeeId])
+  employeeId     Int?
 }
 
 model tuitionview {
-  tuitionViewId  Int           @id @default(autoincrement())
+  tuitionViewId  Int            @id @default(autoincrement())
   tuition        Float
-  courses        courses       @relation("course", fields: [courseId], references: [courseId])
-  courseId       Int
-  trainingYears  trainingYears @relation(fields: [trainingYearId], references: [trainingYearId])
-  trainingYearId Int
+  courses        courses?       @relation("course", fields: [courseId], references: [courseId])
+  courseId       Int?
+  trainingYears  trainingYears? @relation(fields: [trainingYearId], references: [trainingYearId])
+  trainingYearId Int?
 }
 
 model trainingYears {
@@ -101,13 +101,13 @@ model courses {
 //finance module
 
 model transactions {
-  transactionId     Int           @id
+  transactionId     Int            @id
   payableCost       Float
   paymentMethod     String
-  Registrations     Registrations @relation("registration", fields: [registraionNumber], references: [registrationNumber])
-  registraionNumber Int
-  payables          payables      @relation("payable", fields: [payableId], references: [payableId])
-  payableId         Int           @unique
+  Registrations     Registrations? @relation("registration", fields: [registraionNumber], references: [registrationNumber])
+  registraionNumber Int?
+  payables          payables?      @relation("payable", fields: [payableId], references: [payableId])
+  payableId         Int?           @unique
 }
 
 model payables {
@@ -115,17 +115,17 @@ model payables {
   payableName        String
   payableCost        Float
   payableTransaction transactions[] @relation("payable")
-  courses            courses        @relation("course", fields: [courseId], references: [courseId])
-  courseId           Int
-  trainingYears      trainingYears  @relation(fields: [trainingYearId], references: [trainingYearId])
-  trainingYearId     Int
+  courses            courses?       @relation("course", fields: [courseId], references: [courseId])
+  courseId           Int?
+  trainingYears      trainingYears? @relation(fields: [trainingYearId], references: [trainingYearId])
+  trainingYearId     Int?
 }
 
 model payableNames {
-  payableID   Int     @id @default(autoincrement()) //TODO: change or revise - temporary ra sa nang autoinc
-  payableName String  @unique
-  courses     courses @relation("course", fields: [courseId], references: [courseId])
-  courseId    Int
+  payableID   Int      @id @default(autoincrement()) //TODO: change or revise - temporary ra sa nang autoinc
+  payableName String   @unique
+  courses     courses? @relation("course", fields: [courseId], references: [courseId])
+  courseId    Int?
 }
 
 //administrative module
