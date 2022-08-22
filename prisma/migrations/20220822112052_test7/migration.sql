@@ -1,3 +1,9 @@
+/*
+  Warnings:
+
+  - You are about to drop the column `payableName` on the `payables` table. All the data in the column will be lost.
+
+*/
 -- DropForeignKey
 ALTER TABLE "Registrations" DROP CONSTRAINT "Registrations_batchId_fkey";
 
@@ -40,6 +46,9 @@ ALTER TABLE "tuitionview" DROP CONSTRAINT "tuitionview_courseId_fkey";
 -- DropForeignKey
 ALTER TABLE "tuitionview" DROP CONSTRAINT "tuitionview_trainingYearId_fkey";
 
+-- DropIndex
+DROP INDEX "courses_courseId_key";
+
 -- AlterTable
 ALTER TABLE "Registrations" ALTER COLUMN "traineeId" DROP NOT NULL,
 ALTER COLUMN "courseId" DROP NOT NULL,
@@ -52,10 +61,17 @@ ALTER COLUMN "courseId" DROP NOT NULL,
 ALTER COLUMN "employeeId" DROP NOT NULL;
 
 -- AlterTable
+CREATE SEQUENCE "courses_courseid_seq";
+ALTER TABLE "courses" ALTER COLUMN "courseId" SET DEFAULT nextval('courses_courseid_seq'),
+ADD CONSTRAINT "courses_pkey" PRIMARY KEY ("courseId");
+ALTER SEQUENCE "courses_courseid_seq" OWNED BY "courses"."courseId";
+
+-- AlterTable
 ALTER TABLE "payableNames" ALTER COLUMN "courseId" DROP NOT NULL;
 
 -- AlterTable
-ALTER TABLE "payables" ALTER COLUMN "trainingYearId" DROP NOT NULL,
+ALTER TABLE "payables" DROP COLUMN "payableName",
+ALTER COLUMN "trainingYearId" DROP NOT NULL,
 ALTER COLUMN "courseId" DROP NOT NULL;
 
 -- AlterTable
