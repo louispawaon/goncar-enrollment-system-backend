@@ -22,42 +22,46 @@ async function main(){
   await prisma.batch.deleteMany();
   await prisma.registrations.deleteMany();
   await prisma.employees.deleteMany();
-  /*
+  await prisma.trainingYears.deleteMany();
+  await prisma.courses.deleteMany();
+  await prisma.employees.deleteMany();
+  await prisma.roles.deleteMany();
+
   const traineeTestdate = new Date('2015-02-02')
-  const trainee = await prisma.trainees.create({
-    data:{
-      firstName:"Try",
-      middleName:"Meh",
-      lastName:"Dela Cruz",
-      birthDay:'1996-01-01',
-      sex:"Female",
-      address:"Davao City",
-      emailAdd:"juandcruz@testtest.com",
-      cpNum:"0912343533222",
-      educationalAttainment:"College Graduate",
-      yearGrad:'2022-05-01',
-      SSSNum:"12312-3123213-3213",
-      TINNum:"1312321-123213-12321",
-      SGLicense:"123123-312312-31231",
-      expiryDate:"2022-05-01",
-    }
-  });
+  // const trainee = await prisma.trainees.create({
+  //   data:{
+  //     firstName:"Try",
+  //     middleName:"Meh",
+  //     lastName:"Dela Cruz",
+  //     birthDay:'1996-01-01',
+  //     sex:"Female",
+  //     address:"Davao City",
+  //     emailAdd:"juandcruz@testtest.com",
+  //     cpNum:"0912343533222",
+  //     educationalAttainment:"College Graduate",
+  //     yearGrad:'2022-05-01',
+  //     SSSNum:"12312-3123213-3213",
+  //     TINNum:"1312321-123213-12321",
+  //     SGLicense:"123123-312312-31231",
+  //     expiryDate:"2022-05-01",
+  //   }
+  // });
 
-  console.log(trainee);
+  // console.log(trainee);
 
-    //registrations
-    // const registrations = await prisma.registrations.create({
-    //   data:{
-    //     dateEnrolled:"1996-01-01",
-    //     registrationStatus:"enrolled",
-    //     traineeId:1,
-    //     batchId:1,
-    //     courseId:1,
-    //     trainingYearId:1
-    //   }
+     //registrations
+    const registrations = await prisma.registrations.create({
+      data:{
+        dateEnrolled:"1996-01-01",
+        registrationStatus:"enrolled",
+        traineeId:1,
+        batchId:1,
+        courseId:1,
+        trainingYearId:1
+      }
 
-    // });
-    // console.log(registrations)
+    });
+    console.log(registrations)
 
     //Training module. Batch
 
@@ -103,7 +107,7 @@ async function main(){
 
       const courses = await prisma.courses.create({
         data:{
-          courseId:1,
+          courseId:10,
           courseName:"progremeng",
           courseDescription:"Mao ni ang description",
           requiredHours:999,
@@ -161,7 +165,7 @@ async function main(){
     const date = new Date('2015-01-01')
     const employees = await prisma.employees.create({
         data:{  
-            roleId:1,           
+            roleId:10,           
             firstName:"Try",
             middleName:"Meh",
             lastName:"Dela Cruz",
@@ -185,7 +189,6 @@ async function main(){
       });
       console.log(roles);
 
-*/
 }
 
 main()
