@@ -210,11 +210,50 @@ const trainee = await prisma.trainees.create({
 });
 */
 
+//registrationId=6 na ni i change lang 
+const registrations = await prisma.registrations.create({
+  data:{
+    dateEnrolled:new Date('2022-02-01'),
+    registrationStatus:"enrolled",
+  }
+})
+
+console.log(registrations);
+
+const trainee = await prisma.trainees.create({
+  data:{
+    firstName:"Try",
+    middleName:"Meh",
+    lastName:"Dela Cruz",
+    birthDay:new Date('1996-01-01'),
+    sex:"Female",
+    address:"Davao City",
+    emailAdd:"juandcruz@testtest.com",
+    cpNum:"0912343533222",
+    educationalAttainment:"College Graduate",
+    yearGrad:"2024",
+    SSSNum:"12312-3123213-3213",
+    TINNum:"1312321-123213-12321",
+    SGLicense:"123123-312312-31231",
+    expiryDate:new Date('2022-05-01'),
+    registrations:{
+      connect:{
+        registrationNumber:6 //ichange lang ni
+      }
+    }
+  },
+  include:{
+    registrations:true
+  }
+});
+
+console.log(trainee);
+
 }
 
 main()
   .catch(e=>{
-  console.error(e.message)
+  console.error(e.code+" + "+e.message)
   })
   .finally(async()=>{
   await prisma.$disconnect()
