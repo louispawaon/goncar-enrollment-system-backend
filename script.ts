@@ -18,10 +18,10 @@ async function main(){
   // TRAINEE ENROLLMENT MODULE
 
   //trainees
-  await prisma.trainees.deleteMany();
-  await prisma.batch.deleteMany();
-  await prisma.registrations.deleteMany();
-  await prisma.employees.deleteMany();
+  //await prisma.trainees.deleteMany();
+  //await prisma.batch.deleteMany();
+  //await prisma.registrations.deleteMany();
+  //await prisma.employees.deleteMany();
   /*
   const traineeTestdate = new Date('2015-02-02')
   const trainee = await prisma.trainees.create({
@@ -210,6 +210,7 @@ const trainee = await prisma.trainees.create({
 });
 */
 
+/*
 //registrationId=6 na ni i change lang 
 const registrations = await prisma.registrations.create({
   data:{
@@ -222,8 +223,8 @@ console.log(registrations);
 
 const trainee = await prisma.trainees.create({
   data:{
-    firstName:"Try",
-    middleName:"Meh",
+    firstName:"Juan",
+    middleName:"Hatdog",
     lastName:"Dela Cruz",
     birthDay:new Date('1996-01-01'),
     sex:"Female",
@@ -238,7 +239,7 @@ const trainee = await prisma.trainees.create({
     expiryDate:new Date('2022-05-01'),
     registrations:{
       connect:{
-        registrationNumber:6 //ichange lang ni
+        registrationNumber:10 //ichange lang ni
       }
     }
   },
@@ -248,6 +249,30 @@ const trainee = await prisma.trainees.create({
 });
 
 console.log(trainee);
+*/
+const registrationz = await prisma.registrations.update({
+  where:{
+    registrationNumber:10,
+  },
+  data:{
+    registrationStatus:"inactive",
+  }
+})
+
+console.log(registrationz)
+
+const traineez = await prisma.trainees.findUnique({
+  where:{
+    traineeId:18
+  },
+  include:{
+    registrations:true
+  }
+})
+
+console.log(traineez)
+
+/**/
 
 }
 
