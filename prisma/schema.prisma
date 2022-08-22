@@ -86,7 +86,7 @@ model trainingYears {
 }
 
 model courses {
-  courseId          Int             @unique
+  courseId          Int             @id @default(autoincrement())
   courseName        String
   courseDescription String
   requiredHours     Float
@@ -112,20 +112,22 @@ model transactions {
 
 model payables {
   payableId          Int            @id @unique
-  payableName        String
   payableCost        Float
   payableTransaction transactions[] @relation("payable")
   courses            courses        @relation("course", fields: [courseId], references: [courseId])
   courseId           Int
   trainingYears      trainingYears  @relation(fields: [trainingYearId], references: [trainingYearId])
   trainingYearId     Int
+  payableName        payableNames   @relation(fields: [payableNameID], references: [payableNameID])
+  payableNameID      Int
 }
 
 model payableNames {
-  payableID   Int     @id @default(autoincrement()) //TODO: change or revise - temporary ra sa nang autoinc
-  payableName String  @unique
-  courses     courses @relation("course", fields: [courseId], references: [courseId])
-  courseId    Int
+  payableNameID Int        @id @default(autoincrement()) //TODO: change or revise - temporary ra sa nang autoinc
+  payableName   String     @unique
+  courses       courses    @relation("course", fields: [courseId], references: [courseId])
+  courseId      Int
+  payables      payables[]
 }
 
 //administrative module
