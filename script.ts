@@ -18,10 +18,12 @@ async function main(){
   // TRAINEE ENROLLMENT MODULE
 
   //trainees
-  //await prisma.trainees.deleteMany();
-  //await prisma.batch.deleteMany();
-  //await prisma.registrations.deleteMany();
-  //await prisma.employees.deleteMany();
+  /*
+  await prisma.trainees.deleteMany();
+  await prisma.batch.deleteMany();
+  await prisma.registrations.deleteMany();
+  await prisma.employees.deleteMany();
+  */
   /*
   const traineeTestdate = new Date('2015-02-02')
   const trainee = await prisma.trainees.create({
@@ -189,25 +191,56 @@ async function main(){
 
 
 
+//ABANDONED 
 
 /*
+
 const trainee = await prisma.trainees.create({
   data:{
     firstName:"Try",
-      middleName:"Meh",
-      lastName:"Dela Cruz",
-      birthDay:'1996-01-01',
-      sex:"Female",
-      address:"Davao City",
-      emailAdd:"juandcruz@testtest.com",
-      cpNum:"0912343533222",
-      educationalAttainment:"College Graduate",
-      yearGrad:'2022-05-01',
-      SSSNum:"12312-3123213-3213",
-      TINNum:"1312321-123213-12321",
-      SGLicense:"123123-312312-31231",
-      expiryDate:"2022-05-01"
+    middleName:"Meh",
+    lastName:"Dela Cruz",
+    birthDay:new Date('1996-01-01'),
+    sex:"Female",
+    address:"Davao City",
+    emailAdd:"juandcruz@testtest.com",
+    cpNum:"0912343533222",
+    educationalAttainment:"College Graduate",
+    yearGrad:'2022-05-01',
+    SSSNum:"12312-3123213-3213",
+    TINNum:"1312321-123213-12321",
+    SGLicense:"123123-312312-31231",
+    expiryDate:new Date('2022-05-01')
+}});
+
+console.log(trainee)
+
+const traineeRegistration = await prisma.trainees.update({
+  where:{
+    traineeId:1
+  },
+  data:{
+    registrations:{
+      create:{
+        dateEnrolled:new Date('2022-02-01'),
+        registrationStatus:"enrolled",
+      }
+    }
+  }
 });
+
+console.log(traineeRegistration)
+
+const traineeShow = await prisma.trainees.findUnique({
+  where:{
+    traineeId:1
+  },
+  include:{
+    registrations:true
+  }
+});
+
+console.log(traineeShow)
 */
 
 /*
@@ -249,7 +282,7 @@ const trainee = await prisma.trainees.create({
 });
 
 console.log(trainee);
-*/
+
 const registrationz = await prisma.registrations.update({
   where:{
     registrationNumber:10,
@@ -271,7 +304,7 @@ const traineez = await prisma.trainees.findUnique({
 })
 
 console.log(traineez)
-
+*/
 /**/
 
 }
