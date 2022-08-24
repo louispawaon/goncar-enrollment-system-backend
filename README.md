@@ -3,28 +3,40 @@ The Backend Framework for Goncar Security Training Academy's Enrollment System I
 
 # **REST API ROUTES**
 
->TRAINEE MODULE
+>ENROLLMENT MANAGEMENT
 
-| HTTP METHOD | Description | Route |
-| ----------- | ----------- |----------|
-| GET | Trainee Masterlist  |```/dashboard/trainees```
-| GET | Specific Trainee | ```/dashboard/trainees/{id}```
-| POST | New Trainee | ```/dashboard/trainees/{id}```
-| PUT | Update Specific Trainee | ```/dashboard/trainees/{id}/edit```
-| DELETE | Delete Specific Trainee | ```/dashboard/trainees/{id}/delete```
+| USE CASE ID | HTTP METHOD | Description | Route |
+| ------------| ----------- | ----------- |----------|
+| 1.3 | GET | Specific Trainee | ```/dashboard/trainees/{id}```
+| 1.1 | POST | New Trainee | ```/dashboard/trainees/{id}```
+| 1.2 | PUT | Update Specific Trainee | ```/dashboard/trainees/{id}/edit```
+| 1.4 | POST | New Trainee Registration | ```/dashboard/trainees/registration{id}```
+| 1.5 | PUT | Update Specific Trainee Registration | ```/dashboard/trainees/registration/{id}/edit```
+| 1.5 | GET | Specific Trainee Registration | ```/dashboard/trainees/registration{id}```
+| 1.6  | DELETE | Delete Specific Trainee Registration | ```/dashboard/trainees/{id}/delete```
+| 1.7 | DELETE | Delete Specific Trainee | ```/dashboard/trainees/{id}/delete```
+| 1.9 | GET | Trainee Masterlist  |```/dashboard/trainees```
 
->REGISTRATION MODULE
+* 1.7 and 1.9 are new Use Case ID
 
-| HTTP METHOD | Description | Route |
-| ----------- | ----------- |----------|
-| GET | Specific Trainee Registration | ```/dashboard/trainees/registration{id}```
-| POST | New Trainee Registration | ```/dashboard/trainees/registration{id}```
-| PUT | Update Specific Trainee Registration | ```/dashboard/trainees/registration/{id}/edit```
 
->EMPLOYEE MODULE
+>COURSE MANAGEMENT
+
+| USE CASE ID | HTTP METHOD | Description | Route |
+| ------------| ----------- | ----------- |----------|
+
+
+
+>COURSE BATCH MANAGEMENT
 
 TBA
 
->FINANCE MODULE
+>FEES AND ACCOUNTS MANAGEMENT
 
 TBA
+
+>TRAINEE ACCOUNT MANAGEMENT
+
+TBA
+
+>EMPLOYEE MANAGEMENT 
