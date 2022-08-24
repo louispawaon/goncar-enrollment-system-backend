@@ -1,12 +1,11 @@
 import * as express from 'express';
-import {Request,Response} from 'express';
-import {PrismaClient} from '@prisma/client';
 
 const app = express();
 app.use(express.json());
+
 //npm run devStart
 //const router = require('express').Router();
-const prisma = new PrismaClient();
+
 
 /*TEST CODE*/
 /*app.post("/",(req:Request,res:Response)=>{
@@ -14,7 +13,6 @@ const prisma = new PrismaClient();
 
 });*/
   
-async function main(){
   // TRAINEE ENROLLMENT MODULE
 
   //trainees
@@ -306,17 +304,6 @@ const traineez = await prisma.trainees.findUnique({
 console.log(traineez)
 */
 /**/
-
-}
-
-main()
-  .catch(e=>{
-  console.error(e.code+" + "+e.message)
-  })
-  .finally(async()=>{
-  await prisma.$disconnect()
-})
-
 
 app.listen(3000, () =>
   console.log('REST API server ready at: http://localhost:3000'),
