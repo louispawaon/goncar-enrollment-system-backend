@@ -51,10 +51,12 @@ The Backend Framework for Goncar Security Training Academy's Enrollment System I
 
 >FEES AND ACCOUNTS MANAGEMENT
 
-TBA
+To be Attached
 
 >TRAINEE ACCOUNT MANAGEMENT
 
-TBA
+To be Attached
 
 >EMPLOYEE MANAGEMENT 
+
+To be Attached
