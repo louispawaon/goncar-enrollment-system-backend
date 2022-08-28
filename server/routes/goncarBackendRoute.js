@@ -14,7 +14,11 @@ import {
     updateTrainingYr,
     viewCourse,
     viewCourseMaster,
-    viewTrainingYrMaster
+    viewTrainingYrMaster,
+    addCourseBatch,
+    updateCourseBatch,
+    viewCourseBatch,
+    viewCourseBatchMaster
 } from "../controller/goncarBackendController.js";
 
 const router = express.Router();
