@@ -17,7 +17,6 @@ The Backend Framework for Goncar Security Training Academy's Enrollment System I
 | 1.8** |  | Assign Trainee to Course Batch | 
 | 1.9* | GET | Trainee Masterlist  |```/dashboard/trainees```
 
-
 *1.9 is a new Use Case ID
 
 **1.8 is more of an added process
@@ -33,16 +32,16 @@ The Backend Framework for Goncar Security Training Academy's Enrollment System I
 | 2.4 | POST | Create New Training Year |```/dashboard/administrative/trainingyr/add```  |
 | 2.5 | PUT | Update Training Year |```/dashboard/administrative/trainingyr/edit/{id}```  |
 | 2.6* | GET | Course Masterlist |```/dashboard/administrative/courses/```|
+| 2.7* | GET | Training Year Masterlist |```/dashboard/administrative/courses/```|
 
-*2.6 is a new Use Case ID
-
+*2.6 and 2.7 are new Use Case IDs
 
 >COURSE BATCH MANAGEMENT
 
 | USE CASE ID | HTTP METHOD | Description | Route |
 | ------------| ----------- | ----------- |----------|
-| 3.1 | POST | Create New Course |```/dashboard/classbatch/add```  |
-| 3.2 | PUT | Update Course Details |```/dashboard/classbatch/edit/{id}```|
+| 3.1 | POST | Create New Course Batch |```/dashboard/classbatch/add```  |
+| 3.2 | PUT | Update Course Batch Details |```/dashboard/classbatch/edit/{id}```|
 | 3.3** |  | Assign Teacher to Course Batch | |
 | 3.4 | GET | View Specific Batch |```/dashboard/classbatch/{id}```  |
 |3.5 | GET | Batch Masterlist |```/dashboard/classbatch/```  |
