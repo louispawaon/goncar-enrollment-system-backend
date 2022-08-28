@@ -1,6 +1,4 @@
 node_modules
-tsconfig
-tsconfig.json
 
 # Keep environment variables out of version control
 .env
