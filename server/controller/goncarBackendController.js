@@ -185,3 +185,119 @@ export const viewTraineeMaster = async(req,res)=>{
     }
 }
 
+/*COURSE MANAGEMENT*/
+
+//Create New Course (2.1)
+export const createCourse = async(req,res)=>{
+    const {courseName,courseDescription, requiredHours, units} = req.body;
+    try{
+        const course = await prisma.courses.create({    
+            data:{
+                courseName: courseName,
+                courseDescription: courseDescription,
+                requiredHours: requiredHours,
+                units: units
+            }
+        });
+        res.status(201).json(course);
+    }
+    catch(error){
+        res.status(400).json({msg: error.message});
+    }
+}
+
+//Update Course Details (2.2)
+export const updateCourse = async(req,res)=>{
+    const {courseName,courseDescription, requiredHours, units} = req.body;
+    try{
+        const course = await prisma.courses.update({
+            where:{
+                courseId: Number(req.params.id)
+            },
+            data:{
+                courseName: courseName,
+                courseDescription: courseDescription,
+                requiredHours: requiredHours,
+                units: units
+            }
+        });
+        res.status(200).json(course);
+    }
+    catch(error){
+        res.status(400).json({msg: error.message});
+    }
+}
+
+//View Specific Course (2.3)
+export const viewCourse = async(req,res)=>{
+    try{
+        const course = await prisma.courses.findUnique({
+            where:{
+                courseId: Number(req.params.id)
+            }
+        });
+        res.status(200).json(course);
+    }
+    catch(error){
+        res.status(400).json({msg: error.message});
+    }
+}
+
+//Create New Training Year (2.4)
+export const newTrainingYr = async(req,res)=>{
+    const {trainingYearSpan} = req.body;
+    try{
+        const trainingYr = await prisma.trainingYears.create({
+            data:{
+                trainingYearSpan:trainingYearSpan
+            }
+        });
+        res.status(201).json(trainingYr);
+    }
+    catch(error){
+        res.status(400).json({msg: error.message});
+    }
+}
+
+//Update Training Year (2.5)
+export const updateTrainingYr = async(req,res)=>{
+    const {trainingYearSpan} = req.body;
+    try{
+        const trainingYr = await prisma.trainingYears.update({
+            where:{
+                trainingYearId: Number(req.params.id)
+            },
+            data:{
+                trainingYearSpan:trainingYearSpan
+            }
+        });
+        res.status(200).json(trainingYr);
+    }
+    catch(error){
+        res.status(400).json({msg: error.message});
+    }
+}
+
+//Trainee Masterlist (2.6)
+export const viewCourseMaster = async(req,res)=>{
+    try{
+        const course = await prisma.courses.findMany({})
+        res.status(200).json(course);
+    }
+    catch(error){
+        res.status(400).json({msg: error.message});
+    }
+}
+
+//Training Year Masterlist (2.7)
+export const viewTrainingYrMaster = async(req,res)=>{
+    try{
+        const trainingYr = await prisma.trainingYears.findMany({})
+        res.status(200).json(trainingYr);
+    }
+    catch(error){
+        res.status(400).json({msg: error.message});
+    }
+}
+
+/*COURSE BATCH MANAGEMENT*/
