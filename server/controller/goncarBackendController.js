@@ -301,3 +301,72 @@ export const viewTrainingYrMaster = async(req,res)=>{
 }
 
 /*COURSE BATCH MANAGEMENT*/
+
+//Create New Course Batch(3.1)
+export const addCourseBatch = async(req,res)=>{
+    const {laNumber,batchName,startDate,endDate,maxStudents} = req.body;
+    try{
+        const batch = await prisma.batch.create({
+            data:{
+                laNumber:laNumber,
+                batchName:batchName,
+                startDate: startDate,
+                endDate: endDate,
+                maxStudents: maxStudents
+            }
+        });
+        res.status(201).json(batch);
+    }
+    catch(error){
+        res.status(400).json({msg: error.message});
+    }
+}
+
+//Update Course Batch Details (3.2)
+export const updateCourseBatch = async(req,res)=>{
+    const {laNumber,batchName,startDate,endDate,maxStudents} = req.body;
+    try{
+        const batch = await prisma.batch.update({
+            where:{
+                batchId:Number(req.params.id)
+            },
+            data:{
+                laNumber:laNumber,
+                batchName:batchName,
+                startDate: startDate,
+                endDate: endDate,
+                maxStudents: maxStudents
+            }
+        });
+        res.status(200).json(batch);
+    }
+    catch(error){
+        res.status(400).json({msg: error.message});
+    }
+}
+
+//View Specific Batch (3.4)
+export const viewCourseBatch = async(req,res)=>{
+    try{
+        const batch = await prisma.batch.findUnique({
+            where:{
+                batchId:Number(req.params.id)
+            }
+        });
+        res.status(200).json(batch);
+    }
+    catch(error){
+        res.status(400).json({msg: error.message});
+    }
+}
+
+//Batch Masterlist (3.5)
+export const viewCourseBatchMaster = async(req,res)=>{
+    try{
+        const batch = await prisma.batch.findMany({});
+        res.status(200).json(batch);
+    }
+    catch(error){
+        res.status(400).json({msg: error.message});
+    }
+}
