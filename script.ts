@@ -2,7 +2,7 @@ import * as express from 'express';
 
 const app = express();
 app.use(express.json());
-
+/*
 import {PrismaClient} from '@prisma/client';
 
 const prisma = new PrismaClient();
@@ -123,7 +123,7 @@ const registration = await prisma.registrations.update({
       }
     }
   }
-})*/
+})
 }
 
 main()
@@ -133,7 +133,7 @@ main()
   .finally(async()=>{
   await prisma.$disconnect()
 })
-
+*/
 app.listen(3000, () =>
   console.log('REST API server ready at: http://localhost:3000'),
 )
