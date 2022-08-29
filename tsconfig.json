@@ -3,9 +3,10 @@
         "target":"es6",
         "sourceMap": true,
         "outDir": "dist",
-        "strict": true,
+        "strict": false,
         "lib": ["esnext"],
         "esModuleInterop":true,
+        "module": "commonjs",
         "allowJs": true
     }
 }

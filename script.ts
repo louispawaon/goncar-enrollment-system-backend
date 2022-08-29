@@ -1,7 +1,16 @@
 import * as express from 'express';
+import * as cors from 'cors';
+import * as dotenv from 'dotenv';
+import * as goncarBackendRoute from './server/routes/goncarBackendRoute.js';
+
+dotenv.config();
 
 const app = express();
+
+app.use(cors);
 app.use(express.json());
+app.use(goncarBackendRoute);
+
 /*
 import {PrismaClient} from '@prisma/client';
 
@@ -134,6 +143,6 @@ main()
   await prisma.$disconnect()
 })
 */
-app.listen(3000, () =>
+app.listen(process.env.BACKEND_PORT||3000, () =>
   console.log('REST API server ready at: http://localhost:3000'),
 )
