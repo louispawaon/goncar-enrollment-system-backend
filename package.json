@@ -2,9 +2,9 @@
   "name": "prismapractice",
   "version": "1.0.0",
   "description": "",
-  "main": "index",
+  "main": "main",
   "scripts": {
-    "devStart": "nodemon script.ts"
+    "devStart": "nodemon main.ts"
   },
   "keywords": [],
   "author": "",
