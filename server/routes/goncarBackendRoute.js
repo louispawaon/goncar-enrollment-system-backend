@@ -23,4 +23,17 @@ import {
 
 const router = express.Router();
 
+/*ENROLLMENT MANAGEMENT*/
+router.post('/dashboard/trainees/add',addTrainee);
+router.put('/dashboard/trainees/edit/:id',updateTrainee);
+router.get('/dashboard/trainees/:id',displayTrainee);
+router.post('/dashboard/trainees/:id/registration/add',createTraineeReg);
+router.put('/dashboard/trainees/:id/registration/:id/edit',updateTraineeReg);
+router.get('/dashboard/trainees/:id/registration/:id',displayTraineeReg);
+router.delete('/dashboard/trainees/:id/registration/:id/delete',deleteTraineeReg);
+router.get('/dashboard/trainees',viewTraineeMaster);
+
+
+
+
 export default router;
