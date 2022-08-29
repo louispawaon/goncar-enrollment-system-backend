@@ -15,7 +15,7 @@ The Backend Framework for Goncar Security Training Academy's Enrollment System I
 | 1.6 | GET | Display Specific Trainee Registration | ```/api/trainees/:id/registration/:id```
 | 1.7 | DELETE | Delete/Drop Specific Trainee Registration | ```/api/trainees/:id/registration/:id```
 | 1.8** |  | Assign Trainee to Course Batch | 
-| 1.9* | GET | Trainee Masterlist  |```/api/trainees``
+| 1.9* | GET | Trainee Masterlist  |```/api/trainees```
 
 *1.9 is a new Use Case ID
 
