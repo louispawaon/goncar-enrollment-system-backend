@@ -43,10 +43,10 @@ model Registrations {
   batch              batch?         @relation("batches", fields: [batchId], references: [batchId])
   batchId            Int?
   transactions       transactions[] @relation("registration")
-  courses            courses?       @relation("course", fields: [courseId], references: [courseId])
-  courseId           Int?
-  trainingYears      trainingYears? @relation(fields: [trainingYearId], references: [trainingYearId])
-  trainingYearId     Int?
+  //courses            courses?       @relation("course", fields: [courseId], references: [courseId])
+  //courseId           Int?
+  //trainingYears      trainingYears? @relation(fields: [trainingYearId], references: [trainingYearId])
+  //trainingYearId     Int?
 }
 
 //TRAINING MODULE
@@ -82,7 +82,7 @@ model trainingYears {
   tuitionview      tuitionview[]
   batch            batch[]
   payables         payables[]
-  registration     Registrations[]
+  //registration     Registrations[]
 }
 
 model courses {
@@ -91,7 +91,7 @@ model courses {
   courseDescription String
   requiredHours     Float
   units             Float
-  registration      Registrations[] @relation("course")
+  //registration      Registrations[] @relation("course")
   batch             batch[]         @relation("course")
   tuitionview       tuitionview[]   @relation("course")
   payables          payables[]      @relation("course")
