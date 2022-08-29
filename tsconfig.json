@@ -3,7 +3,7 @@
         "target":"es6",
         "sourceMap": true,
         "outDir": "dist",
-        "strict": false,
+        "strict": true,
         "lib": ["esnext"],
         "esModuleInterop":true,
         "module": "commonjs",
