@@ -1,11 +1,12 @@
 import {PrismaClient} from '@prisma/client';
+import {Request,Response} from 'express';
 
 const prisma = new PrismaClient();
 
 /*ENROLLMENT MANAGEMENT*/
 
 //Add Trainee (1.1)
-export const addTrainee = async(req,res) =>{
+export const addTrainee = async(req:Request,res:Response) =>{
     const {firstName,middleName,lastName,birthDay,sex,address,emailAdd,cpNum,educationalAttainment,yearGrad} = req.body;
     try{
         const trainee = await prisma.trainees.create({
@@ -31,7 +32,7 @@ export const addTrainee = async(req,res) =>{
 };
 
 //Update Trainee (1.2)
-export const updateTrainee = async(req,res)=>{
+export const updateTrainee = async(req:Request,res:Response)=>{
     const {firstName,middleName,lastName,birthDay,sex,address,emailAdd,cpNum,educationalAttainment,yearGrad} = req.body;
     try{
         const trainee = await prisma.trainees.update({
@@ -59,7 +60,7 @@ export const updateTrainee = async(req,res)=>{
 };
 
 //Display Trainee (1.3)
-export const displayTrainee = async(req,res)=>{
+export const displayTrainee = async(req:Request,res:Response)=>{
     try{
         const trainee = await prisma.trainees.findUnique({
             where:{
@@ -74,7 +75,7 @@ export const displayTrainee = async(req,res)=>{
 };
 
 //Create Trainee Registration (1.4)
-export const createTraineeReg = async(req,res)=>{
+export const createTraineeReg = async(req:Request,res:Response)=>{
     const {batchId, courseId, traineeId,SSSNum,TINNum,SGLicense,expiryDate,dateEnrolled,registrationStatus} = req.body;
     try{
         const traineeReg = await prisma.trainees.update({
@@ -89,18 +90,7 @@ export const createTraineeReg = async(req,res)=>{
                 registrations:{
                     create:{
                         dateEnrolled: dateEnrolled,
-                        registrationStatus: registrationStatus,
-                        //Assign Trainee to Course Batch (1.8)
-                        batch:{
-                            connect:{
-                                batchId: Number(batchId)
-                            }
-                        },
-                        courses:{ 
-                            connect:{
-                                courseId: Number(courseId)
-                            }
-                        }
+                        registrationStatus: registrationStatus
                     }
                 }
             }
@@ -113,7 +103,7 @@ export const createTraineeReg = async(req,res)=>{
 };
 
 //Update Specific Trainee Registration (1.5)
-export const updateTraineeReg = async(req,res)=>{
+export const updateTraineeReg = async(req:Request,res:Response)=>{
     const {registrationNumber,SSSNum,TINNum,SGLicense,expiryDate,dateEnrolled,registrationStatus} = req.body;
     try{
         const traineeReg = await prisma.trainees.update({
@@ -146,7 +136,7 @@ export const updateTraineeReg = async(req,res)=>{
 };
 
 //Display Specific Trainee Registration (1.6)
-export const displayTraineeReg = async(req,res)=>{
+export const displayTraineeReg = async(req:Request,res:Response)=>{
     try{
         const traineeReg = await prisma.registrations.findUnique({
             where:{
@@ -161,7 +151,7 @@ export const displayTraineeReg = async(req,res)=>{
 };
 
 //Delete/Drop Specific Trainee Registration (1.7)
-export const deleteTraineeReg = async(req,res)=>{
+export const deleteTraineeReg = async(req:Request,res:Response)=>{
     try{
         const traineeReg = await prisma.registrations.delete({
             where:{
@@ -176,7 +166,7 @@ export const deleteTraineeReg = async(req,res)=>{
 }
 
 //Trainee Masterlist (1.9)
-export const viewTraineeMaster = async(req,res)=>{
+export const viewTraineeMaster = async(req:Request,res:Response)=>{
     try{
         const trainee = await prisma.trainees.findMany()
         console.log(res.status);
@@ -190,7 +180,7 @@ export const viewTraineeMaster = async(req,res)=>{
 /*COURSE MANAGEMENT*/
 
 //Create New Course (2.1)
-export const createCourse = async(req,res)=>{
+export const createCourse = async(req:Request,res:Response)=>{
     const {courseName,courseDescription, requiredHours, units} = req.body;
     try{
         const course = await prisma.courses.create({    
@@ -209,7 +199,7 @@ export const createCourse = async(req,res)=>{
 }
 
 //Update Course Details (2.2)
-export const updateCourse = async(req,res)=>{
+export const updateCourse = async(req:Request,res:Response)=>{
     const {courseName,courseDescription, requiredHours, units} = req.body;
     try{
         const course = await prisma.courses.update({
@@ -231,7 +221,7 @@ export const updateCourse = async(req,res)=>{
 }
 
 //View Specific Course (2.3)
-export const viewCourse = async(req,res)=>{
+export const viewCourse = async(req:Request,res:Response)=>{
     try{
         const course = await prisma.courses.findUnique({
             where:{
@@ -246,7 +236,7 @@ export const viewCourse = async(req,res)=>{
 }
 
 //Create New Training Year (2.4)
-export const newTrainingYr = async(req,res)=>{
+export const newTrainingYr = async(req:Request,res:Response)=>{
     const {trainingYearSpan} = req.body;
     try{
         const trainingYr = await prisma.trainingYears.create({
@@ -262,7 +252,7 @@ export const newTrainingYr = async(req,res)=>{
 }
 
 //Update Training Year (2.5)
-export const updateTrainingYr = async(req,res)=>{
+export const updateTrainingYr = async(req:Request,res:Response)=>{
     const {trainingYearSpan} = req.body;
     try{
         const trainingYr = await prisma.trainingYears.update({
@@ -281,7 +271,7 @@ export const updateTrainingYr = async(req,res)=>{
 }
 
 //Trainee Masterlist (2.6)
-export const viewCourseMaster = async(req,res)=>{
+export const viewCourseMaster = async(req:Request,res:Response)=>{
     try{
         const course = await prisma.courses.findMany({})
         res.status(200).json(course);
@@ -292,7 +282,7 @@ export const viewCourseMaster = async(req,res)=>{
 }
 
 //Training Year Masterlist (2.7)
-export const viewTrainingYrMaster = async(req,res)=>{
+export const viewTrainingYrMaster = async(req:Request,res:Response)=>{
     try{
         const trainingYr = await prisma.trainingYears.findMany({})
         res.status(200).json(trainingYr);
@@ -305,7 +295,7 @@ export const viewTrainingYrMaster = async(req,res)=>{
 /*COURSE BATCH MANAGEMENT*/
 
 //Create New Course Batch(3.1)
-export const addCourseBatch = async(req,res)=>{
+export const addCourseBatch = async(req:Request,res:Response)=>{
     const {laNumber,batchName,startDate,endDate,maxStudents} = req.body;
     try{
         const batch = await prisma.batch.create({
@@ -325,7 +315,7 @@ export const addCourseBatch = async(req,res)=>{
 }
 
 //Update Course Batch Details (3.2)
-export const updateCourseBatch = async(req,res)=>{
+export const updateCourseBatch = async(req:Request,res:Response)=>{
     const {laNumber,batchName,startDate,endDate,maxStudents} = req.body;
     try{
         const batch = await prisma.batch.update({
@@ -348,7 +338,7 @@ export const updateCourseBatch = async(req,res)=>{
 }
 
 //View Specific Batch (3.4)
-export const viewCourseBatch = async(req,res)=>{
+export const viewCourseBatch = async(req:Request,res:Response)=>{
     try{
         const batch = await prisma.batch.findUnique({
             where:{
@@ -363,7 +353,7 @@ export const viewCourseBatch = async(req,res)=>{
 }
 
 //Batch Masterlist (3.5)
-export const viewCourseBatchMaster = async(req,res)=>{
+export const viewCourseBatchMaster = async(req:Request,res:Response)=>{
     try{
         const batch = await prisma.batch.findMany({});
         res.status(200).json(batch);

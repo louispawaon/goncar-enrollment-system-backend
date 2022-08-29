@@ -1,4 +1,4 @@
-import express from "express";
+import * as express from "express";
 import {
     addTrainee,
     updateTrainee,
@@ -19,7 +19,7 @@ import {
     updateCourseBatch,
     viewCourseBatch,
     viewCourseBatchMaster
-} from "../controller/goncarBackendController.js";
+} from "../controller/goncarBackendController";
 
 const router = express.Router();
 
@@ -32,8 +32,6 @@ router.put('/dashboard/trainees/:id/registration/:id/edit',updateTraineeReg);
 router.get('/dashboard/trainees/:id/registration/:id',displayTraineeReg);
 router.delete('/dashboard/trainees/:id/registration/:id/delete',deleteTraineeReg);
 router.get('/dashboard/trainees',viewTraineeMaster);
-
-
 
 
 export default router;
