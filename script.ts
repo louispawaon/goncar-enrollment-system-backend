@@ -1,8 +1,8 @@
 import * as express from 'express';
 import * as cors from 'cors';
 import * as dotenv from 'dotenv';
-import * as goncarBackendRoute from './server/routes/goncarBackendRoute.js';
-/*
+import goncarBackendRoute from './server/routes/goncarBackendRoute';
+
 dotenv.config();
 
 const app = express();
@@ -10,8 +10,8 @@ const app = express();
 app.use(cors);
 app.use(express.json());
 app.use(goncarBackendRoute);
-*/
-
+/**/
+/*
 const app = express();
 app.use(express.json());
 
@@ -24,7 +24,7 @@ const prisma = new PrismaClient();
 
 async function main(){
 //ABANDONED 
-/*
+
 /*
   await prisma.trainees.deleteMany();
   await prisma.batch.deleteMany();
@@ -174,7 +174,7 @@ const findtime = await prisma.registrations.findMany({
   }
 })
 
-console.log(JSON.stringify(findtime));*/
+console.log(JSON.stringify(findtime));
 
 }
 
@@ -184,7 +184,7 @@ main()
   })
   .finally(async()=>{
   await prisma.$disconnect()
-})
+})*/
 
 app.listen(process.env.BACKEND_PORT||3000, () =>
   console.log('REST API server ready at: http://localhost:3000'),
