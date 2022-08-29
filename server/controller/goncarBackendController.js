@@ -22,6 +22,7 @@ export const addTrainee = async(req,res) =>{
                 yearGrad: yearGrad
             }
         });
+        
         res.status(201).json(trainee);
     }
     catch(error){
@@ -177,7 +178,8 @@ export const deleteTraineeReg = async(req,res)=>{
 //Trainee Masterlist (1.9)
 export const viewTraineeMaster = async(req,res)=>{
     try{
-        const trainee = await prisma.trainees.findMany({})
+        const trainee = await prisma.trainees.findMany()
+        console.log(res.status);
         res.status(200).json(trainee);
     }
     catch(error){
