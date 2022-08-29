@@ -2,7 +2,7 @@ import * as express from 'express';
 import * as cors from 'cors';
 import * as dotenv from 'dotenv';
 import * as goncarBackendRoute from './server/routes/goncarBackendRoute.js';
-
+/*
 dotenv.config();
 
 const app = express();
@@ -10,8 +10,11 @@ const app = express();
 app.use(cors);
 app.use(express.json());
 app.use(goncarBackendRoute);
+*/
 
-/*
+const app = express();
+app.use(express.json());
+
 import {PrismaClient} from '@prisma/client';
 
 const prisma = new PrismaClient();
@@ -21,7 +24,7 @@ const prisma = new PrismaClient();
 
 async function main(){
 //ABANDONED 
-
+/*
 /*
   await prisma.trainees.deleteMany();
   await prisma.batch.deleteMany();
@@ -83,11 +86,6 @@ const traineeRegistration = await prisma.trainees.update({
           connect:{
             batchId:1
           }
-        },
-        courses:{
-          connect:{
-            courseId:1
-          }
         }
       }
     }
@@ -132,7 +130,52 @@ const registration = await prisma.registrations.update({
       }
     }
   }
+})*/
+/*const batch = await prisma.batch.update({
+  where:{
+    batchId:1
+  },
+  data:{
+    courses:{
+      connect:{
+        courseId:1
+      }
+    }
+  }
 })
+
+const trainingYear = await prisma.trainingYears.create({
+  data:{
+    trainingYearSpan:"2022-2023"
+  }
+});
+
+const batch = await prisma.batch.update({
+  where:{
+    batchId:1
+  },
+  data:{
+    trainingYears:{
+      connect:{
+        trainingYearId:1
+      }
+    }
+  }
+})
+
+const findtime = await prisma.registrations.findMany({
+  include:{
+    batch:{
+      include:{
+        courses:true,
+        trainingYears:true
+      }
+    }
+  }
+})
+
+console.log(JSON.stringify(findtime));*/
+
 }
 
 main()
@@ -142,7 +185,7 @@ main()
   .finally(async()=>{
   await prisma.$disconnect()
 })
-*/
+
 app.listen(process.env.BACKEND_PORT||3000, () =>
   console.log('REST API server ready at: http://localhost:3000'),
 )
