@@ -31,8 +31,8 @@ The Backend Framework for Goncar Security Training Academy's Enrollment System I
 | 2.3 | GET | View Specific Course |```/api/courses/:id``` |
 | 2.4 | POST | Create New Training Year |```/api/trainingYr```  |
 | 2.5 | PUT | Update Training Year |```/api/trainingYr/:id```  |
-| 2.6* | GET | Course Masterlist |```api/courses```|
-| 2.7* | GET | Training Year Masterlist |```api/trainingYr```|
+| 2.6* | GET | Course Masterlist |```/api/courses```|
+| 2.7* | GET | Training Year Masterlist |```/api/trainingYr```|
 
 *2.6 and 2.7 are new Use Case IDs
 
