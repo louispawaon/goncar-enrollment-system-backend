@@ -193,7 +193,11 @@ app.delete('/api/trainees/:id/registration/:id',async(req:Request,res:Response)=
 //Trainee Masterlist (1.9)
 app.get('/api/trainees',async(req:Request,res:Response)=>{
     try{
-        const trainee = await prisma.trainees.findMany()
+        const trainee = await prisma.trainees.findMany({
+            include:{
+                registrations:true
+            }
+        })
         console.log(trainee);
         res.status(200).json(trainee);
     }
