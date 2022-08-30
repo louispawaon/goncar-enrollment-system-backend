@@ -196,10 +196,13 @@ app.get('/api/trainees',async(req:Request,res:Response)=>{
         const trainee = await prisma.trainees.findMany({
             include:{
                 registrations:{
+                    select:{
+                        registrationStatus:true
+                    },
                     include:{
                         batch:{
-                            include:{
-                                courses:true
+                            select:{
+                               courses:true
                             }
                         }
                     }
