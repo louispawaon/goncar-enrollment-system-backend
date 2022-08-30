@@ -89,11 +89,11 @@ app.get('/api/trainees/:id',async(req:Request,res:Response)=>{
 
 //Create Trainee Registration (1.4)
 app.post('/api/trainees/:id/registration/',async(req:Request,res:Response)=>{
-    const {batchId, traineeId,SSSNum,TINNum,SGLicense,expiryDate,dateEnrolled,registrationStatus} = req.body;
+    const {batchId,SSSNum,TINNum,SGLicense,expiryDate,dateEnrolled,registrationStatus} = req.body;
     try{
         const traineeReg = await prisma.trainees.update({
             where:{
-                traineeId: Number(traineeId)
+                traineeId: Number(req.params.id)
             },
             data:{
                 SSSNum: SSSNum,
@@ -121,12 +121,12 @@ app.post('/api/trainees/:id/registration/',async(req:Request,res:Response)=>{
 });
 
 //Update Specific Trainee Registration (1.5)
-app.put('/api/trainees/:id/registration/:id/',async(req:Request,res:Response)=>{
-    const {registrationNumber,SSSNum,TINNum,SGLicense,expiryDate,dateEnrolled,registrationStatus} = req.body;
+app.put('/api/trainees/:id/registration/:regid/',async(req:Request,res:Response)=>{
+    const {registrationNumber, traineeId,SSSNum,TINNum,SGLicense,expiryDate,dateEnrolled,registrationStatus} = req.body;
     try{
         const traineeReg = await prisma.trainees.update({
             where:{
-                traineeId: Number(req.params.id)
+                traineeId: traineeId
             },
             data:{
                 SSSNum: SSSNum,
@@ -136,7 +136,7 @@ app.put('/api/trainees/:id/registration/:id/',async(req:Request,res:Response)=>{
                 registrations:{
                     update:{
                         where:{
-                            registrationNumber: registrationNumber
+                            registrationNumber: Number(req.params.regid)
                         }, 
                         data:{
                             dateEnrolled: dateEnrolled,
@@ -154,11 +154,11 @@ app.put('/api/trainees/:id/registration/:id/',async(req:Request,res:Response)=>{
 });
 
 //Display Specific Trainee Registration (1.6)
-app.get('/api/trainees/:id/registration/:id',async(req:Request,res:Response)=>{
+app.get('/api/trainees/:id/registration/:regid',async(req:Request,res:Response)=>{
     try{
         const traineeReg = await prisma.registrations.findUnique({
             where:{
-                registrationNumber: Number(req.params.id)
+                registrationNumber: Number(req.params.regid)
             },
             include:{
                 batch:{
@@ -177,11 +177,11 @@ app.get('/api/trainees/:id/registration/:id',async(req:Request,res:Response)=>{
 });
 
 //Delete/Drop Specific Trainee Registration (1.7)
-app.delete('/api/trainees/:id/registration/:id',async(req:Request,res:Response)=>{
+app.delete('/api/trainees/:id/registration/:regid',async(req:Request,res:Response)=>{
     try{
         const traineeReg = await prisma.registrations.delete({
             where:{
-                registrationNumber: Number(req.params.id)
+                registrationNumber: Number(req.params.regid)
             }
         });
         res.status(200).json(traineeReg);
@@ -202,6 +202,9 @@ app.get('/api/trainees',async(req:Request,res:Response)=>{
                 middleName:true,
                 lastName: true,
                 registrations:{
+                    where:{
+                        registrationStatus:"Active"
+                    },
                     select:{
                         registrationStatus:true,
                         batch:{
@@ -219,6 +222,17 @@ app.get('/api/trainees',async(req:Request,res:Response)=>{
         })
         console.log(trainee);
         res.status(200).json(trainee);
+    }
+    catch(error){
+        res.status(400).json({msg: error.message});
+    }
+});
+
+app.get('/api/trainees/:id/registrations',async(req:Request,res:Response)=>{
+    try{
+        const traineeReg = await prisma.registrations.findMany({})
+        console.log(traineeReg);
+        res.status(200).json(traineeReg);
     }
     catch(error){
         res.status(400).json({msg: error.message});
