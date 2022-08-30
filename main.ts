@@ -194,18 +194,20 @@ app.delete('/api/trainees/:id/registration/:id',async(req:Request,res:Response)=
 app.get('/api/trainees',async(req:Request,res:Response)=>{
     try{
         const trainee = await prisma.trainees.findMany({
-            include:{
+            select:{
                 registrations:{
                     select:{
-                        registrationStatus:true
-                    },
-                    include:{
+                        registrationStatus:true,
                         batch:{
                             select:{
-                               courses:true
+                                courses:{
+                                    select:{
+                                        courseName:true
+                                    }
+                                }
                             }
                         }
-                    }
+                    },
                 }
             }
         })
