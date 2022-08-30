@@ -195,6 +195,10 @@ app.get('/api/trainees',async(req:Request,res:Response)=>{
     try{
         const trainee = await prisma.trainees.findMany({
             select:{
+                traineeId:true,
+                firstName:true,
+                middleName:true,
+                lastName: true,
                 registrations:{
                     select:{
                         registrationStatus:true,
@@ -207,7 +211,7 @@ app.get('/api/trainees',async(req:Request,res:Response)=>{
                                 }
                             }
                         }
-                    },
+                    }
                 }
             }
         })
