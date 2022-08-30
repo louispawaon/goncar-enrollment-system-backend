@@ -150,9 +150,18 @@ app.put('/api/trainees/:id/registration/:regid/',async(req:Request,res:Response)
 //Display Specific Trainee Registration (1.6)
 app.get('/api/trainees/:id/registration/:regid',async(req:Request,res:Response)=>{
     try{
-        const traineeReg = await prisma.registrations.findUnique({
+        const traineeReg = await prisma.registrations.findMany({
             where:{
-                registrationNumber: Number(req.params.regid)
+                OR:[
+                    {
+                        registrationNumber:Number(req.params.regid)
+                    
+                    },
+                    {
+                        traineeId:Number(req.params.id)
+                    
+                    },
+                ]
             },
             include:{
                 trainees:true,
@@ -223,10 +232,14 @@ app.get('/api/trainees',async(req:Request,res:Response)=>{
     }
 });
 
-//Trainee Reg Masterlist (1.9)
-app.get('/api/trainees/registrations',async(req:Request,res:Response)=>{
+//Trainee Reg Masterlist (1.10)
+app.get('/api/trainees/:id/registrations',async(req:Request,res:Response)=>{
     try{
-        const traineeReg = await prisma.registrations.findMany({})
+        const traineeReg = await prisma.registrations.findMany({
+            where:{
+                traineeId:Number(req.params.id)
+            }
+        })
         console.log(traineeReg);
         res.status(200).json(traineeReg);
     }
@@ -294,7 +307,7 @@ app.get('/api/courses/:id',async(req:Request,res:Response)=>{
 });
 
 //Create New Training Year (2.4)
-app.post('/api/trainingYrs',async(req:Request,res:Response)=>{
+app.post('/api/trainingYears',async(req:Request,res:Response)=>{
     const {trainingYearSpan} = req.body;
     try{
         const trainingYr = await prisma.trainingYears.create({
@@ -310,7 +323,7 @@ app.post('/api/trainingYrs',async(req:Request,res:Response)=>{
 });
 
 //Update Training Year (2.5)
-app.put('/api/trainingYrs/:id',async(req:Request,res:Response)=>{
+app.put('/api/trainingYears/:id',async(req:Request,res:Response)=>{
     const {trainingYearSpan} = req.body;
     try{
         const trainingYr = await prisma.trainingYears.update({
@@ -340,7 +353,7 @@ app.get('/api/courses',async(req:Request,res:Response)=>{
 });
 
 //Training Year Masterlist (2.7)
-app.get('/api/trainingYrs',async(req:Request,res:Response)=>{
+app.get('/api/trainingYears',async(req:Request,res:Response)=>{
     try{
         const trainingYr = await prisma.trainingYears.findMany({})
         res.status(200).json(trainingYr);

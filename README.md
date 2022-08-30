@@ -11,13 +11,14 @@ The Backend Framework for Goncar Security Training Academy's Enrollment System I
 | 1.2 | PUT | Update Trainee Profile | ```/api/trainees/:id```
 | 1.3 | GET | Display Specific Trainee | ```/api/trainees/:id```
 | 1.4 | POST | Create Trainee Registration | ```/api/trainees/:id/registration/```
-| 1.5 | PUT | Update Specific Trainee Registration | ```/api/trainees/:id/registration/:id/```
-| 1.6 | GET | Display Specific Trainee Registration | ```/api/trainees/:id/registration/:id```
-| 1.7 | DELETE | Delete/Drop Specific Trainee Registration | ```/api/trainees/:id/registration/:id```
+| 1.5 | PUT | Update Specific Trainee Registration | ```/api/trainees/:id/registration/:regid/```
+| 1.6 | GET | Display Specific Trainee Registration | ```/api/trainees/:id/registration/:regid```
+| 1.7 | DELETE | Delete/Drop Specific Trainee Registration | ```/api/trainees/:id/registration/:regid```
 | 1.8** |  | Assign Trainee to Course Batch | 
 | 1.9* | GET | Trainee Masterlist  |```/api/trainees```
+| 1.10* | GET | Trainee Registration Masterlist (Per Trainee) | ```/api/trainees/:id/registration```
 
-*1.9 is a new Use Case ID
+*1.9 and 1.10 is a new Use Case ID
 
 **1.8 is more of an added process
 
@@ -29,10 +30,10 @@ The Backend Framework for Goncar Security Training Academy's Enrollment System I
 | 2.1 | POST | Create New Course |```/api/courses```  |
 | 2.2 | PUT | Update Course Details |```/api/courses/:id``` |
 | 2.3 | GET | View Specific Course |```/api/courses/:id``` |
-| 2.4 | POST | Create New Training Year |```/api/trainingYr```  |
-| 2.5 | PUT | Update Training Year |```/api/trainingYr/:id```  |
+| 2.4 | POST | Create New Training Year |```/api/trainingYears```  |
+| 2.5 | PUT | Update Training Year |```/api/trainingYears/:id```  |
 | 2.6* | GET | Course Masterlist |```/api/courses```|
-| 2.7* | GET | Training Year Masterlist |```/api/trainingYr```|
+| 2.7* | GET | Training Year Masterlist |```/api/trainingYears```|
 
 *2.6 and 2.7 are new Use Case IDs
 
