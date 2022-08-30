@@ -4,6 +4,7 @@
   "description": "",
   "main": "main",
   "scripts": {
+    "start": "ts-node main.ts",
     "test": "echo \"Error: no test specified\" && exit 1",
     "devStart": "nodemon main.ts"
   },
