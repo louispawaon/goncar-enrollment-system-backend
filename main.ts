@@ -1,6 +1,7 @@
 import * as express from 'express';
 import {PrismaClient} from '@prisma/client';
 import {Request,Response} from 'express';
+import * as cors from 'cors';
 import * as dotenv from 'dotenv';
 
 const prisma = new PrismaClient();
@@ -10,6 +11,7 @@ dotenv.config();
 const app = express();
 const port = process.env.PORT;
 
+app.use(cors({origin:'http://127.0.0.1:5000'}))
 app.use(express.json());
 
 /*ENROLLMENT MANAGEMENT*/
