@@ -294,7 +294,7 @@ app.put('/api/trainingYr/:id',async(req:Request,res:Response)=>{
 });
 
 //Courses Masterlist (2.6)
-app.get('api/courses',async(req:Request,res:Response)=>{
+app.get('/api/courses',async(req:Request,res:Response)=>{
     try{
         const course = await prisma.courses.findMany({})
         res.status(200).json(course);
@@ -305,7 +305,7 @@ app.get('api/courses',async(req:Request,res:Response)=>{
 });
 
 //Training Year Masterlist (2.7)
-app.get('api/trainingYr',async(req:Request,res:Response)=>{
+app.get('/api/trainingYr',async(req:Request,res:Response)=>{
     try{
         const trainingYr = await prisma.trainingYears.findMany({})
         res.status(200).json(trainingYr);
