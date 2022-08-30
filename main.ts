@@ -91,24 +91,22 @@ app.get('/api/trainees/:id',async(req:Request,res:Response)=>{
 app.post('/api/trainees/:id/registration/',async(req:Request,res:Response)=>{
     const {batchId,SSSNum,TINNum,SGLicense,expiryDate,dateEnrolled,registrationStatus} = req.body;
     try{
-        const traineeReg = await prisma.trainees.update({
-            where:{
-                traineeId: Number(req.params.id)
-            },
+        const traineeReg = await prisma.registrations.create({
             data:{
                 SSSNum: SSSNum,
                 TINNum: TINNum,
                 SGLicense: SGLicense,
                 expiryDate: expiryDate,
-                registrations:{
-                    create:{
-                        dateEnrolled: dateEnrolled,
-                        registrationStatus: registrationStatus,
-                        batch:{
-                            connect:{
-                                batchId:batchId
-                            }
-                        }
+                dateEnrolled: dateEnrolled,
+                registrationStatus: registrationStatus,
+                trainees:{
+                    connect:{
+                        traineeId:Number(req.params.id)
+                    }
+                },
+                batch:{
+                    connect:{
+                        batchId:batchId
                     }
                 }
             }
@@ -122,26 +120,22 @@ app.post('/api/trainees/:id/registration/',async(req:Request,res:Response)=>{
 
 //Update Specific Trainee Registration (1.5)
 app.put('/api/trainees/:id/registration/:regid/',async(req:Request,res:Response)=>{
-    const {registrationNumber, traineeId,SSSNum,TINNum,SGLicense,expiryDate,dateEnrolled,registrationStatus} = req.body;
+    const {SSSNum,TINNum,SGLicense,expiryDate,dateEnrolled,registrationStatus} = req.body;
     try{
-        const traineeReg = await prisma.trainees.update({
+        const traineeReg = await prisma.registrations.update({
             where:{
-                traineeId: traineeId
+                registrationNumber:Number(req.params.regid)
             },
             data:{
                 SSSNum: SSSNum,
                 TINNum: TINNum,
                 SGLicense: SGLicense,
                 expiryDate: expiryDate,
-                registrations:{
-                    update:{
-                        where:{
-                            registrationNumber: Number(req.params.regid)
-                        }, 
-                        data:{
-                            dateEnrolled: dateEnrolled,
-                            registrationStatus: registrationStatus
-                        } 
+                dateEnrolled: dateEnrolled,
+                registrationStatus: registrationStatus,
+                trainees:{
+                    connect:{
+                        traineeId:Number(req.params.id)
                     }
                 }
             }
@@ -161,6 +155,7 @@ app.get('/api/trainees/:id/registration/:regid',async(req:Request,res:Response)=
                 registrationNumber: Number(req.params.regid)
             },
             include:{
+                trainees:true,
                 batch:{
                     include:{
                         courses:true,
@@ -228,7 +223,8 @@ app.get('/api/trainees',async(req:Request,res:Response)=>{
     }
 });
 
-app.get('/api/trainees/:id/registrations',async(req:Request,res:Response)=>{
+//Trainee Reg Masterlist (1.9)
+app.get('/api/trainees/registrations',async(req:Request,res:Response)=>{
     try{
         const traineeReg = await prisma.registrations.findMany({})
         console.log(traineeReg);
