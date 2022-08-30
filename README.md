@@ -40,11 +40,11 @@ The Backend Framework for Goncar Security Training Academy's Enrollment System I
 
 | USE CASE ID | HTTP METHOD | Description | Route |
 | ------------| ----------- | ----------- |----------|
-| 3.1 | POST | Create New Course Batch |```/api/batch```  |
-| 3.2 | PUT | Update Course Batch Details |```/api/batch/:id```|
+| 3.1 | POST | Create New Course Batch |```/api/batches```  |
+| 3.2 | PUT | Update Course Batch Details |```/api/batches/:id```|
 | 3.3** |  | Assign Teacher to Course Batch | |
-| 3.4 | GET | View Specific Batch |```/api/batch/:id```  |
-|3.5 | GET | Batch Masterlist |```/api/batch```  |
+| 3.4 | GET | View Specific Batch |```/api/batches/:id```  |
+|3.5 | GET | Batch Masterlist |```/api/batches```  |
 
 **3.3 is more of an added process
 

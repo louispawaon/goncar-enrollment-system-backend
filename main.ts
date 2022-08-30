@@ -197,7 +197,11 @@ app.get('/api/trainees',async(req:Request,res:Response)=>{
             include:{
                 registrations:{
                     include:{
-                        batch:true
+                        batch:{
+                            include:{
+                                courses:true
+                            }
+                        }
                     }
                 }
             }
@@ -269,7 +273,7 @@ app.get('/api/courses/:id',async(req:Request,res:Response)=>{
 });
 
 //Create New Training Year (2.4)
-app.post('/api/trainingYr',async(req:Request,res:Response)=>{
+app.post('/api/trainingYrs',async(req:Request,res:Response)=>{
     const {trainingYearSpan} = req.body;
     try{
         const trainingYr = await prisma.trainingYears.create({
@@ -285,7 +289,7 @@ app.post('/api/trainingYr',async(req:Request,res:Response)=>{
 });
 
 //Update Training Year (2.5)
-app.put('/api/trainingYr/:id',async(req:Request,res:Response)=>{
+app.put('/api/trainingYrs/:id',async(req:Request,res:Response)=>{
     const {trainingYearSpan} = req.body;
     try{
         const trainingYr = await prisma.trainingYears.update({
@@ -315,7 +319,7 @@ app.get('/api/courses',async(req:Request,res:Response)=>{
 });
 
 //Training Year Masterlist (2.7)
-app.get('/api/trainingYr',async(req:Request,res:Response)=>{
+app.get('/api/trainingYrs',async(req:Request,res:Response)=>{
     try{
         const trainingYr = await prisma.trainingYears.findMany({})
         res.status(200).json(trainingYr);
@@ -328,7 +332,7 @@ app.get('/api/trainingYr',async(req:Request,res:Response)=>{
 /*COURSE BATCH MANAGEMENT*/
 
 //Create New Course Batch(3.1)
-app.post('/api/batch',async(req:Request,res:Response)=>{
+app.post('/api/batches',async(req:Request,res:Response)=>{
     const {courseId, trainingYearId, laNumber,batchName,startDate,endDate,maxStudents} = req.body;
     try{
         const batch = await prisma.batch.create({
@@ -358,7 +362,7 @@ app.post('/api/batch',async(req:Request,res:Response)=>{
 });
 
 //Update Course Batch Details (3.2)
-app.put('/api/batch/:id',async(req:Request,res:Response)=>{
+app.put('/api/batches/:id',async(req:Request,res:Response)=>{
     const {laNumber,batchName,startDate,endDate,maxStudents} = req.body;
     try{
         const batch = await prisma.batch.update({
@@ -381,7 +385,7 @@ app.put('/api/batch/:id',async(req:Request,res:Response)=>{
 });
 
 //View Specific Batch (3.4)
-app.get("/api/batch/:id",async(req:Request,res:Response)=>{
+app.get("/api/batches/:id",async(req:Request,res:Response)=>{
     try{
         const batch = await prisma.batch.findUnique({
             where:{
@@ -400,7 +404,7 @@ app.get("/api/batch/:id",async(req:Request,res:Response)=>{
 });
 
 //Batch Masterlist (3.5)
-app.get('/api/batch',async(req:Request,res:Response)=>{
+app.get('/api/batches',async(req:Request,res:Response)=>{
     try{
         const batch = await prisma.batch.findMany({});
         res.status(200).json(batch);
