@@ -376,6 +376,10 @@ app.get("/api/batch/:id",async(req:Request,res:Response)=>{
         const batch = await prisma.batch.findUnique({
             where:{
                 batchId:Number(req.params.id)
+            },
+            include:{
+                courses:true,
+                trainingYears:true
             }
         });
         res.status(200).json(batch);
