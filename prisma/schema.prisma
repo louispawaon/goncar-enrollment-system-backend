@@ -27,17 +27,17 @@ model Trainees {
   cpNum                 String
   educationalAttainment String
   yearGrad              String
-  SSSNum                String?
-  TINNum                String?
-  SGLicense             String?
-  expiryDate            DateTime?        @db.Date
   registrations         Registrations[] @relation("trainees")
 }
 
 model Registrations {
   registrationNumber Int            @unique @default(autoincrement())
+  SSSNum             String?
+  TINNum             String?
+  SGLicense          String?
+  expiryDate         DateTime?      @db.Date
   dateEnrolled       DateTime       @db.Date
-  registrationStatus String 
+  registrationStatus String
   trainees           Trainees?      @relation("trainees", fields: [traineeId], references: [traineeId])
   traineeId          Int?
   batch              batch?         @relation("batches", fields: [batchId], references: [batchId])
@@ -77,7 +77,7 @@ model tuitionview {
 }
 
 model trainingYears {
-  trainingYearId   Int             @id @default(autoincrement()) //TODO: change or revise - temporary ra nang autoinc
+  trainingYearId   Int           @id @default(autoincrement()) //TODO: change or revise - temporary ra nang autoinc
   trainingYearSpan String
   tuitionview      tuitionview[]
   batch            batch[]
@@ -86,16 +86,16 @@ model trainingYears {
 }
 
 model courses {
-  courseId          Int             @id @default(autoincrement())
+  courseId          Int            @id @default(autoincrement())
   courseName        String
   courseDescription String
   requiredHours     Float
   units             Float
   //registration      Registrations[] @relation("course")
-  batch             batch[]         @relation("course")
-  tuitionview       tuitionview[]   @relation("course")
-  payables          payables[]      @relation("course")
-  payableName       payableNames[]  @relation("course")
+  batch             batch[]        @relation("course")
+  tuitionview       tuitionview[]  @relation("course")
+  payables          payables[]     @relation("course")
+  payableName       payableNames[] @relation("course")
 }
 
 //finance module
