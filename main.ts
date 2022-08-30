@@ -195,7 +195,11 @@ app.get('/api/trainees',async(req:Request,res:Response)=>{
     try{
         const trainee = await prisma.trainees.findMany({
             include:{
-                registrations:true
+                registrations:{
+                    include:{
+                        batch:true
+                    }
+                }
             }
         })
         console.log(trainee);
