@@ -88,7 +88,7 @@ app.get('/api/trainees/:id',async(req:Request,res:Response)=>{
 });
 
 //Create Trainee Registration (1.4)
-app.post('/api/trainees/:id/registration/',async(req:Request,res:Response)=>{
+app.post('/api/trainees/:id/registrations/',async(req:Request,res:Response)=>{
     const {batchId,SSSNum,TINNum,SGLicense,expiryDate,dateEnrolled,registrationStatus} = req.body;
     try{
         const traineeReg = await prisma.registrations.create({
@@ -119,7 +119,7 @@ app.post('/api/trainees/:id/registration/',async(req:Request,res:Response)=>{
 });
 
 //Update Specific Trainee Registration (1.5)
-app.put('/api/trainees/:id/registration/:regid/',async(req:Request,res:Response)=>{
+app.put('/api/trainees/:id/registrations/:regid/',async(req:Request,res:Response)=>{
     const {SSSNum,TINNum,SGLicense,expiryDate,dateEnrolled,registrationStatus} = req.body;
     try{
         const traineeReg = await prisma.registrations.update({
@@ -148,7 +148,7 @@ app.put('/api/trainees/:id/registration/:regid/',async(req:Request,res:Response)
 });
 
 //Display Specific Trainee Registration (1.6)
-app.get('/api/trainees/:id/registration/:regid',async(req:Request,res:Response)=>{
+app.get('/api/trainees/:id/registrations/:regid',async(req:Request,res:Response)=>{
     try{
         const traineeReg = await prisma.registrations.findMany({
             where:{
@@ -181,7 +181,7 @@ app.get('/api/trainees/:id/registration/:regid',async(req:Request,res:Response)=
 });
 
 //Delete/Drop Specific Trainee Registration (1.7)
-app.delete('/api/trainees/:id/registration/:regid',async(req:Request,res:Response)=>{
+app.delete('/api/trainees/:id/registrations/:regid',async(req:Request,res:Response)=>{
     try{
         const traineeReg = await prisma.registrations.delete({
             where:{

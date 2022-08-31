@@ -10,13 +10,13 @@ The Backend Framework for Goncar Security Training Academy's Enrollment System I
 | 1.1 | POST | Create Trainee Profile | ```/api/trainees```
 | 1.2 | PUT | Update Trainee Profile | ```/api/trainees/:id```
 | 1.3 | GET | Display Specific Trainee | ```/api/trainees/:id```
-| 1.4 | POST | Create Trainee Registration | ```/api/trainees/:id/registration/```
-| 1.5 | PUT | Update Specific Trainee Registration | ```/api/trainees/:id/registration/:regid/```
-| 1.6 | GET | Display Specific Trainee Registration | ```/api/trainees/:id/registration/:regid```
-| 1.7 | DELETE | Delete/Drop Specific Trainee Registration | ```/api/trainees/:id/registration/:regid```
+| 1.4 | POST | Create Trainee Registration | ```/api/trainees/:id/registrations/```
+| 1.5 | PUT | Update Specific Trainee Registration | ```/api/trainees/:id/registrations/:regid/```
+| 1.6 | GET | Display Specific Trainee Registration | ```/api/trainees/:id/registrations/:regid```
+| 1.7 | DELETE | Delete/Drop Specific Trainee Registration | ```/api/trainees/:id/registrations/:regid```
 | 1.8** |  | Assign Trainee to Course Batch | 
 | 1.9* | GET | Trainee Masterlist  |```/api/trainees```
-| 1.10* | GET | Trainee Registration Masterlist (Per Trainee) | ```/api/trainees/:id/registration```
+| 1.10* | GET | Trainee Registration Masterlist (Per Trainee) | ```/api/trainees/:id/registrations```
 
 *1.9 and 1.10 is a new Use Case ID
 
