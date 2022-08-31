@@ -240,6 +240,7 @@ app.get('/api/trainees/:id/registrations',async(req:Request,res:Response)=>{
                 traineeId: Number(req.params.id)
             },
             select:{
+                registrationNumber:true,
                 batch:{
                     select:{
                         courses:{
