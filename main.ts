@@ -78,6 +78,16 @@ app.get('/api/trainees/:id',async(req:Request,res:Response)=>{
         const trainee = await prisma.trainees.findUnique({
             where:{
                 traineeId: Number(req.params.id)
+            },
+            include:{
+                registrations:{
+                    select:{
+                        SSSNum:true,
+                        TINNum:true,
+                        SGLicense:true,
+                        expiryDate:true
+                    }
+                }
             }
         });
         res.status(200).json(trainee);
@@ -273,6 +283,20 @@ app.get('/api/trainees/:id/registrations',async(req:Request,res:Response)=>{
         })
         console.log(traineeReg);
         res.status(200).json(traineeReg);
+    }
+    catch(error){
+        res.status(400).json({msg: error.message});
+    }
+});
+
+//Return Total Registrations (1.11)
+app.get('/api/trainees/registrations/total',async(req:Request,res:Response)=>{
+    try{
+        const aggregate = await prisma.registrations.aggregate({
+            _count:true
+        })
+        console.log(aggregate);
+        res.status(200).json(aggregate);
     }
     catch(error){
         res.status(400).json({msg: error.message});
