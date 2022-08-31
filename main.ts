@@ -237,7 +237,25 @@ app.get('/api/trainees/:id/registrations',async(req:Request,res:Response)=>{
     try{
         const traineeReg = await prisma.registrations.findMany({
             where:{
-                traineeId:Number(req.params.id)
+                traineeId: Number(req.params.id)
+            },
+            select:{
+                batch:{
+                    select:{
+                        courses:{
+                            select:{
+                                courseName:true
+                            }
+                        },
+                        trainingYears:{
+                            select:{
+                                trainingYearSpan:true
+                            }
+                        },
+                        batchName:true
+                    }
+                },
+                registrationStatus:true
             }
         })
         console.log(traineeReg);
