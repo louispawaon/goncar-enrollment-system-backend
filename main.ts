@@ -152,7 +152,7 @@ app.get('/api/trainees/:id/registrations/:regid',async(req:Request,res:Response)
     try{
         const traineeReg = await prisma.registrations.findMany({
             where:{
-                OR:[
+                AND:[
                     {
                         registrationNumber:Number(req.params.regid)
                     
@@ -163,14 +163,26 @@ app.get('/api/trainees/:id/registrations/:regid',async(req:Request,res:Response)
                     },
                 ]
             },
-            include:{
-                trainees:true,
+            select:{
+                registrationNumber:true,
                 batch:{
-                    include:{
-                        courses:true,
-                        trainingYears:true
+                    select:{
+                        courses:{
+                            select:{
+                                courseName:true
+                            }
+                        },
+                        batchId:true,
+                        batchName:true,
+                        trainingYears:{
+                            select:{
+                                trainingYearSpan:true
+                            }
+                        }
                     }
-                }
+                },
+                dateEnrolled:true,
+                registrationStatus:true
             }
         });
         res.status(200).json(traineeReg);
