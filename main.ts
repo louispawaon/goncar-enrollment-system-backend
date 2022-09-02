@@ -72,22 +72,13 @@ app.put('/api/trainees/:id',async(req:Request,res:Response)=>{
     }
 });
 
+
 //Display Trainee (1.3)
 app.get('/api/trainees/:id',async(req:Request,res:Response)=>{
     try{
         const trainee = await prisma.trainees.findUnique({
             where:{
                 traineeId: Number(req.params.id)
-            },
-            include:{
-                registrations:{
-                    select:{
-                        SSSNum:true,
-                        TINNum:true,
-                        SGLicense:true,
-                        expiryDate:true
-                    }
-                }
             }
         });
         res.status(200).json(trainee);
@@ -97,16 +88,26 @@ app.get('/api/trainees/:id',async(req:Request,res:Response)=>{
     }
 });
 
+
 //Create Trainee Registration (1.4)
 app.post('/api/trainees/:id/registrations/',async(req:Request,res:Response)=>{
     const {batchId,SSSNum,TINNum,SGLicense,expiryDate,dateEnrolled,registrationStatus} = req.body;
     try{
-        const traineeReg = await prisma.registrations.create({
+
+        const trainee = prisma.trainees.update({
+            where:{
+                traineeId:Number(req.params.id)
+            },
             data:{
-                SSSNum: SSSNum,
-                TINNum: TINNum,
-                SGLicense: SGLicense,
-                expiryDate: expiryDate,
+                SSSNum:SSSNum,
+                TINNum:TINNum,
+                SGLicense:SGLicense,
+                expiryDate:expiryDate
+            }
+        });
+
+        const traineeReg = prisma.registrations.create({
+            data:{
                 dateEnrolled: dateEnrolled,
                 registrationStatus: registrationStatus,
                 trainees:{
@@ -121,26 +122,38 @@ app.post('/api/trainees/:id/registrations/',async(req:Request,res:Response)=>{
                 }
             }
         });
-        res.status(201).json(traineeReg);
+
+        const transact = await prisma.$transaction([trainee,traineeReg]);
+        res.status(201).json(transact);
     }   
     catch(error){
         res.status(400).json({msg: error.message});
     }
 });
 
+
 //Update Specific Trainee Registration (1.5)
 app.put('/api/trainees/:id/registrations/:regid/',async(req:Request,res:Response)=>{
     const {SSSNum,TINNum,SGLicense,expiryDate,dateEnrolled,registrationStatus} = req.body;
     try{
-        const traineeReg = await prisma.registrations.update({
+
+        const trainee = prisma.trainees.update({
             where:{
-                registrationNumber:Number(req.params.regid)
+                traineeId:Number(req.params.id)
             },
             data:{
                 SSSNum: SSSNum,
                 TINNum: TINNum,
                 SGLicense: SGLicense,
-                expiryDate: expiryDate,
+                expiryDate: expiryDate
+            }
+        });
+
+        const traineeReg = prisma.registrations.update({
+            where:{
+                registrationNumber:Number(req.params.regid)
+            },
+            data:{
                 dateEnrolled: dateEnrolled,
                 registrationStatus: registrationStatus,
                 trainees:{
@@ -150,12 +163,15 @@ app.put('/api/trainees/:id/registrations/:regid/',async(req:Request,res:Response
                 }
             }
         });
-        res.status(200).json(traineeReg);
+
+        const transact = await prisma.$transaction([trainee,traineeReg]);
+        res.status(200).json(transact);
     }
     catch(error){
         res.status(400).json({msg: error.message});
     }
 });
+
 
 //Display Specific Trainee Registration (1.6)
 app.get('/api/trainees/:id/registrations/:regid',async(req:Request,res:Response)=>{
