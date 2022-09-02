@@ -46,7 +46,7 @@ app.post('/api/trainees',async(req:Request,res:Response) =>{
 
 //Update Trainee (1.2)
 app.put('/api/trainees/:id',async(req:Request,res:Response)=>{
-    const {firstName,middleName,lastName,birthDay,sex,address,emailAdd,cpNum,educationalAttainment,yearGrad} = req.body;
+    const {firstName,middleName,lastName,birthDay,sex,address,emailAdd,cpNum,educationalAttainment,yearGrad,SSSNum,TINNum,SGLicense,expiryDate} = req.body;
     try{
         const trainee = await prisma.trainees.update({
             where:{
@@ -62,7 +62,12 @@ app.put('/api/trainees/:id',async(req:Request,res:Response)=>{
                 emailAdd: emailAdd,
                 cpNum: cpNum,
                 educationalAttainment: educationalAttainment,
-                yearGrad: yearGrad
+                yearGrad: yearGrad,
+                /*
+                SSSNum:SSSNum,
+                TINNum:TINNum,
+                SGLicense:SGLicense,
+                expiryDate:expiryDate*/
             }
         });
         res.status(200).json(trainee);
@@ -134,7 +139,7 @@ app.post('/api/trainees/:id/registrations/',async(req:Request,res:Response)=>{
 
 //Update Specific Trainee Registration (1.5)
 app.put('/api/trainees/:id/registrations/:regid/',async(req:Request,res:Response)=>{
-    const {SSSNum,TINNum,SGLicense,expiryDate,dateEnrolled,registrationStatus} = req.body;
+    const {SSSNum,TINNum,SGLicense,expiryDate,dateEnrolled,registrationStatus, batchId} = req.body;
     try{
 
         const trainee = prisma.trainees.update({
@@ -160,7 +165,12 @@ app.put('/api/trainees/:id/registrations/:regid/',async(req:Request,res:Response
                     connect:{
                         traineeId:Number(req.params.id)
                     }
-                }
+                }/*,
+                batch:{
+                    connect:{
+                        batchId:batchId
+                    }
+                }*/
             }
         });
 
@@ -260,6 +270,9 @@ app.get('/api/trainees',async(req:Request,res:Response)=>{
                         }
                     }
                 }
+            },
+            orderBy:{
+                traineeId:'asc'
             }
         })
         console.log(trainee);
