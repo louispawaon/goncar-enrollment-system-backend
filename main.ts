@@ -308,6 +308,9 @@ app.get('/api/trainees/:id/registrations',async(req:Request,res:Response)=>{
                     }
                 },
                 registrationStatus:true
+            },
+            orderBy:{
+                registrationNumber:'asc'
             }
         })
         console.log(traineeReg);
@@ -428,7 +431,11 @@ app.put('/api/trainingYears/:id',async(req:Request,res:Response)=>{
 //Courses Masterlist (2.6)
 app.get('/api/courses',async(req:Request,res:Response)=>{
     try{
-        const course = await prisma.courses.findMany({})
+        const course = await prisma.courses.findMany({
+            orderBy:{
+                courseId:'asc'
+            }
+        })
         res.status(200).json(course);
     }
     catch(error){
@@ -439,7 +446,11 @@ app.get('/api/courses',async(req:Request,res:Response)=>{
 //Training Year Masterlist (2.7)
 app.get('/api/trainingYears',async(req:Request,res:Response)=>{
     try{
-        const trainingYr = await prisma.trainingYears.findMany({})
+        const trainingYr = await prisma.trainingYears.findMany({
+            orderBy:{
+                trainingYearId:'asc'
+            }
+        })
         res.status(200).json(trainingYr);
     }
     catch(error){
@@ -524,7 +535,11 @@ app.get("/api/batches/:id",async(req:Request,res:Response)=>{
 //Batch Masterlist (3.5)
 app.get('/api/batches',async(req:Request,res:Response)=>{
     try{
-        const batch = await prisma.batch.findMany({});
+        const batch = await prisma.batch.findMany({
+            orderBy:{
+                batchId:'asc'
+            }
+        });
         res.status(200).json(batch);
     }
     catch(error){
