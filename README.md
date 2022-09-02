@@ -35,9 +35,8 @@ The Backend Framework for Goncar Security Training Academy's Enrollment System I
 | 2.5 | PUT | Update Training Year |```/api/trainingYears/:id```  |
 | 2.6* | GET | Course Masterlist |```/api/courses```|
 | 2.7* | GET | Training Year Masterlist |```/api/trainingYears```|
-| 2.8* | GET | All Batches Belonging Under a Specific Course |```/api/courses/:id/batches```|
 
-*2.6, 2.7, 2.8 are new Use Case IDs
+*2.6 and 2.7 are new Use Case IDs
 
 >COURSE BATCH MANAGEMENT
 
@@ -48,8 +47,11 @@ The Backend Framework for Goncar Security Training Academy's Enrollment System I
 | 3.3** |  | Assign Teacher to Course Batch | |
 | 3.4 | GET | View Specific Batch |```/api/batches/:id```  |
 |3.5 | GET | Batch Masterlist |```/api/batches```  |
+| 3.6* | GET | Group Batches by Course |```/api/courses/batches/grouped```|
 
 **3.3 is more of an added process
+
+*3.6 is a new Use Case ID
 
 >FEES AND ACCOUNTS MANAGEMENT
 
