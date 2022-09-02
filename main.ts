@@ -458,6 +458,35 @@ app.get('/api/trainingYears',async(req:Request,res:Response)=>{
     }
 });
 
+//All Batches Belonging Under a Specific Course (2.8)
+app.get('/api/courses/:id/batches',async(req:Request,res:Response)=>{
+    try{
+        const course = await prisma.courses.findMany({
+            where:{
+                courseId:Number(req.params.id)
+            },
+            select:{
+                courseId:true,
+                courseName:true,
+                batch:{
+                    select:{
+                        batchId:true,
+                        batchName:true,
+                        laNumber:true,
+                        startDate:true,
+                        endDate:true,
+                        maxStudents:true
+                    }
+                }
+            }
+        });
+        res.status(200).json(course);
+    }
+    catch(error){
+        res.status(400).json({msg: error.message});
+    }
+}); 
+
 /*COURSE BATCH MANAGEMENT*/
 
 //Create New Course Batch(3.1)
@@ -546,6 +575,8 @@ app.get('/api/batches',async(req:Request,res:Response)=>{
         res.status(400).json({msg: error.message});
     }
 });
+
+
 
 
 
