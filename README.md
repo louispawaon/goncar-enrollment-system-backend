@@ -75,10 +75,10 @@ The Backend Framework for Goncar Security Training Academy's Enrollment System I
 | ------------| ----------- | ----------- |----------|
 | 6.1 | GET | Display employee profile |```/api/employees:id```  |
 | 6.2 | POST | Create new employee profile |```/api/employees```|
-| 6.3** |  | Assign employee role | |
+| 6.3 | POST | Assign employee role | ```/api/employees/:id/roles``` |
 | 6.4 | PUT | Update employee profile |```/api/employees/:id```  |
-| 6.5 | PUT | Update employee role |```/api/employees/:id```  |
+| 6.5 | PUT | Update employee role | ```/api/employees/:id/roles/:roleid/``` |
 
-**6.3 is more of an added process
+
 
 To be Attached
