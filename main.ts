@@ -335,6 +335,22 @@ app.get('/api/trainees/registrations/total',async(req:Request,res:Response)=>{
     }
 });
 
+//Return Highest Registration Number Currently (1.12)
+app.get('/api/trainees/registrations/max',async(req:Request,res:Response)=>{
+    try{
+        const aggregate = await prisma.registrations.aggregate({
+            _max:{
+                registrationNumber:true
+            }
+        })
+        console.log(aggregate);
+        res.status(200).json(aggregate);
+    }
+    catch(error){
+        res.status(400).json({msg: error.message});
+    }
+});
+
 /*COURSE MANAGEMENT*/
 
 //Create New Course (2.1)

@@ -18,8 +18,9 @@ The Backend Framework for Goncar Security Training Academy's Enrollment System I
 | 1.9* | GET | Trainee Masterlist  |```/api/trainees```
 | 1.10* | GET | Trainee Registration Masterlist (Per Trainee) | ```/api/trainees/:id/registrations```
 | 1.11* | GET | Overall Total Registrations | ```/api/trainees/registrations/total```
+| 1.12* | GET | Max Registration Number Currently | ```/api/trainees/registrations/max```
 
-*1.9, 1.10, 1.11 are new Use Case IDs
+*1.9, 1.10, 1.11, 1.12 are new Use Case IDs
 
 **1.8 is more of an added process
 
