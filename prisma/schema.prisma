@@ -44,10 +44,12 @@ model Registrations {
   batch              batch?         @relation("batches", fields: [batchId], references: [batchId])
   batchId            Int?
   transactions       transactions[] @relation("registration")
+
   //courses            courses?       @relation("course", fields: [courseId], references: [courseId])
   //courseId           Int?
   //trainingYears      trainingYears? @relation(fields: [trainingYearId], references: [trainingYearId])
   //trainingYearId     Int?
+  @@unique([batchId])
 }
 
 //TRAINING MODULE
@@ -55,7 +57,7 @@ model Registrations {
 model batch {
   batchId        Int             @id @default(autoincrement())
   laNumber       String
-  batchName      String
+  batchName      String          @unique
   startDate      DateTime        @db.Date
   endDate        DateTime        @db.Date
   maxStudents    Int
