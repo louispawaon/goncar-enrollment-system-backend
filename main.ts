@@ -136,7 +136,6 @@ app.post('/api/trainees/:id/registrations/',async(req:Request,res:Response)=>{
     }
 });
 
-
 //Update Specific Trainee Registration (1.5)
 app.put('/api/trainees/:id/registrations/:regid/',async(req:Request,res:Response)=>{
     const {SSSNum,TINNum,SGLicense,expiryDate,dateEnrolled,registrationStatus, batchId} = req.body;
@@ -341,6 +340,36 @@ app.get('/api/trainees/registrations/max',async(req:Request,res:Response)=>{
         const aggregate = await prisma.registrations.aggregate({
             _max:{
                 registrationNumber:true
+            }
+        })
+        console.log(aggregate);
+        res.status(200).json(aggregate);
+    }
+    catch(error){
+        res.status(400).json({msg: error.message});
+    }
+});
+
+//Return Total Trainees (1.13)
+app.get('/api/trainees/all/total',async(req:Request,res:Response)=>{
+    try{
+        const aggregate = await prisma.trainees.aggregate({
+            _count:true
+        })
+        console.log(aggregate);
+        res.status(200).json(aggregate);
+    }
+    catch(error){
+        res.status(400).json({msg: error.message});
+    }
+});
+
+//Return Highest Registration Number Currently (1.14)
+app.get('/api/trainees/all/max',async(req:Request,res:Response)=>{
+    try{
+        const aggregate = await prisma.trainees.aggregate({
+            _max:{
+                traineeId:true
             }
         })
         console.log(aggregate);
