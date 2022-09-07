@@ -44,12 +44,11 @@ model Registrations {
   batch              batch?         @relation("batches", fields: [batchId], references: [batchId])
   batchId            Int?
   transactions       transactions[] @relation("registration")
-
   //courses            courses?       @relation("course", fields: [courseId], references: [courseId])
   //courseId           Int?
   //trainingYears      trainingYears? @relation(fields: [trainingYearId], references: [trainingYearId])
   //trainingYearId     Int?
-  @@unique([batchId])
+  //@@unique([batchId])
 }
 
 //TRAINING MODULE
