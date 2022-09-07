@@ -165,12 +165,12 @@ app.put('/api/trainees/:id/registrations/:regid/',async(req:Request,res:Response
                     connect:{
                         traineeId:Number(req.params.id)
                     }
-                }/*,
+                },
                 batch:{
                     connect:{
                         batchId:batchId
                     }
-                }*/
+                }
             }
         });
 
