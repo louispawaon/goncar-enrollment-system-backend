@@ -115,6 +115,10 @@ app.post('/api/trainees/:id/registrations/',async(req:Request,res:Response)=>{
             data:{
                 dateEnrolled: dateEnrolled,
                 registrationStatus: registrationStatus,
+                SSSNumCopy:SSSNum,
+                TINNumCopy:TINNum,
+                SGLicenseCopy:SGLicense,
+                expiryDateCopy:new Date(expiryDate),
                 trainees:{
                     connect:{
                         traineeId:Number(req.params.id)
@@ -153,6 +157,7 @@ app.put('/api/trainees/:id/registrations/:regid/',async(req:Request,res:Response
             }
         });
 
+        //naay kulang pa dre
         const traineeReg = prisma.registrations.update({
             where:{
                 registrationNumber:Number(req.params.regid)
@@ -379,6 +384,22 @@ app.get('/api/trainees/all/max',async(req:Request,res:Response)=>{
         res.status(400).json({msg: error.message});
     }
 });
+
+//Delete Trainee (1.15)
+app.delete('/api/trainees/:id',async(req:Request,res:Response)=>{
+    try{
+        const trainee = await prisma.trainees.delete({
+            where:{
+                traineeId: Number(req.params.id)
+            }
+        });
+        res.status(200).json(trainee);
+    }
+    catch(error){
+        res.status(400).json({msg: error.message});
+    }
+});
+
 
 /*COURSE MANAGEMENT*/
 
