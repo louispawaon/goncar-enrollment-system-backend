@@ -157,7 +157,6 @@ app.put('/api/trainees/:id/registrations/:regid/',async(req:Request,res:Response
             }
         });
 
-        //naay kulang pa dre
         const traineeReg = prisma.registrations.update({
             where:{
                 registrationNumber:Number(req.params.regid)
@@ -177,8 +176,28 @@ app.put('/api/trainees/:id/registrations/:regid/',async(req:Request,res:Response
                 }
             }
         });
+        
+        const traineeRegActive = prisma.registrations.updateMany({
+            where:{
+                AND:[
+                    {
+                        registrationNumber:Number(req.params.id)
+                    },
+                    {
+                        registrationStatus:"Active"
+                    }
+                ]
+            },
+            data:{
+                SSSNumCopy:SSSNum,
+                TINNumCopy:TINNum,
+                SGLicenseCopy:SGLicense,
+                expiryDateCopy:new Date(expiryDate)
+            }
+            
+        })
 
-        const transact = await prisma.$transaction([trainee,traineeReg]);
+        const transact = await prisma.$transaction([trainee,traineeReg,traineeRegActive]);
         res.status(200).json(transact);
     }
     catch(error){
