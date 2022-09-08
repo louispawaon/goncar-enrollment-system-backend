@@ -39,6 +39,10 @@ model Registrations {
   registrationNumber Int            @unique @default(autoincrement())
   dateEnrolled       DateTime       @db.Date
   registrationStatus String
+  SSSNumCopy         String?
+  TINNumCopy         String?
+  SGLicenseCopy      String?
+  expiryDateCopy     DateTime?      @db.Date
   trainees           Trainees?      @relation("trainees", fields: [traineeId], references: [traineeId])
   traineeId          Int?
   batch              batch?         @relation("batches", fields: [batchId], references: [batchId])
