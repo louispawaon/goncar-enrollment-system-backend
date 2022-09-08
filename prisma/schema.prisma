@@ -19,7 +19,7 @@ datasource db {
 model Trainees {
   traineeId             Int             @id @default(autoincrement())
   firstName             String
-  middleName            String
+  middleName            String?
   lastName              String
   birthDay              DateTime        @db.Date
   sex                   String
