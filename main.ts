@@ -27,7 +27,7 @@ app.post('/api/trainees',async(req:Request,res:Response) =>{
                 firstName: firstName,
                 middleName: middleName,
                 lastName: lastName,
-                birthDay: birthDay,
+                birthDay: new Date(birthDay),
                 sex: sex,
                 address: address,
                 emailAdd: emailAdd,
@@ -107,7 +107,7 @@ app.post('/api/trainees/:id/registrations/',async(req:Request,res:Response)=>{
                 SSSNum:SSSNum,
                 TINNum:TINNum,
                 SGLicense:SGLicense,
-                expiryDate:expiryDate
+                expiryDate:new Date(expiryDate)
             }
         });
 
@@ -149,7 +149,7 @@ app.put('/api/trainees/:id/registrations/:regid/',async(req:Request,res:Response
                 SSSNum: SSSNum,
                 TINNum: TINNum,
                 SGLicense: SGLicense,
-                expiryDate: expiryDate
+                expiryDate: new Date(expiryDate)
             }
         });
 
