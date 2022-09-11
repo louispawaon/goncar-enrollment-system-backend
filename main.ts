@@ -649,6 +649,25 @@ app.get('/api/batches',async(req:Request,res:Response)=>{
         const batch = await prisma.batch.findMany({
             orderBy:{
                 batchId:'asc'
+            },
+            select:{
+                laNumber:true,
+                batchName:true,
+                startDate: true,
+                endDate: true,
+                maxStudents: true,
+                courses:{
+                    select:{
+                        courseId:true,
+                        courseName:true
+                    }
+                },
+                trainingYears:{
+                    select:{
+                        trainingYearId:true,
+                        trainingYearSpan:true
+                    }
+                }
             }
         });
         res.status(200).json(batch);
