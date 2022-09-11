@@ -578,7 +578,7 @@ app.post('/api/batches',async(req:Request,res:Response)=>{
 
 //Update Course Batch Details (3.2)
 app.put('/api/batches/:id',async(req:Request,res:Response)=>{
-    const {laNumber,batchName,startDate,endDate,maxStudents} = req.body;
+    const {laNumber,batchName,startDate,endDate,maxStudents, courseId, trainingYearId} = req.body;
     try{
         const batch = await prisma.batch.update({
             where:{
@@ -589,7 +589,17 @@ app.put('/api/batches/:id',async(req:Request,res:Response)=>{
                 batchName:batchName,
                 startDate: startDate,
                 endDate: endDate,
-                maxStudents: maxStudents
+                maxStudents: maxStudents,
+                courses:{
+                    connect:{
+                        courseId:courseId
+                    }
+                },
+                trainingYears:{
+                    connect:{
+                        trainingYearId:trainingYearId
+                    }
+                }
             }
         });
         res.status(200).json(batch);
@@ -606,9 +616,24 @@ app.get("/api/batches/:id",async(req:Request,res:Response)=>{
             where:{
                 batchId:Number(req.params.id)
             },
-            include:{
-                courses:true,
-                trainingYears:true
+            select:{
+                laNumber:true,
+                batchName:true,
+                startDate: true,
+                endDate: true,
+                maxStudents: true,
+                courses:{
+                    select:{
+                        courseId:true,
+                        courseName:true
+                    }
+                },
+                trainingYears:{
+                    select:{
+                        trainingYearId:true,
+                        trainingYearSpan:true
+                    }
+                }
             }
         });
         res.status(200).json(batch);
