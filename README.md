@@ -40,6 +40,7 @@ The Backend Framework for Goncar Security Training Academy's Enrollment System I
 | 2.6* | GET | Course Masterlist |```/api/courses```|
 | 2.7* | GET | Training Year Masterlist |```/api/trainingYears```|
 | 2.8* | GET | Training Year Specific |```/api/trainingYears/:id```|
+| 2.9* | DELETE | Delete Training Year |```/api/trainingYears/:id```|
 
 *2.6, 2.7, 2.8 are new Use Case IDs
 
