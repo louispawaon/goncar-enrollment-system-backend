@@ -646,6 +646,7 @@ app.get("/api/batches/:id",async(req:Request,res:Response)=>{
                 batchId:Number(req.params.id)
             },
             select:{
+                batchId:true,
                 laNumber:true,
                 batchName:true,
                 startDate: true,
@@ -680,6 +681,7 @@ app.get('/api/batches',async(req:Request,res:Response)=>{
                 batchId:'asc'
             },
             select:{
+                batchId:true,
                 laNumber:true,
                 batchName:true,
                 startDate: true,
