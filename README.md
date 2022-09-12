@@ -58,7 +58,7 @@ The Backend Framework for Goncar Security Training Academy's Enrollment System I
 
 **3.3 is more of an added process
 
-*3.6 is a new Use Case ID
+*3.6, 3.7 are new Use Case IDs
 
 >FEES AND ACCOUNTS MANAGEMENT
 
