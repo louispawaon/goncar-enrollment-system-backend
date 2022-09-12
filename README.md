@@ -54,6 +54,7 @@ The Backend Framework for Goncar Security Training Academy's Enrollment System I
 | 3.4 | GET | View Specific Batch |```/api/batches/:id```  |
 |3.5 | GET | Batch Masterlist |```/api/batches```  |
 | 3.6* | GET | Group Batches by Course |```/api/courses/batches/grouped```|
+| 3.7* | GET | Return Highest Batch ID Currently |```/api/batches/all/max```|
 
 **3.3 is more of an added process
 

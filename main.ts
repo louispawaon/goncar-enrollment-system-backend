@@ -734,6 +734,22 @@ app.get('/api/courses/batches/grouped',async(req:Request,res:Response)=>{
     }
 }); 
 
+//Return Highest Batch ID Currently (3.7)
+app.get('/api/batches/all/max',async(req:Request,res:Response)=>{
+    try{
+        const aggregate = await prisma.batch.aggregate({
+            _max:{
+                batchId:true
+            }
+        })
+        console.log(aggregate);
+        res.status(200).json(aggregate);
+    }
+    catch(error){
+        res.status(400).json({msg: error.message});
+    }
+});
+
 
 app.listen(port, () =>
   console.log(`REST API server ready at: http://localhost:${port}`),
