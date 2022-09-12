@@ -543,6 +543,21 @@ app.get('/api/trainingYears',async(req:Request,res:Response)=>{
     }
 });
 
+//Training Year Specific (2.8)
+app.get('/api/trainingYears/:id',async(req:Request,res:Response)=>{
+    try{
+        const trainingYr = await prisma.trainingYears.findUnique({
+            where:{
+                trainingYearId:Number(req.params.id)
+            }
+        })
+        res.status(200).json(trainingYr);
+    }
+    catch(error){
+        res.status(400).json({msg: error.message});
+    }
+});
+
 
 /*COURSE BATCH MANAGEMENT*/
 
