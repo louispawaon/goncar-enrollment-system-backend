@@ -561,7 +561,7 @@ app.get('/api/trainingYears/:id',async(req:Request,res:Response)=>{
 //Delete Training Year (2.9)
 app.delete('/api/trainingYears/:id',async(req:Request,res:Response)=>{
     try{
-        const trainingYr = await prisma.trainingYears.findUnique({
+        const trainingYr = await prisma.trainingYears.delete({
             where:{
                 trainingYearId:Number(req.params.id)
             }
