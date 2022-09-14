@@ -484,6 +484,19 @@ app.get('/api/courses/:id',async(req:Request,res:Response)=>{
         const course = await prisma.courses.findUnique({
             where:{
                 courseId: Number(req.params.id)
+            },
+            select:{
+                courseId:true,
+                courseName:true,
+                courseDescription:true,
+                requiredHours:true,
+                units:true,
+                trainingYears:{
+                    select:{
+                        trainingYearId:true,
+                        trainingYearSpan:true
+                    }
+                }
             }
         });
         res.status(200).json(course);
@@ -534,6 +547,19 @@ app.get('/api/courses',async(req:Request,res:Response)=>{
         const course = await prisma.courses.findMany({
             orderBy:{
                 courseId:'asc'
+            },
+            select:{
+                courseId:true,
+                courseName:true,
+                courseDescription:true,
+                requiredHours:true,
+                units:true,
+                trainingYears:{
+                    select:{
+                        trainingYearId:true,
+                        trainingYearSpan:true
+                    }
+                }
             }
         })
         res.status(200).json(course);
