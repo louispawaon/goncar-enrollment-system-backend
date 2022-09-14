@@ -58,19 +58,19 @@ model Registrations {
 //TRAINING MODULE
 
 model batch {
-  batchId        Int             @id @default(autoincrement())
-  laNumber       String
-  batchName      String          @unique
-  startDate      DateTime        @db.Date
-  endDate        DateTime        @db.Date
-  maxStudents    Int
-  registrations  Registrations[] @relation("batches")
-  courses        courses?        @relation("course", fields: [courseId], references: [courseId])
-  courseId       Int?
-  trainingYears  trainingYears?  @relation(fields: [trainingYearId], references: [trainingYearId])
-  trainingYearId Int?
-  employees      employees?      @relation(fields: [employeeId], references: [employeeId])
-  employeeId     Int?
+  batchId       Int             @id @default(autoincrement())
+  laNumber      String
+  batchName     String          @unique
+  startDate     DateTime        @db.Date
+  endDate       DateTime        @db.Date
+  maxStudents   Int
+  registrations Registrations[] @relation("batches")
+  courses       courses?        @relation("course", fields: [courseId], references: [courseId])
+  courseId      Int?
+  //trainingYears  trainingYears?  @relation(fields: [trainingYearId], references: [trainingYearId])
+  //trainingYearId Int?
+  employees     employees?      @relation(fields: [employeeId], references: [employeeId])
+  employeeId    Int?
 }
 
 model tuitionview {
@@ -86,7 +86,8 @@ model trainingYears {
   trainingYearId   Int           @id @default(autoincrement()) //TODO: change or revise - temporary ra nang autoinc
   trainingYearSpan String
   tuitionview      tuitionview[]
-  batch            batch[]
+  course           courses[]
+  //batch            batch[]
   payables         payables[]
   //registration     Registrations[]
 }
@@ -97,6 +98,8 @@ model courses {
   courseDescription String
   requiredHours     Float
   units             Float
+  trainingYears     trainingYears? @relation(fields: [trainingYearsId], references: [trainingYearId])
+  trainingYearsId   Int?
   //registration      Registrations[] @relation("course")
   batch             batch[]        @relation("course")
   tuitionview       tuitionview[]  @relation("course")
