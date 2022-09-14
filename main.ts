@@ -228,16 +228,16 @@ app.get('/api/trainees/:id/registrations/:regid',async(req:Request,res:Response)
                     select:{
                         courses:{
                             select:{
-                                courseName:true
+                                courseName:true,
+                                trainingYears:{
+                                    select:{
+                                        trainingYearSpan:true
+                                    }
+                                }
                             }
                         },
                         batchId:true,
-                        batchName:true,
-                        trainingYears:{
-                            select:{
-                                trainingYearSpan:true
-                            }
-                        }
+                        batchName:true
                     }
                 },
                 dateEnrolled:true,
@@ -286,7 +286,12 @@ app.get('/api/trainees',async(req:Request,res:Response)=>{
                             select:{
                                 courses:{
                                     select:{
-                                        courseName:true
+                                        courseName:true,
+                                        trainingYears:{
+                                            select:{
+                                                trainingYearSpan:true
+                                            }
+                                        }
                                     }
                                 }
                             }
@@ -319,12 +324,12 @@ app.get('/api/trainees/:id/registrations',async(req:Request,res:Response)=>{
                     select:{
                         courses:{
                             select:{
-                                courseName:true
-                            }
-                        },
-                        trainingYears:{
-                            select:{
-                                trainingYearSpan:true
+                                courseName:true,
+                                trainingYears:{
+                                    select:{
+                                        trainingYearSpan:true
+                                    }
+                                }
                             }
                         },
                         batchName:true
@@ -424,14 +429,19 @@ app.delete('/api/trainees/:id',async(req:Request,res:Response)=>{
 
 //Create New Course (2.1)
 app.post('/api/courses',async(req:Request,res:Response)=>{
-    const {courseName,courseDescription, requiredHours, units} = req.body;
+    const {courseName,courseDescription, requiredHours, units, trainingYearId} = req.body;
     try{
         const course = await prisma.courses.create({    
             data:{
                 courseName: courseName,
                 courseDescription: courseDescription,
                 requiredHours: requiredHours,
-                units: units
+                units: units,
+                trainingYears:{
+                    connect:{
+                        trainingYearId:trainingYearId
+                    }
+                }
             }
         });
         res.status(201).json(course);
@@ -443,7 +453,7 @@ app.post('/api/courses',async(req:Request,res:Response)=>{
 
 //Update Course Details (2.2)
 app.put('/api/courses/:id',async(req:Request,res:Response)=>{
-    const {courseName,courseDescription, requiredHours, units} = req.body;
+    const {courseName,courseDescription, requiredHours, units,trainingYearId} = req.body;
     try{
         const course = await prisma.courses.update({
             where:{
@@ -453,7 +463,12 @@ app.put('/api/courses/:id',async(req:Request,res:Response)=>{
                 courseName: courseName,
                 courseDescription: courseDescription,
                 requiredHours: requiredHours,
-                units: units
+                units: units,
+                trainingYears:{
+                    connect:{
+                        trainingYearId:trainingYearId
+                    }
+                }
             }
         });
         res.status(200).json(course);
@@ -586,14 +601,9 @@ app.post('/api/batches',async(req:Request,res:Response)=>{
                 startDate: startDate,
                 endDate: endDate,
                 maxStudents: maxStudents,
-                courses:{
+                courses:{ //dle ko sure dre
                     connect:{
                         courseId:courseId
-                    }
-                },
-                trainingYears:{
-                    connect:{
-                        trainingYearId:trainingYearId
                     }
                 }
             }
@@ -619,14 +629,9 @@ app.put('/api/batches/:id',async(req:Request,res:Response)=>{
                 startDate: startDate,
                 endDate: endDate,
                 maxStudents: maxStudents,
-                courses:{
+                courses:{ //dle ko sure dre 
                     connect:{
                         courseId:courseId
-                    }
-                },
-                trainingYears:{
-                    connect:{
-                        trainingYearId:trainingYearId
                     }
                 }
             }
@@ -655,13 +660,13 @@ app.get("/api/batches/:id",async(req:Request,res:Response)=>{
                 courses:{
                     select:{
                         courseId:true,
-                        courseName:true
-                    }
-                },
-                trainingYears:{
-                    select:{
-                        trainingYearId:true,
-                        trainingYearSpan:true
+                        courseName:true,
+                        trainingYears:{
+                            select:{
+                                trainingYearId:true,
+                                trainingYearSpan:true
+                            }
+                        }
                     }
                 }
             }
@@ -690,13 +695,13 @@ app.get('/api/batches',async(req:Request,res:Response)=>{
                 courses:{
                     select:{
                         courseId:true,
-                        courseName:true
-                    }
-                },
-                trainingYears:{
-                    select:{
-                        trainingYearId:true,
-                        trainingYearSpan:true
+                        courseName:true,
+                        trainingYears:{
+                            select:{
+                                trainingYearId:true,
+                                trainingYearSpan:true
+                            }
+                        }
                     }
                 }
             }
