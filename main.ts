@@ -554,18 +554,20 @@ app.put('/api/payables/:id',async(req:Request,res:Response)=>{
 
 //View list of payables(4.3)
 
-app.get('/api/payables',async(req:Request,res:Response)=>{
+app.get('/api/payables',async(req:Request,res:Response) =>{
+    const {payableID, trainingYearId, courseId, payableName, payableCost} = req.body;
     try{
-        const payables = await prisma.payables.findMany({
-            select:{
-                payableId: true,
-                trainingYearId: true,
-                courseId: true,
-                payableName: true,
-                payableCost: true,
+        const payables = await prisma.payables.create({
+            data:{
+                payableId: payableID,
+                trainingYearId: trainingYearId,
+                courseId: courseId,
+                payableName: payableName,
+                payableCost: payableCost,
             }
-        })
-        res.status(200).json(payables);
+        });
+        
+        res.status(201).json(payables);
     }
     catch(error){
         res.status(400).json({msg: error.message});
@@ -573,11 +575,47 @@ app.get('/api/payables',async(req:Request,res:Response)=>{
 });
 
 
+
 /*TRAINEE ACCOUNT MANAGEMENT*/
 
 //Create new payment (5.1)
 
+app.post('/api/payments',async(req:Request,res:Response)=>{
+    const {transactionId, registrationNumber, payableId, payableCost, paymentMethod} = req.body;
+    try{
+        const payments = await prisma.payments.create({
+            data:{
+                transactionId:transactionId,
+                registrationNumber:registrationNumber,
+                payableCost:payableCost,
+                paymentMethod:paymentMethod,
+                payables:{
+                    connect:{
+                        payableId:payableId
+                    }
+                }
+            }
+        });
+        res.status(201).json(payments);
+    }   
+    catch(error){
+        res.status(400).json({msg: error.message});
+    }
+});
+
 //View account details (5.2)
+
+
+app.get('/api/pamyents/::id',async(req:Request,res:Response)=>{
+    try{
+        const payables = await prisma.payables.findMany({})
+        res.status(200).json(payables);
+    }
+    catch(error){
+        res.status(400).json({msg: error.message});
+    }
+});
+
 
 /*EMPLOYEE MANAGEMENT*/
 
