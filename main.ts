@@ -608,7 +608,7 @@ app.post('/api/payments',async(req:Request,res:Response)=>{
 
 app.get('/api/pamyents/::id',async(req:Request,res:Response)=>{
     try{
-        const payables = await prisma.payables.findMany({})
+        const payables = await prisma.payments.findMany({})
         res.status(200).json(payables);
     }
     catch(error){
