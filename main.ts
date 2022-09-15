@@ -615,7 +615,7 @@ app.delete('/api/trainingYears/:id',async(req:Request,res:Response)=>{
 });
 
 //Return Total Courses (2.10)
-app.get('/api/courses/total',async(req:Request,res:Response)=>{
+app.get('/api/courses/all/total',async(req:Request,res:Response)=>{
     try{
         const aggregate = await prisma.courses.aggregate({
             _count:true
@@ -629,7 +629,7 @@ app.get('/api/courses/total',async(req:Request,res:Response)=>{
 });
 
 //Return Highest CourseID Currently (2.11)
-app.get('/api/courses/max',async(req:Request,res:Response)=>{
+app.get('/api/courses/all/max',async(req:Request,res:Response)=>{
     try{
         const aggregate = await prisma.courses.aggregate({
             _max:{
@@ -810,6 +810,9 @@ app.get('/api/batches/all/max',async(req:Request,res:Response)=>{
         res.status(400).json({msg: error.message});
     }
 });
+
+
+
 
 
 app.listen(port, () =>
