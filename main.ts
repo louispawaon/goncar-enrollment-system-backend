@@ -614,6 +614,36 @@ app.delete('/api/trainingYears/:id',async(req:Request,res:Response)=>{
     }
 });
 
+//Return Total Courses (2.10)
+app.get('/api/courses/total',async(req:Request,res:Response)=>{
+    try{
+        const aggregate = await prisma.courses.aggregate({
+            _count:true
+        })
+        console.log(aggregate);
+        res.status(200).json(aggregate);
+    }
+    catch(error){
+        res.status(400).json({msg: error.message});
+    }
+});
+
+//Return Highest CourseID Currently (2.11)
+app.get('/api/courses/max',async(req:Request,res:Response)=>{
+    try{
+        const aggregate = await prisma.courses.aggregate({
+            _max:{
+                courseId:true
+            }
+        })
+        console.log(aggregate);
+        res.status(200).json(aggregate);
+    }
+    catch(error){
+        res.status(400).json({msg: error.message});
+    }
+});
+
 /*COURSE BATCH MANAGEMENT*/
 
 //Create New Course Batch(3.1)
