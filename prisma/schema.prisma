@@ -140,7 +140,6 @@ model payableNames {
 
 model employees {
   employeeId     Int      @id @default(autoincrement())
-  roleId         Int
   firstName      String
   middleName     String
   lastName       String
@@ -151,15 +150,4 @@ model employees {
   employeeStatus String
   dateHired      DateTime
   batch          batch[]
-}
-
-model roles {
-  roleId   Int    @id @default(autoincrement())
-  roleName String
-}
-
-enum Role {
-  BASIC
-  ADMIN
-  EDITOR
 }
