@@ -644,6 +644,21 @@ app.get('/api/courses/all/max',async(req:Request,res:Response)=>{
     }
 });
 
+//Delete Specific Course (2.12)
+app.delete('/api/courses/:id',async(req:Request,res:Response)=>{
+    try{
+        const course = await prisma.courses.delete({
+            where:{
+                courseId: Number(req.params.id)
+            }
+        });
+        res.status(200).json(course);
+    }
+    catch(error){
+        res.status(400).json({msg: error.message});
+    }
+});
+
 /*COURSE BATCH MANAGEMENT*/
 
 //Create New Course Batch(3.1)
