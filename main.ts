@@ -928,7 +928,7 @@ app.post('/api/payments',async(req:Request,res:Response)=>{
 //View account details (5.2)
 
 
-app.get('/api/pamyents/::id',async(req:Request,res:Response)=>{
+app.get('/api/pamyents/:id',async(req:Request,res:Response)=>{
     try{
         const payables = await prisma.payments.findMany({})
         res.status(200).json(payables);
@@ -942,6 +942,7 @@ app.get('/api/pamyents/::id',async(req:Request,res:Response)=>{
 /*EMPLOYEE MANAGEMENT*/
 
 //Display employee profile (6.1)
+
 
 app.get('/api/employees/:id',async(req:Request,res:Response)=>{
     try{
@@ -966,6 +967,7 @@ app.get('/api/employees/:id',async(req:Request,res:Response)=>{
         res.status(400).json({msg: error.message});
     }
 });
+
 
 //Create new employee profile (6.2)
 
