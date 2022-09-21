@@ -902,10 +902,10 @@ app.get('/api/payables',async(req:Request,res:Response) =>{
 
 //Create new payment (5.1)
 
-app.post('/api/payments',async(req:Request,res:Response)=>{
+app.post('/api/transactions',async(req:Request,res:Response)=>{
     const {transactionId, registrationNumber, payableId, payableCost, paymentMethod} = req.body;
     try{
-        const transaction = await prisma.transactions.create({
+        const transactions = await prisma.transactions.create({
             data:{
                 transactionId:transactionId,
                 Registrations:registrationNumber,
@@ -918,7 +918,7 @@ app.post('/api/payments',async(req:Request,res:Response)=>{
                 }
             }
         });
-        res.status(201).json(transaction);
+        res.status(201).json(transactions);
     }   
     catch(error){
         res.status(400).json({msg: error.message});
@@ -928,9 +928,9 @@ app.post('/api/payments',async(req:Request,res:Response)=>{
 //View account details (5.2)
 
 
-app.get('/api/pamyents/:id',async(req:Request,res:Response)=>{
+app.get('/api/transactions/:id',async(req:Request,res:Response)=>{
     try{
-        const payables = await prisma.payments.findMany({})
+        const payables = await prisma.transactions.findMany({})
         res.status(200).json(payables);
     }
     catch(error){

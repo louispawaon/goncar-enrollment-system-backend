@@ -78,8 +78,8 @@ The Backend Framework for Goncar Security Training Academy's Enrollment System I
 
 | USE CASE ID | HTTP METHOD | Description | Route |
 | ------------| ----------- | ----------- |----------|
-| 5.1 | POST | Create new payment  |```/api/payments```  |
-| 5.2 | GET | View account details |```/api/payments/:id```|
+| 5.1 | POST | Create new payment  |```/api/transactions```  |
+| 5.2 | GET | View account details |```/api/transactions/:id```|
 
 
 >EMPLOYEE MANAGEMENT 
