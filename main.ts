@@ -905,10 +905,10 @@ app.get('/api/payables',async(req:Request,res:Response) =>{
 app.post('/api/payments',async(req:Request,res:Response)=>{
     const {transactionId, registrationNumber, payableId, payableCost, paymentMethod} = req.body;
     try{
-        const payments = await prisma.payments.create({
+        const transaction = await prisma.transactions.create({
             data:{
                 transactionId:transactionId,
-                registrationNumber:registrationNumber,
+                Registrations:registrationNumber,
                 payableCost:payableCost,
                 paymentMethod:paymentMethod,
                 payables:{
@@ -918,7 +918,7 @@ app.post('/api/payments',async(req:Request,res:Response)=>{
                 }
             }
         });
-        res.status(201).json(payments);
+        res.status(201).json(transaction);
     }   
     catch(error){
         res.status(400).json({msg: error.message});
