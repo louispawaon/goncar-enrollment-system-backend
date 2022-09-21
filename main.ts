@@ -944,21 +944,13 @@ app.get('/api/transactions/:id',async(req:Request,res:Response)=>{
 //Display employee profile (6.1)
 
 
+
+//Displaying specific employee profile(6.2)
 app.get('/api/employees/:id',async(req:Request,res:Response)=>{
     try{
-        const employees = await prisma.employees.findMany({
-            select:{
-                employeeId: true,
-                roleId: true,
-                firstName: true,
-                middleName: true,
-                lastName: true,
-                birthDay: true,
-                sex: true,
-                emailAdd: true,
-                cpNum: true,
-                employeeStatus: true,
-                dateHired: true,
+        const employees = await prisma.employees.findUnique({
+            where:{
+                employeeId: Number(req.params.id)
             }
         });
         res.status(200).json(employees);
@@ -969,7 +961,7 @@ app.get('/api/employees/:id',async(req:Request,res:Response)=>{
 });
 
 
-//Create new employee profile (6.2)
+//Create new employee profile (6.3)
 
 app.post('/api/employees',async(req:Request,res:Response) =>{
     const {roleId, firstName, middleName, lastName, birthDay, sex, emailAdd, cpNum, employeeStatus, dateHired} = req.body;
@@ -980,7 +972,7 @@ app.post('/api/employees',async(req:Request,res:Response) =>{
                 firstName: firstName,
                 middleName: middleName,
                 lastName: lastName,
-                birthDay: birthDay,
+                birthDay: new Date(birthDay),
                 sex: sex,
                 emailAdd: emailAdd,
                 cpNum: cpNum,
@@ -996,7 +988,7 @@ app.post('/api/employees',async(req:Request,res:Response) =>{
     }
 });
 
-//Assign employee role (6.3)
+//Assign employee role (6.4)
 
 app.post('/api/employees/:id/roles',async(req:Request,res:Response) =>{
     const {roleName} = req.body;
@@ -1014,7 +1006,7 @@ app.post('/api/employees/:id/roles',async(req:Request,res:Response) =>{
     }
 });
 
-//Update employee profile (6.4)
+//Update employee profile (6.5)
 
 app.put('/api/employees/:id',async(req:Request,res:Response)=>{
     const {roleId, firstName, middleName, lastName, birthDay, sex, emailAdd, cpNum, employeeStatus, dateHired} = req.body;
@@ -1043,7 +1035,7 @@ app.put('/api/employees/:id',async(req:Request,res:Response)=>{
     }
 });
 
-//Update employee role (6.5)
+//Update employee role (6.6)
 
 app.put('/api/employees/:id/roles/:roleid/',async(req:Request,res:Response)=>{
     const {roleName} = req.body;

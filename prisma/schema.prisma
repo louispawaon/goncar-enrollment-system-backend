@@ -140,6 +140,7 @@ model payableNames {
 
 model employees {
   employeeId     Int      @id @default(autoincrement())
+  roleId         Int 
   firstName      String
   middleName     String
   lastName       String
