@@ -63,14 +63,31 @@ The Backend Framework for Goncar Security Training Academy's Enrollment System I
 
 *3.6, 3.7 are new Use Case IDs
 
+>FINANCE MODULE 
+
 >FEES AND ACCOUNTS MANAGEMENT
 
-To be Attached
+| USE CASE ID | HTTP METHOD | Description | Route |
+| ------------| ----------- | ----------- |----------|
+| 4.1 | POST | Add payable |```/api/payables```  |
+| 4.2 | PUT | Edit payable |```/api/payables/:id```|
+| 4.3 | GET |  View list of payables |```/api/payables/:id``` |
+
 
 >TRAINEE ACCOUNT MANAGEMENT
 
-To be Attached
+| USE CASE ID | HTTP METHOD | Description | Route |
+| ------------| ----------- | ----------- |----------|
+| 5.1 | POST | Create new payment  |```/api/payments```  |
+| 5.2 | GET | View account details |```/api/payments/:id```|
+
 
 >EMPLOYEE MANAGEMENT 
 
-To be Attached
+| USE CASE ID | HTTP METHOD | Description | Route |
+| ------------| ----------- | ----------- |----------|
+| 6.1 | GET | Display employee profile |```/api/employees:id```  |
+| 6.2 | POST | Create new employee profile |```/api/employees```|
+| 6.3 | POST | Assign employee role | ```/api/employees/:id/roles``` |
+| 6.4 | PUT | Update employee profile |```/api/employees/:id```  |
+| 6.5 | PUT | Update employee role | ```/api/employees/:id/roles/:roleid/``` |
