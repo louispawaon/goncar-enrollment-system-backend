@@ -941,28 +941,22 @@ app.get('/api/batches/all/max',async(req:Request,res:Response)=>{
 
 // /*EMPLOYEE MANAGEMENT*/
 
-// //Display employee profile (6.1)
-
-
-
-// //Displaying specific employee profile(6.2)
-// app.get('/api/employees/:id',async(req:Request,res:Response)=>{
-//     try{
-//         const employees = await prisma.employees.findUnique({
-//             where:{
-//                 employeeId: Number(req.params.id)
-//             }
-//         });
-//         res.status(200).json(employees);
-//     }
-//     catch(error){
-//         res.status(400).json({msg: error.message});
-//     }
-// });
-
+//Displaying specific employee profile (6.1)
+app.get('/api/employees/:id', async (req: Request, res: Response) => {
+    try {
+        const employee = await prisma.employees.findUnique({
+            where: {
+                employeeId: Number(req.params.id)
+            }
+        })
+        res.status(200).json(employee)
+    }
+    catch (error) {
+        res.status(400).json({msg: error.message});
+    }
+})
 
 //Create new employee profile (6.2)
-
 app.post('/api/employees',async(req:Request,res:Response) =>{
     const {roleId, firstName, middleName, lastName, birthDay, sex, emailAdd, cpNum, employeeStatus, dateHired} = req.body;
     try{
@@ -990,20 +984,6 @@ app.post('/api/employees',async(req:Request,res:Response) =>{
         res.status(400).json({msg: error.message});
     }
 });
-
-app.get('/api/employees/:id', async (req: Request, res: Response) => {
-    try {
-        const employee = await prisma.employees.findUnique({
-            where: {
-                employeeId: Number(req.params.id)
-            }
-        })
-        res.status(200).json(employee)
-    }
-    catch (error) {
-        res.status(400).json({msg: error.message});
-    }
-})
 
 // Update employee profile (6.4)
 app.put('/api/employees/:id',async(req:Request,res:Response) =>{
@@ -1135,73 +1115,6 @@ app.delete('/api/roles/:id',async(req:Request,res:Response)=>{
         res.status(400).json({msg: error.message});
     }
 });
-
-// //Assign employee role (6.4)
-
-// app.post('/api/employees/:id/roles',async(req:Request,res:Response) =>{
-//     const {roleName} = req.body;
-//     try{
-//         const roles = await prisma.roles.create({
-//             data:{
-//                 roleName: roleName,
-//             }
-//         });
-//         res.status(201).json(roles);
-//     }
-//     catch(error){
-//         res.status(400).json({msg: error.message});
-//     }
-// });
-
-// //Update employee profile (6.5)
-
-// app.put('/api/employees/:id',async(req:Request,res:Response)=>{
-//     const {roleId, firstName, middleName, lastName, birthDay, sex, emailAdd, cpNum, employeeStatus, dateHired} = req.body;
-//     try{
-//         const employees = await prisma.employees.update({
-//             where:{
-//                 employeeId: Number(req.params.id)
-//             },
-//             data:{
-//                 roleId: roleId,
-//                 firstName: firstName,
-//                 middleName: middleName,
-//                 lastName: lastName,
-//                 birthDay: birthDay,
-//                 sex: sex,
-//                 emailAdd: emailAdd,
-//                 cpNum: cpNum,
-//                 employeeStatus: employeeStatus,
-//                 dateHired: dateHired,
-//             }
-//         });
-//         res.status(200).json(employees);
-//     }
-//     catch(error){
-//         res.status(400).json({msg: error.message});
-//     }
-// });
-
-// //Update employee role (6.6)
-
-// app.put('/api/employees/:id/roles/:roleid/',async(req:Request,res:Response)=>{
-//     const {roleName} = req.body;
-//     try{
-//         const roles = await prisma.roles.update({
-//             where:{
-//                 roleId: Number(req.params.id)
-//             },
-//             data:{
-//                 roleName:roleName,
-//             }
-//         });
-//         res.status(200).json(roles);
-//     }
-//     catch(error){
-//         res.status(400).json({msg: error.message});
-//     }
-// });
-
 
 app.listen(port, () =>
   console.log(`REST API server ready at: http://localhost:${port}`),
