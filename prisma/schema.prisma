@@ -69,7 +69,7 @@ model batch {
   courseId      Int?
   //trainingYears  trainingYears?  @relation(fields: [trainingYearId], references: [trainingYearId])
   //trainingYearId Int?
-  employees     employees?      @relation(fields: [employeeId], references: [employeeId])
+  // employees     employees?      @relation(fields: [employeeId], references: [employeeId])
   employeeId    Int?
 }
 
@@ -140,7 +140,6 @@ model payableNames {
 
 model employees {
   employeeId     Int      @id @default(autoincrement())
-  roleId         Int 
   firstName      String
   middleName     String
   lastName       String
@@ -150,5 +149,12 @@ model employees {
   cpNum          String
   employeeStatus String
   dateHired      DateTime
-  batch          batch[]
+  role           roles    @relation(fields: [roleId], references: [roleId])
+  roleId         Int
+}
+
+model roles {
+  roleId    Int         @id @default(autoincrement())
+  roleName  String
+  employees employees[]
 }
