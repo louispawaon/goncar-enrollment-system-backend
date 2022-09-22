@@ -968,7 +968,6 @@ app.post('/api/employees',async(req:Request,res:Response) =>{
     try{
         const employees = await prisma.employees.create({
             data:{
-                // roleId: roleId,
                 firstName: firstName,
                 middleName: middleName,
                 lastName: lastName,
@@ -986,6 +985,52 @@ app.post('/api/employees',async(req:Request,res:Response) =>{
             }
         });
         res.status(201).json(employees);
+    }
+    catch(error){
+        res.status(400).json({msg: error.message});
+    }
+});
+
+app.get('/api/employees/:id', async (req: Request, res: Response) => {
+    try {
+        const employee = await prisma.employees.findUnique({
+            where: {
+                employeeId: Number(req.params.id)
+            }
+        })
+        res.status(200).json(employee)
+    }
+    catch (error) {
+        res.status(400).json({msg: error.message});
+    }
+})
+
+// Update employee profile (6.4)
+app.put('/api/employees/:id',async(req:Request,res:Response) =>{
+    const {roleId, firstName, middleName, lastName, birthDay, sex, emailAdd, cpNum, employeeStatus, dateHired} = req.body;
+    try{
+        const employees = await prisma.employees.update({
+            where: {
+                employeeId: Number(req.params.id)
+            },
+            data:{
+                firstName: firstName,
+                middleName: middleName,
+                lastName: lastName,
+                birthDay: new Date(birthDay),
+                sex: sex,
+                emailAdd: emailAdd,
+                cpNum: cpNum,
+                employeeStatus: employeeStatus,
+                dateHired: dateHired,
+                role: {
+                    connect: {
+                        roleId: roleId
+                    }
+                }
+            }
+        });
+        res.status(200).json(employees);
     }
     catch(error){
         res.status(400).json({msg: error.message});
@@ -1020,6 +1065,22 @@ app.get('/api/employees', async(req:Request, res:Response) => {
         })
         console.log(employee);
         res.status(200).json(employee);
+    }
+    catch(error){
+        res.status(400).json({msg: error.message});
+    }
+});
+
+//Return Highest Registration Number Currently (?)
+app.get('/api/employees/all/max',async(req:Request,res:Response)=>{
+    try{
+        const aggregate = await prisma.employees.aggregate({
+            _max:{
+                employeeId: true
+            }
+        })
+        console.log(aggregate);
+        res.status(200).json(aggregate);
     }
     catch(error){
         res.status(400).json({msg: error.message});
@@ -1085,7 +1146,6 @@ app.delete('/api/roles/:id',async(req:Request,res:Response)=>{
 //                 roleName: roleName,
 //             }
 //         });
-        
 //         res.status(201).json(roles);
 //     }
 //     catch(error){
