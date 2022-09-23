@@ -826,188 +826,134 @@ app.get('/api/batches/all/max',async(req:Request,res:Response)=>{
     }
 });
 
-// /*FEES AND ACCOUNTS MANAGEMENT*/
+/*FEES AND ACCOUNTS MANAGEMENT*/
 
-// //Add Payable (4.1)
+//Add Payable (4.1)
 
-// app.post('/api/payables',async(req:Request,res:Response) =>{
-//     const {payableID, trainingYearId, courseId, payableName, payableCost} = req.body;
-//     try{
-//         const payables = await prisma.payables.create({
-//             data:{
-//                 payableId: payableID,
-//                 trainingYearId: trainingYearId,
-//                 courseId: courseId,
-//                 payableName: payableName,
-//                 payableCost: payableCost,
-//             }
-//         });
-        
-//         res.status(201).json(payables);
-//     }
-//     catch(error){
-//         res.status(400).json({msg: error.message});
-//     }
-// });
-
-// //Edit Payable (4.2)
-
-// app.put('/api/payables/:id',async(req:Request,res:Response)=>{
-//     const {payableID, trainingYearId, courseId, payableName, payableCost} = req.body;
-//     try{
-//         const payables = await prisma.payables.update({
-//             where:{
-//                 payableId: Number(req.params.id)
-//             },
-//             data:{
-//                 payableId: payableID,
-//                 trainingYearId: trainingYearId,
-//                 courseId: courseId,
-//                 payableName: payableName,
-//                 payableCost: payableCost,
-//             }
-//         });
-//         res.status(200).json(payables);
-//     }
-//     catch(error){
-//         res.status(400).json({msg: error.message});
-//     }
-// });
-
-// //View list of payables(4.3)
-
-// app.get('/api/payables',async(req:Request,res:Response) =>{
-//     const {payableID, trainingYearId, courseId, payableName, payableCost} = req.body;
-//     try{
-//         const payables = await prisma.payables.create({
-//             data:{
-//                 payableId: payableID,
-//                 trainingYearId: trainingYearId,
-//                 courseId: courseId,
-//                 payableName: payableName,
-//                 payableCost: payableCost,
-//             }
-//         });
-        
-//         res.status(201).json(payables);
-//     }
-//     catch(error){
-//         res.status(400).json({msg: error.message});
-//     }
-// });
-
-
-
-// /*TRAINEE ACCOUNT MANAGEMENT*/
-
-// //Create new payment (5.1)
-
-// app.post('/api/transactions',async(req:Request,res:Response)=>{
-//     const {transactionId, registrationNumber, payableId, payableCost, paymentMethod} = req.body;
-//     try{
-//         const transactions = await prisma.transactions.create({
-//             data:{
-//                 transactionId:transactionId,
-//                 Registrations:registrationNumber,
-//                 payableCost:payableCost,
-//                 paymentMethod:paymentMethod,
-//                 payables:{
-//                     connect:{
-//                         payableId:payableId
-//                     }
-//                 }
-//             }
-//         });
-//         res.status(201).json(transactions);
-//     }   
-//     catch(error){
-//         res.status(400).json({msg: error.message});
-//     }
-// });
-
-// //View account details (5.2)
-
-
-// app.get('/api/transactions/:id',async(req:Request,res:Response)=>{
-//     try{
-//         const payables = await prisma.transactions.findMany({})
-//         res.status(200).json(payables);
-//     }
-//     catch(error){
-//         res.status(400).json({msg: error.message});
-//     }
-// });
-
-
-// /*EMPLOYEE MANAGEMENT*/
-
-//Displaying specific employee profile (6.1)
-app.get('/api/employees/:id', async (req: Request, res: Response) => {
-    try {
-        const employee = await prisma.employees.findUnique({
-            where: {
-                employeeId: Number(req.params.id)
-            }
-        })
-        res.status(200).json(employee)
-    }
-    catch (error) {
-        res.status(400).json({msg: error.message});
-    }
-})
-
-//Create new employee profile (6.2)
-app.post('/api/employees',async(req:Request,res:Response) =>{
-    const {roleId, firstName, middleName, lastName, birthDay, sex, emailAdd, cpNum, employeeStatus, dateHired} = req.body;
+app.post('/api/payables',async(req:Request,res:Response) =>{
+    const {payableID, trainingYearId, courseId, payableNames, payableCost} = req.body;
     try{
-        const employees = await prisma.employees.create({
+        const payables = await prisma.payables.create({
             data:{
-                firstName: firstName,
-                middleName: middleName,
-                lastName: lastName,
-                birthDay: new Date(birthDay),
-                sex: sex,
-                emailAdd: emailAdd,
-                cpNum: cpNum,
-                employeeStatus: employeeStatus,
-                dateHired: dateHired,
-                role: {
-                    connect: {
-                        roleId: roleId
+                payableId: payableID,
+                trainingYearId: trainingYearId,
+                courseId: courseId,
+                payableNames:{
+                    connect:{
+                        payableNames:payableNames
                     }
-                }
+                },
+                payableCost: payableCost
             }
         });
-        res.status(201).json(employees);
+        
+        res.status(201).json(payables);
     }
     catch(error){
         res.status(400).json({msg: error.message});
     }
 });
 
-// Update employee profile (6.4)
-app.put('/api/employees/:id',async(req:Request,res:Response) =>{
-    const {roleId, firstName, middleName, lastName, birthDay, sex, emailAdd, cpNum, employeeStatus, dateHired} = req.body;
+// //Edit Payable (4.2)
+
+app.put('/api/payables/:id',async(req:Request,res:Response)=>{
+    const {payableID, trainingYearId, courseId, payableName, payableCost} = req.body;
     try{
-        const employees = await prisma.employees.update({
-            where: {
-                employeeId: Number(req.params.id)
+        const payables = await prisma.payables.update({
+            where:{
+                payableId: Number(req.params.id)
             },
             data:{
-                firstName: firstName,
-                middleName: middleName,
-                lastName: lastName,
-                birthDay: new Date(birthDay),
-                sex: sex,
-                emailAdd: emailAdd,
-                cpNum: cpNum,
-                employeeStatus: employeeStatus,
-                dateHired: dateHired,
-                role: {
-                    connect: {
-                        roleId: roleId
+                payableId: payableID,
+                trainingYearId: trainingYearId,
+                courseId: courseId,
+                payableName: payableName,  //connect with payable model somehow
+                payableCost: payableCost,
+            }
+        });
+        res.status(200).json(payables);
+    }
+    catch(error){
+        res.status(400).json({msg: error.message});
+    }
+});
+
+// //View list of payables(4.3)
+
+app.get('/api/payables',async(req:Request,res:Response) =>{
+    const {payableID, trainingYearId, courseId, payableName, payableCost} = req.body;
+    try{
+        const payables = await prisma.payables.create({
+            data:{
+                payableId: payableID,
+                trainingYearId: trainingYearId,
+                courseId: courseId,
+                payableName: payableName, //connect wiht payable model
+                payableCost: payableCost,
+            }
+        });
+        
+        res.status(201).json(payables);
+    }
+    catch(error){
+        res.status(400).json({msg: error.message});
+    }
+});
+
+
+
+/*TRAINEE ACCOUNT MANAGEMENT*/
+
+//Create new payment (5.1)
+
+app.post('/api/transactions',async(req:Request,res:Response)=>{
+    const {transactionId, registrationNumber, payableId, payableCost, paymentMethod} = req.body;
+    try{
+        const transactions = await prisma.transactions.create({
+            data:{
+                transactionId:transactionId,
+                Registrations:registrationNumber,
+                payableCost:payableCost,
+                paymentMethod:paymentMethod,
+                payables:{
+                    connect:{
+                        payableId:payableId
                     }
                 }
+            }
+        });
+        res.status(201).json(transactions);
+    }   
+    catch(error){
+        res.status(400).json({msg: error.message});
+    }
+});
+
+//View account details (5.2)
+
+
+app.get('/api/transactions/:id',async(req:Request,res:Response)=>{
+    try{
+        const payables = await prisma.transactions.findMany({})
+        res.status(200).json(payables);
+    }
+    catch(error){
+        res.status(400).json({msg: error.message});
+    }
+});
+
+
+/*EMPLOYEE MANAGEMENT*/
+
+
+
+
+//Displaying specific employee profile(6.1)
+app.get('/api/employees/:id',async(req:Request,res:Response)=>{
+    try{
+        const employees = await prisma.employees.findUnique({
+            where:{
+                employeeId: Number(req.params.id)
             }
         });
         res.status(200).json(employees);
@@ -1017,46 +963,151 @@ app.put('/api/employees/:id',async(req:Request,res:Response) =>{
     }
 });
 
-// Display employee masterlist (?)
-app.get('/api/employees', async(req:Request, res:Response) => {
+//Create new employee profile (6.2)
+
+app.post('/api/employees',async(req:Request,res:Response) =>{
+    const {roleId, firstName, middleName, lastName, birthDay, sex, emailAdd, cpNum, employeeStatus, dateHired} = req.body;
     try{
-        const employee = await prisma.employees.findMany({
-            select:{
-                employeeId: true,
-                firstName: true,
-                middleName: true,
-                lastName: true,
-                birthDay: true,
-                cpNum: true,
-                dateHired: true,
-                emailAdd: true,
-                sex: true,
-                employeeStatus: true,
-                role: {
-                    select: {
-                        roleId: true,
-                        roleName: true
-                    }
-                }
-            },
-            orderBy:{
-                employeeId:'asc'
+        const employees = await prisma.employees.create({
+            data:{
+                roleId: roleId,
+                firstName: firstName,
+                middleName: middleName,
+                lastName: lastName,
+                birthDay: new Date(birthDay),
+                sex: sex,
+                emailAdd: emailAdd,
+                cpNum: cpNum,
+                employeeStatus: employeeStatus,
+                dateHired: dateHired,
             }
-        })
-        console.log(employee);
-        res.status(200).json(employee);
+        });
+        
+        res.status(201).json(employees);
     }
     catch(error){
         res.status(400).json({msg: error.message});
     }
 });
 
-//Return Highest Registration Number Currently (?)
+
+//Update employee profile (6.5)
+
+app.put('/api/employees/:id',async(req:Request,res:Response)=>{
+    const {roleId, firstName, middleName, lastName, birthDay, sex, emailAdd, cpNum, employeeStatus, dateHired} = req.body;
+    try{
+        const employees = await prisma.employees.update({
+            where:{
+                employeeId: Number(req.params.id)
+            },
+            data:{
+                roleId: roleId,
+                firstName: firstName,
+                middleName: middleName,
+                lastName: lastName,
+                birthDay: birthDay,
+                sex: sex,
+                emailAdd: emailAdd,
+                cpNum: cpNum,
+                employeeStatus: employeeStatus,
+                dateHired: dateHired,
+            }
+        });
+        res.status(200).json(employees);
+    }
+    catch(error){
+        res.status(400).json({msg: error.message});
+    }
+});
+
+//Display employee profile masterlist (6.6)
+
+app.get('/api/employees',async(req:Request,res:Response)=>{
+    try{
+        const employees = await prisma.employees.findMany({})
+        res.status(200).json(employees);
+    }
+    catch(error){
+        res.status(400).json({msg: error.message});
+    }
+});
+
+
+//Create new role (6.7)
+
+app.post('/api/roles',async(req:Request,res:Response) =>{
+    const {roleId, roleName} = req.body;
+    try{
+        const roles = await prisma.roles.create({
+            data:{
+                roleId: roleId,
+                roleName:roleName,
+            }
+        });
+        
+        res.status(201).json(roles);
+    }
+    catch(error){
+        res.status(400).json({msg: error.message});
+    }
+});
+
+//View all roles (6.8)
+
+app.get('/api/roles',async(req:Request,res:Response)=>{
+    try{
+        const roles = await prisma.roles.findMany({})
+        res.status(200).json(roles);
+    }
+    catch(error){
+        res.status(400).json({msg: error.message});
+    }
+});
+
+//Update specific role (6.9)
+
+app.put('/api/roles/:id',async(req:Request,res:Response)=>{
+    const {roleId, roleName} = req.body;
+    try{
+        const roles = await prisma.roles.update({
+            where:{
+                roleId: Number(req.params.id)
+            },
+            data:{
+                roleId: roleId,
+                roleName: roleName
+            }
+        });
+        res.status(200).json(roles);
+    }
+    catch(error){
+        res.status(400).json({msg: error.message});
+    }
+});
+
+//Delete specific role (6.10)
+
+app.delete('/api/roles/:id',async(req:Request,res:Response)=>{
+    try{
+        const roles = await prisma.roles.delete({
+            where:{
+                roleId: Number(req.params.regid)
+            }
+        });
+        res.status(200).json(roles);
+    }
+    catch(error){
+        res.status(400).json({msg: error.message});
+    }
+});
+
+//MAX employee ID (6.11)
+
 app.get('/api/employees/all/max',async(req:Request,res:Response)=>{
     try{
         const aggregate = await prisma.employees.aggregate({
             _max:{
-                employeeId: true
+                employeeId:true
             }
         })
         console.log(aggregate);
@@ -1067,54 +1118,7 @@ app.get('/api/employees/all/max',async(req:Request,res:Response)=>{
     }
 });
 
-// ROLE MODEL
 
-// Add role (?)
-app.post('/api/roles', async(req: Request, res: Response) => {
-    const {roleName} = req.body;
-    try{
-        const role = await prisma.roles.create({
-            data:{
-                roleName: roleName
-            }
-        });
-        res.status(201).json(role);
-    }
-    catch(error){
-        res.status(400).json({msg: error.message});
-    }
-})
-
-// View all roles (?)
-app.get('/api/roles', async (req: Request, res: Response) => {
-    try {
-        const roles =  await prisma.roles.findMany({
-            select: {
-                roleId: true,
-                roleName: true
-            }
-        })
-        res.status(200).json(roles);
-    }
-    catch(error){
-        res.status(400).json({msg: error.message});
-    }
-})
-
-// Update role (?)
-app.delete('/api/roles/:id',async(req:Request,res:Response)=>{
-    try{
-        const role = await prisma.roles.delete({
-            where:{
-                roleId:Number(req.params.id)
-            },
-        });
-        res.status(200).json(role);
-    }
-    catch(error){
-        res.status(400).json({msg: error.message});
-    }
-});
 
 app.listen(port, () =>
   console.log(`REST API server ready at: http://localhost:${port}`),

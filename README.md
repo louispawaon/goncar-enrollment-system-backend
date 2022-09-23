@@ -91,9 +91,9 @@ The Backend Framework for Goncar Security Training Academy's Enrollment System I
 | 6.3 | POST | Assign employee role | ```/api/employees/:id/roles``` |
 | 6.4 | PUT | Update employee profile |```/api/employees/:id```  |
 | 6.5 | PUT | Update employee role | ```/api/employees/:id``` |
-| ? | GET | Display employee masterlist | ```/api/employees``` |
-| ? | POST | Add role | ```/api/roles``` |
-| ? | GET | View all roles | ```/api/roles``` |
-| ? | PUT | Update specific role | ```/api/roles/:id``` |
-| ? | DELETE | Delete specific role | ```/api/roles/:id``` |
-| ? | GET | Max employee ID| ```/api/employees/all/max``` |
+| 6.6 | GET | Display employee masterlist | ```/api/employees``` |
+| 6.7 | POST | Add role | ```/api/roles``` |
+| 6.8 | GET | View all roles | ```/api/roles``` |
+| 6.9 | PUT | Update specific role | ```/api/roles/:id``` |
+| 6.10 | DELETE | Delete specific role | ```/api/roles/:id``` |
+| 6.11 | GET | Max employee ID| ```/api/employees/all/max``` |
