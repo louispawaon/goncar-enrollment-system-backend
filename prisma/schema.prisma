@@ -156,6 +156,6 @@ model employees {
 
 model roles {
   roleId    Int         @id @default(autoincrement())
-  roleName  String
+  roleName  String      @unique
   employees employees[]
 }
