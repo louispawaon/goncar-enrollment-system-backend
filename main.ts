@@ -663,7 +663,7 @@ app.delete('/api/courses/:id',async(req:Request,res:Response)=>{
 
 //Create New Course Batch(3.1)
 app.post('/api/batches',async(req:Request,res:Response)=>{
-    const {courseId, trainingYearId, laNumber,batchName,startDate,endDate,maxStudents} = req.body;
+    const {courseId, trainingYearId, laNumber,batchName,startDate,endDate,maxStudents, employeeId} = req.body;
     try{
         const batch = await prisma.batch.create({
             data:{
@@ -675,6 +675,11 @@ app.post('/api/batches',async(req:Request,res:Response)=>{
                 courses:{ //dle ko sure dre
                     connect:{
                         courseId:courseId
+                    }
+                },
+                employee: {
+                    connect: {
+                        employeeId: employeeId
                     }
                 }
             }
@@ -688,7 +693,7 @@ app.post('/api/batches',async(req:Request,res:Response)=>{
 
 //Update Course Batch Details (3.2)
 app.put('/api/batches/:id',async(req:Request,res:Response)=>{
-    const {laNumber,batchName,startDate,endDate,maxStudents, courseId, trainingYearId} = req.body;
+    const {laNumber,batchName,startDate,endDate,maxStudents, courseId, trainingYearId, employeeId} = req.body;
     try{
         const batch = await prisma.batch.update({
             where:{
@@ -703,6 +708,11 @@ app.put('/api/batches/:id',async(req:Request,res:Response)=>{
                 courses:{ //dle ko sure dre 
                     connect:{
                         courseId:courseId
+                    }
+                },
+                employee: {
+                    connect: {
+                        employeeId: employeeId
                     }
                 }
             }
@@ -739,7 +749,16 @@ app.get("/api/batches/:id",async(req:Request,res:Response)=>{
                             }
                         }
                     }
+                },
+                employee: {
+                    select: {
+                        employeeId: true,
+                        lastName: true,
+                        firstName: true,
+                        middleName: true
+                    }
                 }
+
             }
         });
         res.status(200).json(batch);
@@ -773,6 +792,14 @@ app.get('/api/batches',async(req:Request,res:Response)=>{
                                 trainingYearSpan:true
                             }
                         }
+                    }
+                },
+                employee: {
+                    select: {
+                        employeeId: true,
+                        lastName: true,
+                        firstName: true,
+                        middleName: true
                     }
                 }
             }
@@ -830,75 +857,75 @@ app.get('/api/batches/all/max',async(req:Request,res:Response)=>{
 
 //Add Payable (4.1)
 
-app.post('/api/payables',async(req:Request,res:Response) =>{
-    const {payableID, trainingYearId, courseId, payableNames, payableCost} = req.body;
-    try{
-        const payables = await prisma.payables.create({
-            data:{
-                payableId: payableID,
-                trainingYearId: trainingYearId,
-                courseId: courseId,
-                payableNames:{
-                    connect:{
-                        payableNames:payableNames
-                    }
-                },
-                payableCost: payableCost
-            }
-        });
+// app.post('/api/payables',async(req:Request,res:Response) =>{
+//     const {payableID, trainingYearId, courseId, payableNames, payableCost} = req.body;
+//     try{
+//         const payables = await prisma.payables.create({
+//             data:{
+//                 payableId: payableID,
+//                 trainingYearId: trainingYearId,
+//                 courseId: courseId,
+//                 payableNames:{
+//                     connect:{
+//                         payableNames:payableNames
+//                     }
+//                 },
+//                 payableCost: payableCost
+//             }
+//         });
         
-        res.status(201).json(payables);
-    }
-    catch(error){
-        res.status(400).json({msg: error.message});
-    }
-});
+//         res.status(201).json(payables);
+//     }
+//     catch(error){
+//         res.status(400).json({msg: error.message});
+//     }
+// });
 
 // //Edit Payable (4.2)
 
-app.put('/api/payables/:id',async(req:Request,res:Response)=>{
-    const {payableID, trainingYearId, courseId, payableName, payableCost} = req.body;
-    try{
-        const payables = await prisma.payables.update({
-            where:{
-                payableId: Number(req.params.id)
-            },
-            data:{
-                payableId: payableID,
-                trainingYearId: trainingYearId,
-                courseId: courseId,
-                payableName: payableName,  //connect with payable model somehow
-                payableCost: payableCost,
-            }
-        });
-        res.status(200).json(payables);
-    }
-    catch(error){
-        res.status(400).json({msg: error.message});
-    }
-});
+// app.put('/api/payables/:id',async(req:Request,res:Response)=>{
+//     const {payableID, trainingYearId, courseId, payableName, payableCost} = req.body;
+//     try{
+//         const payables = await prisma.payables.update({
+//             where:{
+//                 payableId: Number(req.params.id)
+//             },
+//             data:{
+//                 payableId: payableID,
+//                 trainingYearId: trainingYearId,
+//                 courseId: courseId,
+//                 payableName: payableName,  //connect with payable model somehow
+//                 payableCost: payableCost,
+//             }
+//         });
+//         res.status(200).json(payables);
+//     }
+//     catch(error){
+//         res.status(400).json({msg: error.message});
+//     }
+// });
 
 // //View list of payables(4.3)
 
-app.get('/api/payables',async(req:Request,res:Response) =>{
-    const {payableID, trainingYearId, courseId, payableName, payableCost} = req.body;
-    try{
-        const payables = await prisma.payables.create({
-            data:{
-                payableId: payableID,
-                trainingYearId: trainingYearId,
-                courseId: courseId,
-                payableName: payableName, //connect wiht payable model
-                payableCost: payableCost,
-            }
-        });
+// app.get('/api/payables',async(req:Request,res:Response) =>{
+//     const {payableID, trainingYearId, courseId, payableName, payableCost} = req.body;
+//     try{
+//         const payables = await prisma.payables.create({
+//             data:{
+//                 payableId: payableID,
+//                 trainingYearId: trainingYearId,
+//                 courseId: courseId,
+//                 payableName: payableName, //connect wiht payable model
+//                 payableCost: payableCost,
+//             }
+//         });
         
-        res.status(201).json(payables);
-    }
-    catch(error){
-        res.status(400).json({msg: error.message});
-    }
-});
+//         res.status(201).json(payables);
+//     }
+//     catch(error){
+//         res.status(400).json({msg: error.message});
+//     }
+// });
 
 
 
@@ -944,9 +971,6 @@ app.get('/api/transactions/:id',async(req:Request,res:Response)=>{
 
 
 /*EMPLOYEE MANAGEMENT*/
-
-
-
 
 //Displaying specific employee profile(6.1)
 app.get('/api/employees/:id',async(req:Request,res:Response)=>{
