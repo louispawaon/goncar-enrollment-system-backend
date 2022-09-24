@@ -20,14 +20,15 @@ function populateCourse(data) {
 function populateRoles(data) {
     axios.post(`${deployedURI}/api/roles`, data)
     .then(() => console.log("CREATED Role"))
-    .catch(error => console.log(error))
+    .catch(error => console.log("ERROR Role"))
 }
 
 //EMPLOYEE
 function populateEmployees(data) {
     axios.post(`${deployedURI}/api/employees`, data)
     .then(() => console.log("CREATED Employee"))
-    .catch(error => console.log("ERROR Employee"))
+    .catch(error => console.log(error)
+    )
 }
 
 //BATCH
@@ -73,15 +74,15 @@ function populateBatches(data) {
 //     trainingYearId: 1
 // })
 
-populateRoles({
-    roleName: "Teacher"
-})
-populateRoles({
-    roleName: "Cashier"
-})
-populateRoles({
-    roleName: "Registrar"
-})
+// populateRoles({
+//     roleName: "Teacher"
+// })
+// populateRoles({
+//     roleName: "Cashier"
+// })
+// populateRoles({
+//     roleName: "Registrar"
+// })
 
 // populateEmployees({
 //     firstName: "Cyril",
@@ -109,18 +110,17 @@ populateRoles({
 //     roleId: 1
 // })
 
-// populateEmployees({
-//     firstName: "Euan",
-//     middleName: null,
-//     lastName: "Abalos",
-//     birthDay: "2001-12-12T00:00:00.000Z",
-//     sex: "Male",
-//     emailAdd: "abalose@addu.edu.ph",
-//     cpNum: "09123456789",
-//     employeeStatus: "Active",
-//     dateHired: "2022-09-24T00:00:00.000Z",
-//     roleId: 2
-// })
+populateEmployees({
+    firstName: "Euan",
+    lastName: "Abalos",
+    birthDay: "2001-12-12T00:00:00.000Z",
+    sex: "Male",
+    emailAdd: "abalose@addu.edu.ph",
+    cpNum: "09123456789",
+    employeeStatus: "Active",
+    dateHired: "2022-09-24T00:00:00.000Z",
+    roleId: 2
+})
 
 // populateBatches({
 //     laNumber:"123",

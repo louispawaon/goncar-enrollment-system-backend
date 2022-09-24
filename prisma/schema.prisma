@@ -147,7 +147,7 @@ model payables {
 model employees {
   employeeId     Int      @id @default(autoincrement())
   firstName      String
-  middleName     String
+  middleName     String?
   lastName       String
   birthDay       DateTime @db.Date
   sex            String

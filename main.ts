@@ -1023,7 +1023,11 @@ app.post('/api/employees',async(req:Request,res:Response) =>{
     try{
         const employees = await prisma.employees.create({
             data:{
-                roleId: roleId,
+                role: {
+                    connect: {
+                        roleId: roleId
+                    }
+                },
                 firstName: firstName,
                 middleName: middleName,
                 lastName: lastName,
@@ -1054,7 +1058,11 @@ app.put('/api/employees/:id',async(req:Request,res:Response)=>{
                 employeeId: Number(req.params.id)
             },
             data:{
-                roleId: roleId,
+                role: {
+                    connect: {
+                        roleId: roleId
+                    }
+                },
                 firstName: firstName,
                 middleName: middleName,
                 lastName: lastName,
