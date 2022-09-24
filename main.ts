@@ -1077,7 +1077,21 @@ app.put('/api/employees/:id',async(req:Request,res:Response)=>{
 
 app.get('/api/employees',async(req:Request,res:Response)=>{
     try{
-        const employees = await prisma.employees.findMany({})
+        const employees = await prisma.employees.findMany({
+            select: {
+                employeeId: true,
+                lastName: true,
+                firstName: true,
+                middleName: true,
+                role: {
+                    select: {
+                        roleId: true,
+                        roleName: true
+                    }
+                },
+                employeeStatus: true,
+            }
+        })
         res.status(200).json(employees);
     }
     catch(error){
