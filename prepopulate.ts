@@ -95,7 +95,8 @@ function populateBatches(data) {
 //     employeeStatus: "Active",
 //     dateHired: "2022-09-24T00:00:00.000Z",
 //     roleId: 1,
-//     address: "Marapangi"
+//     address: "Marapangi",
+//     maritalStatus: "Single"
 // })
 
 // populateEmployees({
@@ -109,7 +110,8 @@ function populateBatches(data) {
 //     employeeStatus: "Active",
 //     dateHired: "2022-09-24T00:00:00.000Z",
 //     roleId: 1,
-//     address: "IWHA"
+//     address: "IWHA",
+//     maritalStatus: "Single"
 // })
 
 // populateEmployees({
@@ -122,7 +124,8 @@ function populateBatches(data) {
 //     employeeStatus: "Active",
 //     dateHired: "2022-09-24T00:00:00.000Z",
 //     roleId: 2,
-//     address: "Davao"
+//     address: "Davao",
+//     maritalStatus: "Single"
 // })
 
 // populateBatches({

@@ -156,6 +156,7 @@ model employees {
   employeeStatus String
   address        String
   dateHired      DateTime
+  maritalStatus  String
   role           roles    @relation(fields: [roleId], references: [roleId])
   roleId         Int
   batch          batch[]
