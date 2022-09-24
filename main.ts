@@ -1123,7 +1123,12 @@ app.post('/api/roles',async(req:Request,res:Response) =>{
 
 app.get('/api/roles',async(req:Request,res:Response)=>{
     try{
-        const roles = await prisma.roles.findMany({})
+        const roles = await prisma.roles.findMany({
+            select: {
+                roleId: true,
+                roleName: true
+            }
+        })
         res.status(200).json(roles);
     }
     catch(error){
