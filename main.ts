@@ -1007,6 +1007,13 @@ app.get('/api/employees/:id',async(req:Request,res:Response)=>{
         const employees = await prisma.employees.findUnique({
             where:{
                 employeeId: Number(req.params.id)
+            },
+            include: {
+                role: {
+                    select: {
+                        roleName: true
+                    }
+                }
             }
         });
         res.status(200).json(employees);
@@ -1019,7 +1026,7 @@ app.get('/api/employees/:id',async(req:Request,res:Response)=>{
 //Create new employee profile (6.2)
 
 app.post('/api/employees',async(req:Request,res:Response) =>{
-    const {roleId, firstName, middleName, lastName, birthDay, sex, emailAdd, cpNum, employeeStatus, dateHired} = req.body;
+    const {roleId, firstName, middleName, lastName, birthDay, sex, emailAdd, cpNum, employeeStatus, dateHired, address} = req.body;
     try{
         const employees = await prisma.employees.create({
             data:{
@@ -1037,6 +1044,7 @@ app.post('/api/employees',async(req:Request,res:Response) =>{
                 cpNum: cpNum,
                 employeeStatus: employeeStatus,
                 dateHired: dateHired,
+                address: address
             }
         });
         
@@ -1051,7 +1059,7 @@ app.post('/api/employees',async(req:Request,res:Response) =>{
 //Update employee profile (6.5)
 
 app.put('/api/employees/:id',async(req:Request,res:Response)=>{
-    const {roleId, firstName, middleName, lastName, birthDay, sex, emailAdd, cpNum, employeeStatus, dateHired} = req.body;
+    const {roleId, firstName, middleName, lastName, birthDay, sex, emailAdd, cpNum, employeeStatus, dateHired, address} = req.body;
     try{
         const employees = await prisma.employees.update({
             where:{
@@ -1072,6 +1080,7 @@ app.put('/api/employees/:id',async(req:Request,res:Response)=>{
                 cpNum: cpNum,
                 employeeStatus: employeeStatus,
                 dateHired: dateHired,
+                address: address
             }
         });
         res.status(200).json(employees);
@@ -1111,11 +1120,10 @@ app.get('/api/employees',async(req:Request,res:Response)=>{
 //Create new role (6.7)
 
 app.post('/api/roles',async(req:Request,res:Response) =>{
-    const {roleId, roleName} = req.body;
+    const {roleName} = req.body;
     try{
         const roles = await prisma.roles.create({
             data:{
-                roleId: roleId,
                 roleName:roleName,
             }
         });

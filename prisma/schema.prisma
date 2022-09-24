@@ -154,6 +154,7 @@ model employees {
   emailAdd       String
   cpNum          String
   employeeStatus String
+  address        String
   dateHired      DateTime
   role           roles    @relation(fields: [roleId], references: [roleId])
   roleId         Int

@@ -94,7 +94,8 @@ function populateBatches(data) {
 //     cpNum: "09456789012",
 //     employeeStatus: "Active",
 //     dateHired: "2022-09-24T00:00:00.000Z",
-//     roleId: 1
+//     roleId: 1,
+//     address: "Marapangi"
 // })
 
 // populateEmployees({
@@ -107,20 +108,22 @@ function populateBatches(data) {
 //     cpNum: "09987654321",
 //     employeeStatus: "Active",
 //     dateHired: "2022-09-24T00:00:00.000Z",
-//     roleId: 1
+//     roleId: 1,
+//     address: "IWHA"
 // })
 
-populateEmployees({
-    firstName: "Euan",
-    lastName: "Abalos",
-    birthDay: "2001-12-12T00:00:00.000Z",
-    sex: "Male",
-    emailAdd: "abalose@addu.edu.ph",
-    cpNum: "09123456789",
-    employeeStatus: "Active",
-    dateHired: "2022-09-24T00:00:00.000Z",
-    roleId: 2
-})
+// populateEmployees({
+//     firstName: "Euan",
+//     lastName: "Abalos",
+//     birthDay: "2001-12-12T00:00:00.000Z",
+//     sex: "Male",
+//     emailAdd: "abalose@addu.edu.ph",
+//     cpNum: "09123456789",
+//     employeeStatus: "Active",
+//     dateHired: "2022-09-24T00:00:00.000Z",
+//     roleId: 2,
+//     address: "Davao"
+// })
 
 // populateBatches({
 //     laNumber:"123",
