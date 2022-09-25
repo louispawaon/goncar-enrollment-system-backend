@@ -96,4 +96,5 @@ The Backend Framework for Goncar Security Training Academy's Enrollment System I
 | 6.8 | GET | View all roles | ```/api/roles``` |
 | 6.9 | PUT | Update specific role | ```/api/roles/:id``` |
 | 6.10 | DELETE | Delete specific role | ```/api/roles/:id``` |
-| 6.11 | GET | Max employee ID| ```/api/employees/all/max``` |
+| 6.11 | GET | Max employee ID | ```/api/employees/all/max``` |
+| ? | GET | GET ALL TEACHER EMPLOYEES | ```/api/employees/all/teacher``` |

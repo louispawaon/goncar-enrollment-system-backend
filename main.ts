@@ -1199,6 +1199,23 @@ app.delete('/api/roles/:id',async(req:Request,res:Response)=>{
     }
 });
 
+// GET ALL TEACHER EMPLOYEES (?)
+app.get('/api/employees/all/teacher', async(req: Request, res: Response) => {
+    try {
+        const teachers = await prisma.employees.findMany({
+            where: {
+                role: {
+                    roleName: "Teacher"
+                }
+            }
+        })
+        res.status(200).json(teachers);
+    }
+    catch(error){
+        res.status(400).json({msg: error.message});
+    }
+})
+
 //MAX employee ID (6.11)
 
 app.get('/api/employees/all/max',async(req:Request,res:Response)=>{
