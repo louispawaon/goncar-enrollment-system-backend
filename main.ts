@@ -826,6 +826,11 @@ app.get('/api/batches',async(req:Request,res:Response)=>{
                         firstName: true,
                         middleName: true
                     }
+                },
+                _count: {
+                    select: {
+                        registrations: true
+                    }
                 }
             }
         });
