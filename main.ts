@@ -240,6 +240,10 @@ app.get('/api/trainees/:id/registrations/:regid',async(req:Request,res:Response)
                         batchName:true
                     }
                 },
+                SSSNumCopy: true,
+                TINNumCopy: true,
+                SGLicenseCopy: true,
+                expiryDateCopy: true,
                 dateEnrolled:true,
                 registrationStatus:true
             }
