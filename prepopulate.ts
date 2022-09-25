@@ -38,8 +38,18 @@ function populateBatches(data) {
     .catch(error => console.log("ERROR Batch"))
 }
 
+// TRAINEE PROFILE
+function populateTrainees(data) {
+    axios.post(`${deployedURI}/api/trainees`, data)
+    .then(() => console.log("CREATED Trainee"))
+    .catch(error => console.log(error))
+}
 
-
+function populateTraineeRegistration(traineeID, data) {
+    axios.post(`${deployedURI}/api/trainees/${traineeID}/registrations/`, data)
+    .then(() => console.log("CREATED Registration"))
+    .catch(error => console.log(error))
+}
 
 //POPULATE HERE
 // populateTrainingYears({
@@ -157,3 +167,54 @@ function populateBatches(data) {
 //     courseId:1,
 //     employeeId: 3
 // })
+
+// populateTrainees({
+//     "firstName": "Cyril",
+//     "middleName": "Malinao",
+//     "lastName": "Olanolan",
+//     "birthDay": "2001-12-12T00:00:00.000Z",
+//     "sex": "Male",
+//     "address": "Toril",
+//     "emailAdd": "olanolancyrilm@gmail.com",
+//     "cpNum": "09782345678",
+//     "educationalAttainment": "Undergraduate",
+//     "yearGrad": "2022"
+// })
+
+// populateTrainees({
+//     "firstName": "Julienne",
+//     "middleName": "Andrea",
+//     "lastName": "Panes",
+//     "birthDay": "2001-12-12T00:00:00.000Z",
+//     "sex": "Female",
+//     "address": "Toril",
+//     "emailAdd": "idk@gmail.com",
+//     "cpNum": "09782345678",
+//     "educationalAttainment": "Undergraduate",
+//     "yearGrad": "2020"
+// })
+
+// populateTrainees({
+//     "firstName": "Voldemort",
+//     "middleName": "Harry",
+//     "lastName": "Potter",
+//     "birthDay": "2001-12-12T00:00:00.000Z",
+//     "sex": "Male",
+//     "address": "Toril",
+//     "emailAdd": "asdasd@gmail.com",
+//     "cpNum": "09782345678",
+//     "educationalAttainment": "Undergraduate",
+//     "yearGrad": "2020"
+// })
+
+// for (let i=1; i <= 5; i++) {
+//     populateTraineeRegistration(1, {
+//         "batchId": 1,
+//         "SSSNum": "123",
+//         "TINNum": "456",
+//         "registrationStatus": "Active",
+//         "dateEnrolled": "2001-12-12T00:00:00.000Z",
+//         "data.SGLicense": "123123123",
+//         "data.expiryDate": "567678"
+//     })
+// }

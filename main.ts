@@ -844,7 +844,7 @@ app.get('/api/batches',async(req:Request,res:Response)=>{
 //Group Batches by Course (3.6)
 app.get('/api/courses/batches/grouped',async(req:Request,res:Response)=>{
     try{
-        const groupBy = await prisma.courses.findMany({
+        const courses = await prisma.courses.findMany({
             select:{
                 courseId:true,
                 courseName:true,
@@ -855,12 +855,37 @@ app.get('/api/courses/batches/grouped',async(req:Request,res:Response)=>{
                         laNumber:true,
                         startDate:true,
                         endDate:true,
-                        maxStudents:true
+                        maxStudents:true,
+                        _count: {
+                            select: {
+                                registrations: true
+                            }
+                        }
                     }
                 }
             }
         });
-        res.status(200).json(groupBy);
+
+        // FIND ALL BATCHES WITH REGISTRATIONS LESS THAN 30
+        var eligibleBatches : typeof courses= [];
+
+        for (let course of courses) {
+            let batchArray = (
+                course.batch.filter((batch) => {
+                    if (batch._count.registrations < 30) {
+                        return batch;
+                    }
+                })
+            )
+
+            eligibleBatches.push({
+                courseId: course.courseId,
+                courseName: course.courseName,
+                batch: batchArray
+            })
+        }
+
+        res.status(200).json(eligibleBatches);
     }
     catch(error){
         res.status(400).json({msg: error.message});
