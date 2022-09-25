@@ -1109,6 +1109,9 @@ app.get('/api/employees',async(req:Request,res:Response)=>{
                     }
                 },
                 employeeStatus: true,
+            },
+            orderBy: {
+                employeeId: 'asc'
             }
         })
         res.status(200).json(employees);
