@@ -98,12 +98,41 @@ app.get('/api/trainees/:id',async(req:Request,res:Response)=>{
 app.post('/api/trainees/:id/registrations/',async(req:Request,res:Response)=>{
     const {batchId,SSSNum,TINNum,SGLicense,expiryDate,dateEnrolled,registrationStatus} = req.body;
     try{
+        // CHECK IF INCOMING REG IS SET TO ACTIVE AND IF THERE IS AN EXISTING ACTIVE REG INSIDE TRAINEE
+        // ELSE CONTINUE
+        let hasActiveReg = false;
+        if (registrationStatus.toUpperCase() === "ACTIVE") {
+            // FIND ALL TRAINEES WITH HAS ACTIVE REG
+            const traineesWithActiveReg = await prisma.trainees.findMany({
+                where: {
+                    hasActiveRegistration: true
+                },
+                select: {
+                    traineeId: true
+                }
+            })
+    
+            // CHECK IF PARAMS ID IS IN TRAINEES WITH ACTIVE REG
+            // IF IT IS, THROW ERROR
+            // IF IT'S NOT, CONTINUE WITH REGISTRATION
+            if (traineesWithActiveReg.length != 0) {
+                for (let trainee of traineesWithActiveReg) {
+                    if (trainee.traineeId === Number(req.params.id)) {
+                        hasActiveReg = true;
+                        throw "hasActiveReg"
+                    }
+                }
+            }
+
+            hasActiveReg = true;
+        }
 
         const trainee = prisma.trainees.update({
             where:{
                 traineeId:Number(req.params.id)
             },
             data:{
+                hasActiveRegistration: hasActiveReg,
                 SSSNum:SSSNum,
                 TINNum:TINNum,
                 SGLicense:SGLicense,
@@ -136,7 +165,12 @@ app.post('/api/trainees/:id/registrations/',async(req:Request,res:Response)=>{
         res.status(201).json(transact);
     }   
     catch(error){
-        res.status(400).json({msg: error.message});
+        if (error === "hasActiveReg") {
+            res.status(409).json({msg: "hasActiveReg"});
+        }
+        else {
+            res.status(400).json({msg: error.message});
+        }
     }
 });
 
@@ -144,7 +178,6 @@ app.post('/api/trainees/:id/registrations/',async(req:Request,res:Response)=>{
 app.put('/api/trainees/:id/registrations/:regid/',async(req:Request,res:Response)=>{
     const {SSSNum,TINNum,SGLicense,expiryDate,dateEnrolled,registrationStatus, batchId} = req.body;
     try{
-
         const trainee = prisma.trainees.update({
             where:{
                 traineeId:Number(req.params.id)
@@ -198,6 +231,35 @@ app.put('/api/trainees/:id/registrations/:regid/',async(req:Request,res:Response
         })
 
         const transact = await prisma.$transaction([trainee,traineeReg,traineeRegActive]);
+
+        // set hasActiveRegistration to FALSE in trainee IF NO ACTIVE REG
+        const hasActiveReg = await prisma.trainees.findMany({
+            where: {
+                registrations: {
+                    some: {
+                        registrationStatus: "Active",
+                        traineeId:Number(req.params.id)
+                    }
+                }
+            },
+            select: {
+                traineeId: true,
+                hasActiveRegistration: true
+            }
+        })
+
+        // IF NO ACTIVE, SET FLAG TO FALSE
+        if (hasActiveReg.length === 0) {
+            const updateTrainee = await prisma.trainees.update({
+                where: {
+                    traineeId: Number(req.params.id)
+                },
+                data: {
+                    hasActiveRegistration: false
+                }
+            })
+        }
+
         res.status(200).json(transact);
     }
     catch(error){
@@ -245,7 +307,7 @@ app.get('/api/trainees/:id/registrations/:regid',async(req:Request,res:Response)
                 SGLicenseCopy: true,
                 expiryDateCopy: true,
                 dateEnrolled:true,
-                registrationStatus:true
+                registrationStatus:true,
             }
         });
         res.status(200).json(traineeReg);
@@ -280,11 +342,13 @@ app.get('/api/trainees',async(req:Request,res:Response)=>{
                 firstName:true,
                 middleName:true,
                 lastName: true,
+                hasActiveRegistration: true,
                 registrations:{
                     where:{
                         registrationStatus:"Active"
                     },
                     select:{
+                        registrationNumber: true,
                         registrationStatus:true,
                         batch:{
                             select:{
@@ -318,6 +382,17 @@ app.get('/api/trainees',async(req:Request,res:Response)=>{
 //Trainee Reg Masterlist (1.10)
 app.get('/api/trainees/:id/registrations',async(req:Request,res:Response)=>{
     try{
+        const traineesWithActiveReg = await prisma.trainees.findMany({
+            where: {
+                hasActiveRegistration: true
+            },
+            select: {
+                traineeId: true,
+                hasActiveRegistration: true
+            }
+        })
+        console.log(traineesWithActiveReg)
+
         const traineeReg = await prisma.registrations.findMany({
             where:{
                 traineeId: Number(req.params.id)
@@ -345,7 +420,7 @@ app.get('/api/trainees/:id/registrations',async(req:Request,res:Response)=>{
                 registrationNumber:'asc'
             }
         })
-        console.log(traineeReg);
+        // console.log(traineeReg);
         res.status(200).json(traineeReg);
     }
     catch(error){

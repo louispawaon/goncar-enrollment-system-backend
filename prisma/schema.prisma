@@ -33,6 +33,7 @@ model Trainees {
   SGLicense             String?
   expiryDate            DateTime?       @db.Date
   registrations         Registrations[] @relation("trainees")
+  hasActiveRegistration Boolean         @default(false)
 }
 
 model Registrations {
