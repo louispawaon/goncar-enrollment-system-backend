@@ -24,7 +24,7 @@ model Trainees {
   birthDay              DateTime        @db.Date
   sex                   String
   address               String
-  emailAdd              String          @unique
+  emailAdd              String
   cpNum                 String
   educationalAttainment String
   yearGrad              String
