@@ -214,7 +214,8 @@ app.put('/api/trainees/:id/registrations/:regid/',async(req:Request,res:Response
                     traineeId: true,
                     registrations: {
                         select: {
-                            registrationNumber: true
+                            registrationNumber: true,
+                            registrationStatus: true
                         }
                     }
                 }
@@ -229,7 +230,7 @@ app.put('/api/trainees/:id/registrations/:regid/',async(req:Request,res:Response
                     if (trainee.traineeId === Number(req.params.id)) {
                         // LOOK INSIDE REGISTRATIONS IF EDITING THE CURRENT ACTIVE REG
                         for (let registration of trainee.registrations) {
-                            if (registration.registrationNumber === Number(req.params.regid)) {
+                            if (registration.registrationNumber === Number(req.params.regid) && registration.registrationStatus.toUpperCase() === "ACTIVE") {
                                 currentReg = true;
                                 break;
                             }
