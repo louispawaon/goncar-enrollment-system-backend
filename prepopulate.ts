@@ -84,15 +84,15 @@ function populateTraineeRegistration(traineeID, data) {
 //     trainingYearId: 1
 // })
 
-// populateRoles({
-//     roleName: "Teacher"
-// })
-// populateRoles({
-//     roleName: "Cashier"
-// })
-// populateRoles({
-//     roleName: "Registrar"
-// })
+populateRoles({
+    roleName: "Teacher"
+})
+populateRoles({
+    roleName: "Cashier"
+})
+populateRoles({
+    roleName: "Registrar"
+})
 
 // populateEmployees({
 //     firstName: "Cyril",
