@@ -995,9 +995,14 @@ app.get('/api/batches',async(req:Request,res:Response)=>{
                         middleName: true
                     }
                 },
-                _count: {
-                    select: {
-                        registrations: true
+                // _count: {
+                //     select: {
+                //         registrations: true
+                //     }
+                // },
+                registrations: {
+                    where: {
+                        registrationStatus: "Active",
                     }
                 }
             }
