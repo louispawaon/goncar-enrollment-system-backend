@@ -207,14 +207,14 @@ function populateTraineeRegistration(traineeID, data) {
 //     "yearGrad": "2020"
 // })
 
-// for (let i=1; i <= 5; i++) {
-//     populateTraineeRegistration(1, {
-//         "batchId": 1,
-//         "SSSNum": "123",
-//         "TINNum": "456",
-//         "registrationStatus": "Active",
-//         "dateEnrolled": "2001-12-12T00:00:00.000Z",
-//         "data.SGLicense": "123123123",
-//         "data.expiryDate": "567678"
-//     })
-// }
+for (let i=1; i <= 6; i++) {
+    populateTraineeRegistration(2, {
+        "batchId": 1,
+        "SSSNum": "123",
+        "TINNum": "456",
+        "registrationStatus": "Dropped",
+        "dateEnrolled": "2001-12-12T00:00:00.000Z",
+        "data.SGLicense": "123123123",
+        "data.expiryDate": "567678"
+    })
+}

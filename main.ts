@@ -1045,7 +1045,7 @@ app.get('/api/courses/batches/grouped',async(req:Request,res:Response)=>{
         for (let course of courses) {
             let batchArray = (
                 course.batch.filter((batch) => {
-                    if (batch._count.registrations < 30) {
+                    if (batch._count.registrations < batch.maxStudents) {
                         return batch;
                     }
                 })
