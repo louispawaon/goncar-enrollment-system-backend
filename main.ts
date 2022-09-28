@@ -573,11 +573,18 @@ app.get('/api/trainees/all/max',async(req:Request,res:Response)=>{
 //Delete Trainee (1.15)
 app.delete('/api/trainees/:id',async(req:Request,res:Response)=>{
     try{
+        await prisma.registrations.deleteMany({
+            where: {
+                traineeId: Number(req.params.id)
+            }
+        })
+
         const trainee = await prisma.trainees.delete({
             where:{
                 traineeId: Number(req.params.id)
             }
         });
+
         res.status(200).json(trainee);
     }
     catch(error){
