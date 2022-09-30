@@ -160,7 +160,7 @@ app.post('/api/trainees/:id/registrations/',async(req:Request,res:Response)=>{
                 SSSNum:SSSNum,
                 TINNum:TINNum,
                 SGLicense:SGLicense,
-                expiryDate:new Date(expiryDate)
+                expiryDate: expiryDate ? new Date(expiryDate) : null
             }
         });
 
@@ -171,7 +171,7 @@ app.post('/api/trainees/:id/registrations/',async(req:Request,res:Response)=>{
                 SSSNumCopy:SSSNum,
                 TINNumCopy:TINNum,
                 SGLicenseCopy:SGLicense,
-                expiryDateCopy:new Date(expiryDate),
+                expiryDateCopy: expiryDate ? new Date(expiryDate) : null,
                 trainees:{
                     connect:{
                         traineeId:Number(req.params.id)
@@ -253,7 +253,7 @@ app.put('/api/trainees/:id/registrations/:regid/',async(req:Request,res:Response
                 SSSNum: SSSNum,
                 TINNum: TINNum,
                 SGLicense: SGLicense,
-                expiryDate: new Date(expiryDate)
+                expiryDate: expiryDate ? new Date(expiryDate) : null
             }
         });
 
@@ -292,7 +292,7 @@ app.put('/api/trainees/:id/registrations/:regid/',async(req:Request,res:Response
                 SSSNumCopy:SSSNum,
                 TINNumCopy:TINNum,
                 SGLicenseCopy:SGLicense,
-                expiryDateCopy:new Date(expiryDate)
+                expiryDateCopy:expiryDate ? new Date(expiryDate) : null
             }
             
         })
