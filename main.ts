@@ -102,52 +102,31 @@ app.post('/api/trainees/:id/registrations/',async(req:Request,res:Response)=>{
         // ELSE CONTINUE
         let hasActiveReg = false;
         if (registrationStatus.toUpperCase() === "ACTIVE") {
-            // FIND ALL TRAINEES WITH HAS ACTIVE REG
-            const traineesWithActiveReg = await prisma.trainees.findMany({
+            // CHECK IF THERE EXISTS A REGISTRATION THAT IS CURRENTLY ACTIVE
+            const activeRegInTrainee = await prisma.trainees.findMany({
                 where: {
-                    hasActiveRegistration: true
+                    traineeId: Number(req.params.id),
+                    registrations: {
+                        some: {
+                            registrationStatus: "Active"
+                        }
+                    }
                 },
                 select: {
-                    traineeId: true
+                    traineeId: true,
+                    registrations: {
+                        select: {
+                            registrationNumber: true,
+                        }
+                    }
                 }
             })
-    
-            // CHECK IF PARAMS ID IS IN TRAINEES WITH ACTIVE REG
-            // IF IT IS, THROW ERROR
-            // IF IT'S NOT, CONTINUE WITH REGISTRATION
-            if (traineesWithActiveReg.length != 0) {
-                for (let trainee of traineesWithActiveReg) {
-                    if (trainee.traineeId === Number(req.params.id)) {
-                        hasActiveReg = true;
-                        throw "hasActiveReg"
-                    }
-                }
+
+            if (activeRegInTrainee.length !== 0) {
+                hasActiveReg = true
+                throw "hasActiveReg"
             }
 
-            hasActiveReg = true;
-        }
-
-        // set hasActiveRegistration to FALSE in trainee IF NO ACTIVE REG
-        const activeReg = await prisma.trainees.findMany({
-            where: {
-                registrations: {
-                    some: {
-                        registrationStatus: "Active",
-                        traineeId:Number(req.params.id)
-                    }
-                }
-            },
-            select: {
-                traineeId: true,
-                hasActiveRegistration: true
-            }
-        })
-
-        // IF NO ACTIVE, SET FLAG TO FALSE
-        if (activeReg.length === 0) {
-            hasActiveReg = false
-        }
-        else {
             hasActiveReg = true
         }
 
@@ -202,47 +181,79 @@ app.post('/api/trainees/:id/registrations/',async(req:Request,res:Response)=>{
 app.put('/api/trainees/:id/registrations/:regid/',async(req:Request,res:Response)=>{
     const {SSSNum,TINNum,SGLicense,expiryDate,dateEnrolled,registrationStatus, batchId} = req.body;
     try{
+        // // CHECK IF INCOMING REG IS SET TO ACTIVE AND IF THERE IS AN EXISTING ACTIVE REG INSIDE TRAINEE
+        // // ELSE CONTINUE
+        // if (registrationStatus.toUpperCase() === "ACTIVE") {
+        //     // FIND ALL TRAINEES WITH HAS ACTIVE REG
+        //     const traineesWithActiveReg = await prisma.trainees.findMany({
+        //         where: {
+        //             hasActiveRegistration: true
+        //         },
+        //         select: {
+        //             traineeId: true,
+        //             registrations: {
+        //                 select: {
+        //                     registrationNumber: true,
+        //                     registrationStatus: true
+        //                 }
+        //             }
+        //         }
+        //     })
+            
+        //     let currentReg = false;
+        //     // CHECK IF PARAMS ID IS IN TRAINEES WITH ACTIVE REG
+        //     // IF IT IS, THROW ERROR
+        //     // IF IT'S NOT, CONTINUE WITH REGISTRATION
+        //     if (traineesWithActiveReg.length != 0) {
+        //         for (let trainee of traineesWithActiveReg) {
+        //             if (trainee.traineeId === Number(req.params.id)) {
+        //                 // LOOK INSIDE REGISTRATIONS IF EDITING THE CURRENT ACTIVE REG
+        //                 for (let registration of trainee.registrations) {
+        //                     if (registration.registrationNumber === Number(req.params.regid) && registration.registrationStatus.toUpperCase() === "ACTIVE") {
+        //                         currentReg = true;
+        //                         break;
+        //                     }
+        //                 }
+
+        //                 if (currentReg) break;
+                        
+        //                 // IF NOT EDITING THE CURRENT ACTIVE REG, THROW HAS ACTIVE REG
+        //                 throw "hasActiveReg"
+        //             }
+        //         }
+        //     }
+        // }
+
         // CHECK IF INCOMING REG IS SET TO ACTIVE AND IF THERE IS AN EXISTING ACTIVE REG INSIDE TRAINEE
         // ELSE CONTINUE
+        let hasActiveReg = false;
         if (registrationStatus.toUpperCase() === "ACTIVE") {
-            // FIND ALL TRAINEES WITH HAS ACTIVE REG
-            const traineesWithActiveReg = await prisma.trainees.findMany({
+            // CHECK IF THERE EXISTS A REGISTRATION THAT IS CURRENTLY ACTIVE
+            const activeRegInTrainee = await prisma.trainees.findMany({
                 where: {
-                    hasActiveRegistration: true
+                    traineeId: Number(req.params.id),
+                    registrations: {
+                        some: {
+                            registrationStatus: "Active"
+                        }
+                    }
                 },
                 select: {
                     traineeId: true,
                     registrations: {
                         select: {
                             registrationNumber: true,
-                            registrationStatus: true
                         }
                     }
                 }
             })
-            
-            let currentReg = false;
-            // CHECK IF PARAMS ID IS IN TRAINEES WITH ACTIVE REG
-            // IF IT IS, THROW ERROR
-            // IF IT'S NOT, CONTINUE WITH REGISTRATION
-            if (traineesWithActiveReg.length != 0) {
-                for (let trainee of traineesWithActiveReg) {
-                    if (trainee.traineeId === Number(req.params.id)) {
-                        // LOOK INSIDE REGISTRATIONS IF EDITING THE CURRENT ACTIVE REG
-                        for (let registration of trainee.registrations) {
-                            if (registration.registrationNumber === Number(req.params.regid) && registration.registrationStatus.toUpperCase() === "ACTIVE") {
-                                currentReg = true;
-                                break;
-                            }
-                        }
 
-                        if (currentReg) break;
-                        
-                        // IF NOT EDITING THE CURRENT ACTIVE REG, THROW HAS ACTIVE REG
-                        throw "hasActiveReg"
-                    }
-                }
+            if (activeRegInTrainee.length !== 0) {
+                hasActiveReg = true
+                throw "hasActiveReg"
             }
+
+            hasActiveReg = true
         }
 
         const trainee = prisma.trainees.update({
