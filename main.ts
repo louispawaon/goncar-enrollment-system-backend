@@ -867,7 +867,7 @@ app.delete('/api/courses/:id',async(req:Request,res:Response)=>{
 
 //Create New Course Batch(3.1)
 app.post('/api/batches',async(req:Request,res:Response)=>{
-    const {courseId, trainingYearId, laNumber,batchName,startDate,endDate,maxStudents, employeeId} = req.body;
+    const {courseId, batchStatus, laNumber,batchName,startDate,endDate,maxStudents, employeeId} = req.body;
     try{
         const batch = await prisma.batch.create({
             data:{
@@ -876,6 +876,7 @@ app.post('/api/batches',async(req:Request,res:Response)=>{
                 startDate: startDate,
                 endDate: endDate,
                 maxStudents: maxStudents,
+                batchStatus: batchStatus,
                 courses:{ //dle ko sure dre
                     connect:{
                         courseId:courseId
@@ -888,6 +889,15 @@ app.post('/api/batches',async(req:Request,res:Response)=>{
                 }
             }
         });
+
+        const instructor = await prisma.employees.update({
+            where: {
+                employeeId: employeeId
+            },
+            data: {
+                hasActiveBatch: true
+            }
+        })
         res.status(201).json(batch);
     }
     catch(error){
@@ -897,7 +907,7 @@ app.post('/api/batches',async(req:Request,res:Response)=>{
 
 //Update Course Batch Details (3.2)
 app.put('/api/batches/:id',async(req:Request,res:Response)=>{
-    const {laNumber,batchName,startDate,endDate,maxStudents, courseId, trainingYearId, employeeId} = req.body;
+    const {laNumber, batchStatus, batchName,startDate,endDate,maxStudents, courseId, trainingYearId, employeeId} = req.body;
     try{
         const batch = await prisma.batch.update({
             where:{
@@ -909,6 +919,7 @@ app.put('/api/batches/:id',async(req:Request,res:Response)=>{
                 startDate: startDate,
                 endDate: endDate,
                 maxStudents: maxStudents,
+                batchStatus: batchStatus,
                 courses:{ //dle ko sure dre 
                     connect:{
                         courseId:courseId
@@ -942,6 +953,7 @@ app.get("/api/batches/:id",async(req:Request,res:Response)=>{
                 startDate: true,
                 endDate: true,
                 maxStudents: true,
+                batchStatus: true,
                 courses:{
                     select:{
                         courseId:true,
@@ -986,6 +998,7 @@ app.get('/api/batches',async(req:Request,res:Response)=>{
                 startDate: true,
                 endDate: true,
                 maxStudents: true,
+                batchStatus: true,
                 courses:{
                     select:{
                         courseId:true,
@@ -1040,6 +1053,7 @@ app.get('/api/courses/batches/grouped',async(req:Request,res:Response)=>{
                         startDate:true,
                         endDate:true,
                         maxStudents:true,
+                        batchStatus: true,
                         _count: {
                             select: {
                                 registrations: true
@@ -1056,7 +1070,7 @@ app.get('/api/courses/batches/grouped',async(req:Request,res:Response)=>{
         for (let course of courses) {
             let batchArray = (
                 course.batch.filter((batch) => {
-                    if (batch._count.registrations < batch.maxStudents) {
+                    if (batch._count.registrations < batch.maxStudents && batch.batchStatus === "Active") {
                         return batch;
                     }
                 })
@@ -1413,9 +1427,10 @@ app.get('/api/employees/all/teacher', async(req: Request, res: Response) => {
     try {
         const teachers = await prisma.employees.findMany({
             where: {
-                role: {
-                    roleName: "Teacher"
-                }
+                AND: [
+                    {role: {roleName: "Teacher"}},
+                    {hasActiveBatch: false}
+                ]
             }
         })
         res.status(200).json(teachers);
