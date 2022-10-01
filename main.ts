@@ -909,6 +909,58 @@ app.post('/api/batches',async(req:Request,res:Response)=>{
 app.put('/api/batches/:id',async(req:Request,res:Response)=>{
     const {laNumber, batchStatus, batchName,startDate,endDate,maxStudents, courseId, trainingYearId, employeeId} = req.body;
     try{
+        // IF BATCHSTATUS IS THE ONE BEING CHANGED, UPDATE THE STATUS OF THE INSTRUCTOR
+        if (batchStatus.toUpperCase() === "INACTIVE") {
+            // FIND EMPLOYEE ID OF BATCH CURRENTLY UPDATING
+            const employeeIdOfBatch = await prisma.batch.findUnique({
+                where: {
+                    batchId:Number(req.params.id)
+                },
+                select: {
+                    batchStatus: true,
+                    employee: {
+                        select: {
+                            employeeId: true,
+                            hasActiveBatch: true
+                        }
+                    }
+                }
+            })
+
+            // ONLY UPDATE EMPLOYEE IF THIS IS THE ACTIVE BATCH
+            if (employeeIdOfBatch.batchStatus === "Active") {
+                // UPDATE hasActiveBatch for employee
+                await prisma.employees.update({
+                    where: {
+                        employeeId: employeeIdOfBatch.employee.employeeId
+                    },
+                    data: {
+                        hasActiveBatch: false
+                    }
+                })
+            }
+        }
+        else if (batchStatus.toUpperCase() === "ACTIVE") {
+            // FIND EMPLOYEE ID OF BATCH CURRENTLY UPDATING AND IF THEY HAVE ACTIVE BATCH
+            const employeeIdOfBatch = await prisma.batch.findUnique({
+                where: {
+                    batchId:Number(req.params.id)
+                },
+                select: {
+                    employee: {
+                        select: {
+                            employeeId: true,
+                            hasActiveBatch: true
+                        }
+                    }
+                }
+            })
+
+            if (employeeIdOfBatch.employee.hasActiveBatch === true) {
+                throw "hasActiveBatch"
+            }
+        }
+
         const batch = await prisma.batch.update({
             where:{
                 batchId:Number(req.params.id)
@@ -932,10 +984,16 @@ app.put('/api/batches/:id',async(req:Request,res:Response)=>{
                 }
             }
         });
+
         res.status(200).json(batch);
     }
     catch(error){
-        res.status(400).json({msg: error.message});
+        if (error === "hasActiveBatch") {
+            res.status(409).json({msg: error});
+        }
+        else {
+            res.status(400).json({msg: error.message});
+        }
     }
 });
 
@@ -1273,7 +1331,7 @@ app.post('/api/employees',async(req:Request,res:Response) =>{
                 employeeStatus: employeeStatus,
                 dateHired: dateHired,
                 address: address,
-                maritalStatus: maritalStatus
+                maritalStatus: maritalStatus,
             }
         });
         
@@ -1337,6 +1395,7 @@ app.get('/api/employees',async(req:Request,res:Response)=>{
                     }
                 },
                 employeeStatus: true,
+                hasActiveBatch: true
             },
             orderBy: {
                 employeeId: 'asc'
