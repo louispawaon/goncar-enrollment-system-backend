@@ -1292,7 +1292,7 @@ app.get('/api/courses/:courseId/payables', async (req: Request, res: Response) =
             },
         })
 
-        payables['tuition'] = tuition;
+        payables['tuition'] = tuition._sum.payableCost ?? 0;
 
         res.status(200).json(payables);
     }
