@@ -75,19 +75,19 @@ model batch {
   batchStatus   String          @default("Active")
 }
 
-model tuitionview {
-  tuitionViewId  Int            @id @default(autoincrement())
-  tuition        Float
-  courses        courses?       @relation("course", fields: [courseId], references: [courseId])
-  courseId       Int?
-  trainingYears  trainingYears? @relation(fields: [trainingYearId], references: [trainingYearId])
-  trainingYearId Int?
-}
+// model tuitionview {
+//   tuitionViewId  Int            @id @default(autoincrement())
+//   tuition        Float
+//   courses        courses?       @relation("course", fields: [courseId], references: [courseId])
+//   courseId       Int?
+//   trainingYears  trainingYears? @relation(fields: [trainingYearId], references: [trainingYearId])
+//   trainingYearId Int?
+// }
 
 model trainingYears {
-  trainingYearId   Int           @id @default(autoincrement()) //TODO: change or revise - temporary ra nang autoinc
+  trainingYearId   Int       @id @default(autoincrement()) //TODO: change or revise - temporary ra nang autoinc
   trainingYearSpan String
-  tuitionview      tuitionview[]
+  // tuitionview      tuitionview[]
   course           courses[]
   //batch            batch[]
   // payables         payables[]
@@ -95,16 +95,16 @@ model trainingYears {
 }
 
 model courses {
-  courseId          Int            @id @default(autoincrement())
+  courseId          Int           @id @default(autoincrement())
   courseName        String
   courseDescription String
   requiredHours     Float
   units             Float
-  trainingYears     trainingYears? @relation(fields: [trainingYearsId], references: [trainingYearId])
-  trainingYearsId   Int?
+  trainingYears     trainingYears @relation(fields: [trainingYearsId], references: [trainingYearId])
+  trainingYearsId   Int
   //registration      Registrations[] @relation("course")
-  batch             batch[]        @relation("course")
-  tuitionview       tuitionview[]  @relation("course")
+  batch             batch[]       @relation("course")
+  // tuitionview       tuitionview[] @relation("course")
   payables          payables[]
 }
 

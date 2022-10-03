@@ -1167,9 +1167,8 @@ app.get('/api/batches/all/max',async(req:Request,res:Response)=>{
 /*FEES AND ACCOUNTS MANAGEMENT*/
 
 //Add Payable (4.1)
-
 app.post('/api/payables',async(req:Request,res:Response) =>{
-    const {trainingYearId, courseId, payableName, payableCost} = req.body;
+    const {courseId, payableName, payableCost} = req.body;
     try{
         const payable = await prisma.payables.create({
             data: {
@@ -1182,6 +1181,7 @@ app.post('/api/payables',async(req:Request,res:Response) =>{
                 }
             }
         });
+
         res.status(201).json(payable);
     }
     catch(error){
@@ -1217,32 +1217,89 @@ app.post('/api/payables',async(req:Request,res:Response) =>{
 //     }
 // });
 
-// //View list of payables(4.3)
+//View list of payables(4.3)
 
 app.get('/api/payables',async(req:Request,res:Response) =>{
     try{
-        const payables = await prisma.payables.findMany({
+        const courses = await prisma.courses.findMany({
             select: {
-                payableId: true,
-                payableName: true,
-                payableCost: true,
-                course :{
+                courseId: true,
+                courseName: true,
+                trainingYears: {
                     select: {
-                        courseId:true,
-                        courseName: true
+                        trainingYearId: true,
+                        trainingYearSpan: true
                     }
                 }
             }
-        });
+        })
+
+        // LOOP THROUGH ALL COURSES AND CALCULATE THE SUM OF THEIR PAYABLE COST
+        for (let course of courses) {
+            // QUERY AGGREGATE FOR EVERY COURSE ID
+            const payableAggregate = await prisma.payables.aggregate({
+                where: {
+                    courseId: course.courseId
+                },
+                _sum: {
+                    payableCost: true
+                }
+            })
+
+            // ADD TO COURSE OBJECT, IF NULL RETURN 0
+            course['tuition'] = payableAggregate._sum.payableCost ?? 0;
+        }
         
-        res.status(200).json(payables);
+        res.status(200).json(courses);
     }
     catch(error){
         res.status(400).json({msg: error.message});
     }
 });
 
+// VIEW PAYABLES OF CERTAIN COURSE (?)
+app.get('/api/courses/:courseId/payables', async (req: Request, res: Response) => {
+    try {
+        const payables = await prisma.courses.findUnique({
+            where: {
+                courseId: Number(req.params.courseId)
+            },
+            select: {
+                courseId: true,
+                courseName: true,
+                trainingYears: {
+                    select: {
+                        trainingYearId: true,
+                        trainingYearSpan: true
+                    }
+                },
+                payables: {
+                    select: {
+                        payableId: true,
+                        payableName: true,
+                        payableCost: true
+                    }
+                }
+            }
+        })
 
+        const tuition = await prisma.payables.aggregate({
+            where: {
+                courseId: Number(req.params.courseId)
+            },
+            _sum: {
+                payableCost: true
+            },
+        })
+
+        payables['tuition'] = tuition;
+
+        res.status(200).json(payables);
+    }
+    catch (error) {
+        res.status(400).json({msg: error.message});
+    }
+}) 
 
 /*TRAINEE ACCOUNT MANAGEMENT*/
 
