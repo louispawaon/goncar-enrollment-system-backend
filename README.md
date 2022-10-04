@@ -75,6 +75,7 @@ The Backend Framework for Goncar Security Training Academy's Enrollment System I
 | ? | GET |  Find All Training Years Based On Course |```/api/trainingYears/all/courses``` |
 | ? | GET | View Payables of Certain Course |```/api/courses/:courseId/payables``` |
 | ? | GET | Get the latest payable ID |```/api/payables/all/max``` |
+| ? | GET | View Finance Masterlist |```/api/finance``` |
 
 >TRAINEE ACCOUNT MANAGEMENT
 

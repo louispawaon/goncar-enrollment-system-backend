@@ -1191,35 +1191,53 @@ app.post('/api/payables',async(req:Request,res:Response) =>{
 
 // //Edit Payable (4.2)
 
-// app.put('/api/payables/:id',async(req:Request,res:Response)=>{
-//     const {payableID, trainingYearId, courseId, payableName, payableCost} = req.body;
-//     try{
-//         const payable = await prisma.payables.create({
-//             data:{
-//                 payableName: payableName,
-//                 payableCost: payableCost,
-//                 course: {
-//                     connect: {
-//                         courseId: courseId
-//                     }
-//                 },
-//                 trainingYear: {
-//                     connect: {
-//                         trainingYearId: trainingYearId
-//                     }
-//                 }
-//             }
-//         });
-//         res.status(200).json(payable);
-//     }
-//     catch(error){
-//         res.status(400).json({msg: error.message});
-//     }
-// });
+// Edit payable (?)
+app.put('api/payables/:id', async (req: Request, res: Response) => {
+    const {payableName, payableCost} = req.body;
+    try {
+        const payable = await prisma.payables.update({
+            where: {
+                payableId: Number(req.params.id)
+            },
+            data: {
+                payableName: payableName,
+                payableCost: payableCost
+            }
+        })
+
+        res.status(200).json(payable);
+    }
+    catch (error) {
+        res.status(400).json({msg: error.message});
+    }
+})
 
 //View list of payables(4.3)
-
 app.get('/api/payables',async(req:Request,res:Response) =>{
+    try {
+        const payables = await prisma.payables.findMany({
+            select: {
+                payableId: true,
+                payableName: true,
+                payableCost: true,
+                course: {
+                    select: {
+                        courseId: true,
+                        courseName: true
+                    }
+                }
+            }
+        })
+
+        res.status(200).json(payables);
+    }
+    catch(error){
+        res.status(400).json({msg: error.message});
+    }
+});
+
+// View Finance Masterlist (?)
+app.get('/api/finance',async(req:Request,res:Response) =>{
     try{
         const courses = await prisma.courses.findMany({
             select: {
