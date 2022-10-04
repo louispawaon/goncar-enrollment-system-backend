@@ -1189,7 +1189,35 @@ app.post('/api/payables',async(req:Request,res:Response) =>{
     }
 });
 
-// //Edit Payable (4.2)
+// View specific payable (?)
+app.get('/api/payables/:id', async (req: Request, res: Response) => {
+    try {
+        const payable = await prisma.payables.findUnique({
+            where: {
+                payableId: Number(req.params.id)
+            },
+            select: {
+                payableId: true,
+                payableName: true,
+                payableCost: true,
+                course: {
+                    select: {
+                        courseName: true,
+                        trainingYears: {
+                            select: {
+                                trainingYearSpan: true
+                            }
+                        }
+                    }
+                }
+            }
+        })
+        res.status(200).json(payable)
+    }
+    catch (error) {
+        res.status(400).json({msg: error.message});
+    }
+});
 
 // Edit payable (?)
 app.put('/api/payables/:id', async (req: Request, res: Response) => {

@@ -76,7 +76,8 @@ The Backend Framework for Goncar Security Training Academy's Enrollment System I
 | ? | GET | View Payables of Certain Course |```/api/courses/:courseId/payables``` |
 | ? | GET | Get the latest payable ID |```/api/payables/all/max``` |
 | ? | GET | View Finance Masterlist |```/api/finance``` |
-| ? | GET | Delete payable |```/api/payables/:id``` |
+| ? | DELETE | Delete payable |```/api/payables/:id``` |
+| ? | GET | View specific payable |```/api/payables/:id``` |
 
 >TRAINEE ACCOUNT MANAGEMENT
 
