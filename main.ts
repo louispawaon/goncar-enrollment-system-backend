@@ -1301,6 +1301,22 @@ app.get('/api/courses/:courseId/payables', async (req: Request, res: Response) =
     }
 }) 
 
+// Get the latest payable ID (?)
+app.get('/api/payables/all/max', async (req: Request, res: Response) => {
+    try {
+        const maxPayableId = await prisma.payables.aggregate({
+            _max: {
+                payableId: true
+            }
+        })
+
+        res.status(200).json(maxPayableId);
+    }
+    catch (error) {
+        res.status(400).json({msg: error.message});
+    }
+})
+
 /*TRAINEE ACCOUNT MANAGEMENT*/
 
 //Create new payment (5.1)
