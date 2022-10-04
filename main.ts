@@ -1192,7 +1192,7 @@ app.post('/api/payables',async(req:Request,res:Response) =>{
 // //Edit Payable (4.2)
 
 // Edit payable (?)
-app.put('api/payables/:id', async (req: Request, res: Response) => {
+app.put('/api/payables/:id', async (req: Request, res: Response) => {
     const {payableName, payableCost} = req.body;
     try {
         const payable = await prisma.payables.update({
@@ -1202,6 +1202,23 @@ app.put('api/payables/:id', async (req: Request, res: Response) => {
             data: {
                 payableName: payableName,
                 payableCost: payableCost
+            }
+        })
+
+        res.status(200).json(payable);
+    }
+    catch (error) {
+        res.status(400).json({msg: error.message});
+    }
+})
+
+// Delete payable (?)
+app.delete('/api/payables/:id', async (req: Request, res: Response) => {
+    const {payableName, payableCost} = req.body;
+    try {
+        const payable = await prisma.payables.delete({
+            where: {
+                payableId: Number(req.params.id)
             }
         })
 
