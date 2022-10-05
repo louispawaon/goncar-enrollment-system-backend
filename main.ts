@@ -907,7 +907,7 @@ app.post('/api/batches',async(req:Request,res:Response)=>{
 
 //Update Course Batch Details (3.2)
 app.put('/api/batches/:id',async(req:Request,res:Response)=>{
-    const {laNumber, batchStatus, batchName,startDate,endDate,maxStudents, courseId, trainingYearId, employeeId} = req.body;
+    const {laNumber, batchStatus, batchName,startDate,endDate,maxStudents, courseId, employeeId} = req.body;
     try{
         // FIND EMPLOYEE ID OF BATCH CURRENTLY UPDATING
         const employeeIdOfBatch = await prisma.batch.findUnique({
@@ -964,7 +964,7 @@ app.put('/api/batches/:id',async(req:Request,res:Response)=>{
                 }
             })
 
-            // IF THE CURRENT BATCH BEING UPDATED IS CURRENTLY ACTIVE
+            // IF THE CURRENT BATCH BEING UPDATED IS CURRENTLY ACTIVE, PROCEED OUTSIDE BLOCK
             let proceed = false;
             for (let batch of employeeIdOfBatchActive.employee.batch){
                 if (Number(req.params.id) === batch.batchId) {
@@ -972,6 +972,9 @@ app.put('/api/batches/:id',async(req:Request,res:Response)=>{
                     break;
                 }
             }
+
+            // IF EMPLOYEE IS CHANGED, PROCEED OUTSIDE THIS BLOCK
+            if (employeeIdOfBatchActive.employee.employeeId !== Number(employeeId)) proceed = true;
 
             if (!proceed && employeeIdOfBatchActive.employee.hasActiveBatch === true) {
                 throw "hasActiveBatch"
