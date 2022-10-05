@@ -1120,6 +1120,12 @@ app.get('/api/courses/batches/grouped',async(req:Request,res:Response)=>{
             select:{
                 courseId:true,
                 courseName:true,
+                trainingYears: {
+                    select: {
+                        trainingYearId: true,
+                        trainingYearSpan: true
+                    }
+                },
                 batch:{
                     select:{
                         batchId:true,
@@ -1154,7 +1160,8 @@ app.get('/api/courses/batches/grouped',async(req:Request,res:Response)=>{
             eligibleBatches.push({
                 courseId: course.courseId,
                 courseName: course.courseName,
-                batch: batchArray
+                batch: batchArray,
+                trainingYears: course.trainingYears
             })
         }
 
