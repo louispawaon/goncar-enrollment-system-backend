@@ -37,17 +37,18 @@ model Trainees {
 }
 
 model Registrations {
-  registrationNumber Int       @unique @default(autoincrement())
-  dateEnrolled       DateTime  @db.Date
+  registrationNumber Int            @unique @default(autoincrement())
+  dateEnrolled       DateTime       @db.Date
   registrationStatus String
   SSSNumCopy         String?
   TINNumCopy         String?
   SGLicenseCopy      String?
-  expiryDateCopy     DateTime? @db.Date
-  trainees           Trainees? @relation("trainees", fields: [traineeId], references: [traineeId])
+  expiryDateCopy     DateTime?      @db.Date
+  trainees           Trainees?      @relation("trainees", fields: [traineeId], references: [traineeId])
   traineeId          Int?
-  batch              batch?    @relation("batches", fields: [batchId], references: [batchId])
+  batch              batch?         @relation("batches", fields: [batchId], references: [batchId])
   batchId            Int?
+  transactions       transactions[]
 }
 
 //TRAINING MODULE
@@ -86,6 +87,14 @@ model courses {
 }
 
 //finance module
+
+model transactions {
+  transactionId  Int           @id @default(autoincrement())
+  paymentMethod  String
+  paymentAmount  Float
+  registration   Registrations @relation(fields: [registrationId], references: [registrationNumber])
+  registrationId Int
+}
 
 model payables {
   payableId   Int     @id @default(autoincrement())

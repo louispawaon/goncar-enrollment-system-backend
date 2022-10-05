@@ -950,13 +950,30 @@ app.put('/api/batches/:id',async(req:Request,res:Response)=>{
                     employee: {
                         select: {
                             employeeId: true,
-                            hasActiveBatch: true
+                            hasActiveBatch: true,
+                            batch: {
+                                where: {
+                                    batchStatus: "Active"
+                                },
+                                select: {
+                                    batchId: true
+                                }
+                            }
                         }
                     }
                 }
             })
 
-            if (employeeIdOfBatch.employee.hasActiveBatch === true) {
+            // IF THE CURRENT BATCH BEING UPDATED IS CURRENTLY ACTIVE
+            let proceed = false;
+            for (let batch of employeeIdOfBatch.employee.batch){
+                if (Number(req.params.id) === batch.batchId) {
+                    proceed = true;
+                    break;
+                }
+            }
+
+            if (!proceed && employeeIdOfBatch.employee.hasActiveBatch === true) {
                 throw "hasActiveBatch"
             }
         }
@@ -1383,29 +1400,27 @@ app.get('/api/payables/all/max', async (req: Request, res: Response) => {
 /*TRAINEE ACCOUNT MANAGEMENT*/
 
 //Create new payment (5.1)
+app.post('/api/payments', async (req: Request, res: Response) => {
+    const { paymentAmount, paymentMethod, registrationId } = req.body;
+    try {
+        await prisma.transactions.create({
+            data: {
+                paymentAmount: paymentAmount,
+                paymentMethod: paymentMethod,
+                registration: {
+                    connect: {
+                        registrationNumber: registrationId
+                    }
+                }
+            }
+        })
 
-// app.post('/api/transactions',async(req:Request,res:Response)=>{
-//     const {transactionId, registrationNumber, payableId, payableCost, paymentMethod} = req.body;
-//     try{
-//         const transactions = await prisma.transactions.create({
-//             data:{
-//                 transactionId:transactionId,
-//                 Registrations:registrationNumber,
-//                 payableCost:payableCost,
-//                 paymentMethod:paymentMethod,
-//                 payables:{
-//                     connect:{
-//                         payableId:payableId
-//                     }
-//                 }
-//             }
-//         });
-//         res.status(201).json(transactions);
-//     }   
-//     catch(error){
-//         res.status(400).json({msg: error.message});
-//     }
-// });
+        res.status(200);
+    }
+    catch (error) {
+        res.status(400).json({msg: error.message});
+    }
+})
 
 //View account details (5.2)
 
