@@ -909,24 +909,24 @@ app.post('/api/batches',async(req:Request,res:Response)=>{
 app.put('/api/batches/:id',async(req:Request,res:Response)=>{
     const {laNumber, batchStatus, batchName,startDate,endDate,maxStudents, courseId, trainingYearId, employeeId} = req.body;
     try{
-        // IF BATCHSTATUS IS THE ONE BEING CHANGED, UPDATE THE STATUS OF THE INSTRUCTOR
-        if (batchStatus.toUpperCase() === "INACTIVE") {
-            // FIND EMPLOYEE ID OF BATCH CURRENTLY UPDATING
-            const employeeIdOfBatch = await prisma.batch.findUnique({
-                where: {
-                    batchId:Number(req.params.id)
-                },
-                select: {
-                    batchStatus: true,
-                    employee: {
-                        select: {
-                            employeeId: true,
-                            hasActiveBatch: true
-                        }
+        // FIND EMPLOYEE ID OF BATCH CURRENTLY UPDATING
+        const employeeIdOfBatch = await prisma.batch.findUnique({
+            where: {
+                batchId:Number(req.params.id)
+            },
+            select: {
+                batchStatus: true,
+                employee: {
+                    select: {
+                        employeeId: true,
+                        hasActiveBatch: true
                     }
                 }
-            })
+            }
+        })
 
+        // IF BATCHSTATUS IS THE ONE BEING CHANGED, UPDATE THE STATUS OF THE INSTRUCTOR
+        if (batchStatus.toUpperCase() === "INACTIVE") {
             // ONLY UPDATE EMPLOYEE IF THIS IS THE ACTIVE BATCH
             if (employeeIdOfBatch.batchStatus === "Active") {
                 // UPDATE hasActiveBatch for employee
@@ -942,7 +942,7 @@ app.put('/api/batches/:id',async(req:Request,res:Response)=>{
         }
         else if (batchStatus.toUpperCase() === "ACTIVE") {
             // FIND EMPLOYEE ID OF BATCH CURRENTLY UPDATING AND IF THEY HAVE ACTIVE BATCH
-            const employeeIdOfBatch = await prisma.batch.findUnique({
+            const employeeIdOfBatchActive = await prisma.batch.findUnique({
                 where: {
                     batchId:Number(req.params.id)
                 },
@@ -966,15 +966,55 @@ app.put('/api/batches/:id',async(req:Request,res:Response)=>{
 
             // IF THE CURRENT BATCH BEING UPDATED IS CURRENTLY ACTIVE
             let proceed = false;
-            for (let batch of employeeIdOfBatch.employee.batch){
+            for (let batch of employeeIdOfBatchActive.employee.batch){
                 if (Number(req.params.id) === batch.batchId) {
                     proceed = true;
                     break;
                 }
             }
 
-            if (!proceed && employeeIdOfBatch.employee.hasActiveBatch === true) {
+            if (!proceed && employeeIdOfBatchActive.employee.hasActiveBatch === true) {
                 throw "hasActiveBatch"
+            }
+        }
+
+        // IF INSTRUCTOR IS CHANGED 
+        if (employeeId !== employeeIdOfBatch.employee.employeeId) {
+            // CHECK IF NEW EMPLOYEE HAS AN ACTIVE BATCH
+            const newEmployeeHasActiveBatch = await prisma.employees.findUnique({
+                where: {
+                    employeeId: Number(employeeId)
+                },
+                select: {
+                    hasActiveBatch: true
+                }
+            })
+
+            if (newEmployeeHasActiveBatch.hasActiveBatch) {
+                throw "hasActiveBatch";
+            }
+            else {
+                // IF THEY DONT HAVE ACTIVE BATCH,
+                // SET IT TO ACTIVE AND THEN SET THE PREVIOUS INSTRUCTOR BACK TO INACTIVE
+                const newEmployee = prisma.employees.update({
+                    where: {
+                        employeeId: Number(employeeId)
+                    },
+                    data: {
+                        hasActiveBatch: true // FOR NEW INSTRUCTOR
+                    }
+                })
+
+                const oldEmployee = prisma.employees.update({
+                    where: {
+                        employeeId: employeeIdOfBatch.employee.employeeId
+                    },
+                    data: {
+                        hasActiveBatch: false // FOR OLD INSTRUCTOR
+                    }
+                })
+
+                await prisma.$transaction([newEmployee, oldEmployee]);
             }
         }
 
@@ -1112,6 +1152,26 @@ app.get('/api/batches',async(req:Request,res:Response)=>{
         res.status(400).json({msg: error.message});
     }
 });
+
+// RESET BATCHES (?)
+app.delete('/api/batches/deleteAll', async(req: Request, res: Response) => {
+    try {
+        await prisma.batch.deleteMany();
+
+        await prisma.employees.updateMany({
+            where: {
+                hasActiveBatch: true
+            },
+            data: {
+                hasActiveBatch: false
+            }
+        })
+        res.status(200).json();
+    }
+    catch (error) {
+        res.status(400).json({msg: error.message});
+    }
+})
 
 //Group Batches by Course (3.6)
 app.get('/api/courses/batches/grouped',async(req:Request,res:Response)=>{
