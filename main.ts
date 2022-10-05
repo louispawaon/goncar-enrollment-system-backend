@@ -1008,12 +1008,34 @@ app.put('/api/batches/:id',async(req:Request,res:Response)=>{
                     }
                 })
 
+                // CHECK IF OLD EMPLOYEE HAS ANY ACTIVE BATCH OR NONE
+                const oldEmployeeStatus = await prisma.employees.findUnique({
+                    where: {
+                        employeeId: employeeIdOfBatch.employee.employeeId
+                    },
+                    select: {
+                        batch: {
+                            where: {
+                                batchStatus: "Active"
+                            },
+                            select: {
+                                batchId: true
+                            }
+                        }
+                    }
+                });
+
+                let oldEmployeeHasActiveBatch = true;
+                if (oldEmployeeStatus.batch.length === 0) {
+                    oldEmployeeHasActiveBatch = false;
+                }
+
                 const oldEmployee = prisma.employees.update({
                     where: {
                         employeeId: employeeIdOfBatch.employee.employeeId
                     },
                     data: {
-                        hasActiveBatch: false // FOR OLD INSTRUCTOR
+                        hasActiveBatch: oldEmployeeHasActiveBatch // FOR OLD INSTRUCTOR
                     }
                 })
 
