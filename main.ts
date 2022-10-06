@@ -723,7 +723,7 @@ app.put('/api/trainingYears/:id',async(req:Request,res:Response)=>{
 //Courses Masterlist (2.6)
 app.get('/api/courses',async(req:Request,res:Response)=>{
     try{
-        const course = await prisma.courses.findMany({
+        const courses = await prisma.courses.findMany({
             orderBy:{
                 courseId:'asc'
             },
@@ -741,7 +741,24 @@ app.get('/api/courses',async(req:Request,res:Response)=>{
                 }
             }
         })
-        res.status(200).json(course);
+
+        // LOOP THROUGH ALL COURSES AND CALCULATE THE SUM OF THEIR PAYABLE COST
+        for (let course of courses) {
+            // QUERY AGGREGATE FOR EVERY COURSE ID
+            const payableAggregate = await prisma.payables.aggregate({
+                where: {
+                    courseId: course.courseId
+                },
+                _sum: {
+                    payableCost: true
+                }
+            })
+
+            // ADD TO COURSE OBJECT, IF NULL RETURN 0
+            course['tuition'] = payableAggregate._sum.payableCost ?? 0;
+        }
+
+        res.status(200).json(courses);
     }
     catch(error){
         res.status(400).json({msg: error.message});
