@@ -1178,7 +1178,7 @@ app.get('/api/batches',async(req:Request,res:Response)=>{
     }
 });
 
-// RESET BATCHES (?)
+// RESET BATCHES (?) TODO: DONT ADD THIS, DELETE THIS AFTER 
 app.delete('/api/batches/deleteAll', async(req: Request, res: Response) => {
     try {
         await prisma.batch.deleteMany();
@@ -1591,6 +1591,54 @@ app.post('/api/employees',async(req:Request,res:Response) =>{
 app.put('/api/employees/:id',async(req:Request,res:Response)=>{
     const {roleId, firstName, middleName, lastName, birthDay, sex, emailAdd, cpNum, employeeStatus, dateHired, address, maritalStatus} = req.body;
     try{
+        // CHECK if role is changed from teacher to another role
+        const role = await prisma.roles.findUnique({
+            where: {
+                roleId: Number(roleId)
+            },
+            select: {
+                roleName: true
+            }
+        })
+
+        // If not a teacher and currently has an active batch, that means the role was switched from teacher to another role, don't allow updating
+        if (role.roleName !== "Teacher") {
+            const employeeActiveBatch = await prisma.batch.findMany({
+                where: {
+                    employeeId: Number(req.params.id),
+                    batchStatus: "Active"
+                },
+                select: {
+                    batchId: true,
+                    batchName: true
+                }
+            })
+
+            // If there is an active batch inside the employeeId, don't allow the updating.
+            if (employeeActiveBatch.length !== 0) {
+                throw "hasActiveBatch"
+            }
+        }
+
+        // CHECK if employeeStatus is being changed form active to inactive
+        if (employeeStatus === "Inactive") {
+            const employeeActiveBatch = await prisma.batch.findMany({
+                where: {
+                    employeeId: Number(req.params.id),
+                    batchStatus: "Active"
+                },
+                select: {
+                    batchId: true,
+                    batchName: true
+                }
+            })
+
+            // If there is an active batch inside the employeeId, don't allow the updating.
+            if (employeeActiveBatch.length !== 0) {
+                throw "hasActiveBatch"
+            }
+        }
+
         const employees = await prisma.employees.update({
             where:{
                 employeeId: Number(req.params.id)
@@ -1617,7 +1665,12 @@ app.put('/api/employees/:id',async(req:Request,res:Response)=>{
         res.status(200).json(employees);
     }
     catch(error){
-        res.status(400).json({msg: error.message});
+        if (error === "hasActiveBatch") {
+            res.status(409).json({msg: error});
+        }
+        else {
+            res.status(400).json({msg: error.message});
+        }
     }
 });
 
@@ -1731,7 +1784,10 @@ app.get('/api/employees/all/teacher', async(req: Request, res: Response) => {
             where: {
                 AND: [
                     {role: {roleName: "Teacher"}},
-                    {hasActiveBatch: false}
+                    {
+                        hasActiveBatch: false,
+                        employeeStatus: "Active"
+                    }
                 ]
             }
         })
