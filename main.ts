@@ -1298,6 +1298,9 @@ app.delete('/api/batches/deleteAll', async(req: Request, res: Response) => {
 app.get('/api/courses/batches/grouped',async(req:Request,res:Response)=>{
     try{
         const courses = await prisma.courses.findMany({
+            where: {
+                courseStatus: "Active"
+            },
             select:{
                 courseId:true,
                 courseName:true,
@@ -1321,6 +1324,9 @@ app.get('/api/courses/batches/grouped',async(req:Request,res:Response)=>{
                                 registrations: true
                             }
                         }
+                    },
+                    where: {
+                        batchStatus: "Active"
                     }
                 }
             }
