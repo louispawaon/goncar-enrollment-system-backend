@@ -51,7 +51,19 @@ function populateTraineeRegistration(traineeID, data) {
     .catch(error => console.log(error))
 }
 
-//POPULATE HERE
+/* ===== POPULATE HERE ===== */
+
+// REQUIRED TO POPULATE ROLES IN BACKEND
+// populateRoles({
+//     roleName: "Teacher"
+// })
+// populateRoles({
+//     roleName: "Cashier"
+// })
+// populateRoles({
+//     roleName: "Registrar"
+// })
+
 // populateTrainingYears({
 //     trainingYearSpan: "2019-2020"
 // })
@@ -63,35 +75,32 @@ function populateTraineeRegistration(traineeID, data) {
 // })
 
 // populateCourse({
-//     courseName: "Course 1",
-//     courseDescription: "Course 1 description",
+//     courseName: "Pre-Licensing Training Course (PLTC)",
+//     courseDescription: "The Pre-Licensing Training Course is designed for individuals who had no previous formal security training or License to Exercise Security Profession (LESP) and aspire to be a security guard. This course introduces the trainee to the security services industry, its basic laws and regulations, as well as, what it takes to be a security professional.",
 //     requiredHours: 123,
 //     units: 60,
 //     trainingYearId: 1
 // })
 // populateCourse({
-//     courseName: "Course 2",
-//     courseDescription: "Course 2 description",
+//     courseName: "Basic Security Supervisory Course (BSSC)",
+//     courseDescription: "The Basic Security Supervisory Course is designed for security professionals aspiring to become a security officer (SO). This course concentrates on training security professionals into being a leader with modules designed to improve their skills in management, plan-making, decision-making, and organization.",
 //     requiredHours: 130,
 //     units: 76,
-//     trainingYearId: 2
+//     trainingYearId: 1
 // })
 // populateCourse({
-//     courseName: "Course 3",
-//     courseDescription: "Course 3 description",
+//     courseName: "In-Service Enhancement Security Training Course (ISESTC)",
+//     courseDescription: "The In-Service Enhancement Security Training Course is the first part of the overall re-training course designed for security guards and security officers whose License to Exercise Security Profession (LESP) is up for renewal. This course enhances and updates the security professional’s knowledge of his profession.",
 //     requiredHours: 165,
 //     units: 62,
 //     trainingYearId: 1
 // })
-
-// populateRoles({
-//     roleName: "Teacher"
-// })
-// populateRoles({
-//     roleName: "Cashier"
-// })
-// populateRoles({
-//     roleName: "Registrar"
+// populateCourse({
+//     courseName: "Refresher Training Course (RTC)",
+//     courseDescription: "The Refresher Training Course is the second part of the overall re-training course that provides basic awareness of security related issues that can potentially affect responsibilities within the purview of their employment. It will improve observation, detection and reporting capabilities while enhancing coordination capability with other emergency response professionals.",
+//     requiredHours: 100,
+//     units: 60,
+//     trainingYearId: 1
 // })
 
 // populateEmployees({
