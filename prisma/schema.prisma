@@ -84,6 +84,7 @@ model courses {
   trainingYearsId   Int
   batch             batch[]       @relation("course")
   payables          payables[]
+  courseStatus      String        @default("Active")
 }
 
 //finance module

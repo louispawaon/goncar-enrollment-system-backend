@@ -608,7 +608,7 @@ app.delete('/api/trainees/:id',async(req:Request,res:Response)=>{
 
 //Create New Course (2.1)
 app.post('/api/courses',async(req:Request,res:Response)=>{
-    const {courseName,courseDescription, requiredHours, units, trainingYearId} = req.body;
+    const {courseName,courseDescription, requiredHours, units, trainingYearId, courseStatus} = req.body;
     try{
         const course = await prisma.courses.create({    
             data:{
@@ -616,6 +616,7 @@ app.post('/api/courses',async(req:Request,res:Response)=>{
                 courseDescription: courseDescription,
                 requiredHours: requiredHours,
                 units: units,
+                courseStatus: courseStatus,
                 trainingYears:{
                     connect:{
                         trainingYearId:trainingYearId
@@ -632,8 +633,29 @@ app.post('/api/courses',async(req:Request,res:Response)=>{
 
 //Update Course Details (2.2)
 app.put('/api/courses/:id',async(req:Request,res:Response)=>{
-    const {courseName,courseDescription, requiredHours, units,trainingYearId} = req.body;
+    const {courseName,courseDescription, requiredHours, units,trainingYearId, courseStatus} = req.body;
     try{
+        // CHECK FOR ACTIVE REGISTRATIONS BEFORE INACTIVATING
+        if (courseStatus === "Inactive") {
+            const activeBatches = await prisma.batch.findMany({
+                where: {
+                    AND: [
+                        {batchStatus: "Active"},
+                        {courseId: Number(req.params.id)}
+                    ]
+                },
+                select: {
+                    batchId: true
+                }
+            })
+
+            console.log(activeBatches)
+
+            if (activeBatches.length !== 0) {
+                throw "hasActiveBatches"
+            }
+        }
+
         const course = await prisma.courses.update({
             where:{
                 courseId: Number(req.params.id)
@@ -643,6 +665,7 @@ app.put('/api/courses/:id',async(req:Request,res:Response)=>{
                 courseDescription: courseDescription,
                 requiredHours: requiredHours,
                 units: units,
+                courseStatus: courseStatus,
                 trainingYears:{
                     connect:{
                         trainingYearId:trainingYearId
@@ -653,7 +676,12 @@ app.put('/api/courses/:id',async(req:Request,res:Response)=>{
         res.status(200).json(course);
     }
     catch(error){
-        res.status(400).json({msg: error.message});
+        if (error === "hasActiveBatches") {
+            res.status(409).json({msg: error});
+        }
+        else {
+            res.status(400).json({msg: error.message});
+        }
     }
 });
 
@@ -670,6 +698,7 @@ app.get('/api/courses/:id',async(req:Request,res:Response)=>{
                 courseDescription:true,
                 requiredHours:true,
                 units:true,
+                courseStatus: true,
                 trainingYears:{
                     select:{
                         trainingYearId:true,
@@ -733,12 +762,62 @@ app.get('/api/courses',async(req:Request,res:Response)=>{
                 courseDescription:true,
                 requiredHours:true,
                 units:true,
+                courseStatus: true,
                 trainingYears:{
                     select:{
                         trainingYearId:true,
                         trainingYearSpan:true
                     }
                 }
+            }
+        })
+
+        // LOOP THROUGH ALL COURSES AND CALCULATE THE SUM OF THEIR PAYABLE COST
+        for (let course of courses) {
+            // QUERY AGGREGATE FOR EVERY COURSE ID
+            const payableAggregate = await prisma.payables.aggregate({
+                where: {
+                    courseId: course.courseId
+                },
+                _sum: {
+                    payableCost: true
+                }
+            })
+
+            // ADD TO COURSE OBJECT, IF NULL RETURN 0
+            course['tuition'] = payableAggregate._sum.payableCost ?? 0;
+        }
+
+        res.status(200).json(courses);
+    }
+    catch(error){
+        res.status(400).json({msg: error.message});
+    }
+});
+
+//Active Courses Masterlist (?)
+app.get('/api/courses/all/active',async(req:Request,res:Response)=>{
+    try{
+        const courses = await prisma.courses.findMany({
+            orderBy:{
+                courseId:'asc'
+            },
+            select:{
+                courseId:true,
+                courseName:true,
+                courseDescription:true,
+                requiredHours:true,
+                units:true,
+                courseStatus: true,
+                trainingYears:{
+                    select:{
+                        trainingYearId:true,
+                        trainingYearSpan:true
+                    }
+                }
+            },
+            where: {
+                courseStatus: "Active"
             }
         })
 
