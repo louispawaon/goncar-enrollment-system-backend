@@ -748,6 +748,8 @@ app.put('/api/trainingYears/:id',async(req:Request,res:Response)=>{
                     ]
                 },
                 select: {
+                    courseId: true,
+                    courseName: true,
                     trainingYears: {
                         select: {
                             trainingYearId: true,
