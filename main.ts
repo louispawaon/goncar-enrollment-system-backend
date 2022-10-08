@@ -637,7 +637,7 @@ app.put('/api/courses/:id',async(req:Request,res:Response)=>{
     try{
         // CHECK FOR ACTIVE REGISTRATIONS BEFORE INACTIVATING
         if (courseStatus === "Inactive") {
-            const activeBatches = await prisma.batch.findMany({
+            var activeBatches = await prisma.batch.findMany({
                 where: {
                     AND: [
                         {batchStatus: "Active"},
@@ -645,7 +645,8 @@ app.put('/api/courses/:id',async(req:Request,res:Response)=>{
                     ]
                 },
                 select: {
-                    batchId: true
+                    batchId: true,
+                    batchName: true
                 }
             })
 
@@ -677,7 +678,10 @@ app.put('/api/courses/:id',async(req:Request,res:Response)=>{
     }
     catch(error){
         if (error === "hasActiveBatches") {
-            res.status(409).json({msg: error});
+            res.status(409).json({
+                msg: error,
+                activeBatches: activeBatches
+            });
         }
         else {
             res.status(400).json({msg: error.message});
@@ -732,20 +736,53 @@ app.post('/api/trainingYears',async(req:Request,res:Response)=>{
 
 //Update Training Year (2.5)
 app.put('/api/trainingYears/:id',async(req:Request,res:Response)=>{
-    const {trainingYearSpan} = req.body;
+    const {trainingYearSpan, trainingYearStatus} = req.body;
     try{
+        if (trainingYearStatus === "Inactive") {
+            // CHECK if changing to inactive but has active course
+            var activeCourses = await prisma.courses.findMany({
+                where: {
+                    AND: [
+                        {trainingYearsId: Number(req.params.id)},
+                        {courseStatus: "Active"}
+                    ]
+                },
+                select: {
+                    trainingYears: {
+                        select: {
+                            trainingYearId: true,
+                            trainingYearSpan: true
+                        }
+                    }
+                }
+            })
+
+            if (activeCourses.length !== 0) {
+                throw "hasActiveCourse";
+            }
+        }
+
         const trainingYr = await prisma.trainingYears.update({
             where:{
                 trainingYearId: Number(req.params.id)
             },
             data:{
-                trainingYearSpan:trainingYearSpan
+                trainingYearSpan: trainingYearSpan,
+                trainingYearStatus: trainingYearStatus
             }
         });
         res.status(200).json(trainingYr);
     }
     catch(error){
-        res.status(400).json({msg: error.message});
+        if (error === "hasActiveCourse") {
+            res.status(409).json({
+                msg: error,
+                activeCourses: activeCourses
+            });
+        }
+        else {
+            res.status(400).json({msg: error.message});
+        }
     }
 });
 
@@ -878,19 +915,19 @@ app.get('/api/trainingYears/:id',async(req:Request,res:Response)=>{
 });
 
 //Delete Training Year (2.9)
-app.delete('/api/trainingYears/:id',async(req:Request,res:Response)=>{
-    try{
-        const trainingYr = await prisma.trainingYears.delete({
-            where:{
-                trainingYearId:Number(req.params.id)
-            }
-        })
-        res.status(200).json(trainingYr);
-    }
-    catch(error){
-        res.status(400).json({msg: error.message});
-    }
-});
+// app.delete('/api/trainingYears/:id',async(req:Request,res:Response)=>{
+//     try{
+//         const trainingYr = await prisma.trainingYears.delete({
+//             where:{
+//                 trainingYearId:Number(req.params.id)
+//             }
+//         })
+//         res.status(200).json(trainingYr);
+//     }
+//     catch(error){
+//         res.status(400).json({msg: error.message});
+//     }
+// });
 
 // Find All Training Years Based On Course (?)
 app.get('/api/trainingYears/all/courses', async (req: Request, res: Response) => {
@@ -1357,7 +1394,7 @@ app.get('/api/courses/batches/grouped',async(req:Request,res:Response)=>{
     catch(error){
         res.status(400).json({msg: error.message});
     }
-}); 
+});
 
 //Return Highest Batch ID Currently (3.7)
 app.get('/api/batches/all/max',async(req:Request,res:Response)=>{

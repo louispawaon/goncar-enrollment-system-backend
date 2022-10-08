@@ -69,9 +69,10 @@ model batch {
 }
 
 model trainingYears {
-  trainingYearId   Int       @id @default(autoincrement()) //TODO: change or revise - temporary ra nang autoinc
-  trainingYearSpan String
-  course           courses[]
+  trainingYearId     Int       @id @default(autoincrement()) //TODO: change or revise - temporary ra nang autoinc
+  trainingYearSpan   String
+  trainingYearStatus String    @default("Active")
+  course             courses[]
 }
 
 model courses {
