@@ -1248,6 +1248,18 @@ app.get("/api/batches/:id",async(req:Request,res:Response)=>{
                         firstName: true,
                         middleName: true
                     }
+                },
+                registrations: {
+                    select: {
+                        trainees: {
+                            select: {
+                                traineeId: true,
+                                lastName: true,
+                                firstName: true,
+                                middleName: true,
+                            }
+                        },
+                    }
                 }
 
             }
