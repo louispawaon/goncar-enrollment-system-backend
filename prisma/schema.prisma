@@ -91,19 +91,19 @@ model courses {
 //finance module
 
 model transactions {
-  transactionId  Int           @id @default(autoincrement())
-  paymentMethod  String
-  paymentAmount  Float
-  registration   Registrations @relation(fields: [registrationId], references: [registrationNumber])
-  registrationId Int
+  transactionId      Int            @id @default(autoincrement())
+  paymentMethod      String
+  paymentAmount      Float
+  Registrations      Registrations? @relation(fields: [registrationNumber], references: [registrationNumber])
+  registrationNumber Int?
 }
 
 model payables {
-  payableId   Int     @id @default(autoincrement())
+  payableId   Int      @id @default(autoincrement())
   payableName String
   payableCost Decimal
-  courseId    Int
-  course      courses @relation(fields: [courseId], references: [courseId])
+  course      courses? @relation(fields: [courseId], references: [courseId])
+  courseId    Int?
 }
 
 //administrative module
