@@ -1679,7 +1679,7 @@ app.get('/api/trainees/:id/transactions/:transId',async (req: Request, res: Resp
             where:{
                 AND:[
                     {
-                        transactionId:Number(req.params.regid)
+                        transactionId:Number(req.params.transId)
                     
                     },
                     {
@@ -1698,26 +1698,44 @@ app.get('/api/trainees/:id/transactions/:transId',async (req: Request, res: Resp
 
 //View Transaction Masterlist (5.3)
 app.get('/api/trainees/:id/transactions',async (req: Request, res: Response) => {
-    const {paymentAmount,courseId} = req.body;
+    const {paymentAmount} = req.body;
+    let tempCourse=0;
     try{
-        const transact = await prisma.transactions.findMany({
+
+        const course = await prisma.registrations.findMany({
             where:{
                 AND:[
                     {
-                        transactionId:Number(req.params.regid)
-                    
+                        traineeId:Number(req.params.id)
                     },
                     {
-                        traineeId:Number(req.params.id)
-                    
-                    },
+                        registrationStatus:"Active"
+                    }
                 ]
+            },
+            select:{
+                batch:{
+                    select:{
+                        courseId:true
+                    }
+                }
             }
+            
         })
+
+        for(let i = 0; i < course.length; i++) {
+            let obj = course[i];
+        
+            tempCourse=(obj.batch.courseId);
+        }
+
+        console.log(tempCourse)
+        const transact = await prisma.transactions.findMany({})
+        
         
         const payables = await prisma.courses.findUnique({
             where: {
-                courseId: courseId
+                courseId: Number(tempCourse)
             },
             select: {
                 courseId: true,
@@ -1740,7 +1758,7 @@ app.get('/api/trainees/:id/transactions',async (req: Request, res: Response) => 
 
         const tuition = await prisma.payables.aggregate({
             where: {
-                courseId: Number(req.params.courseId)
+                courseId: Number(tempCourse)
             },
             _sum: {
                 payableCost: true
@@ -1755,8 +1773,10 @@ app.get('/api/trainees/:id/transactions',async (req: Request, res: Response) => 
         payables['balance'] = trybalance ?? 0;
         
         res.status(200).json({transact, trytuition, trybalance, payables})
+        //res.status(200).json({course,transact})
     }
     catch(error){
+        res.status(400).json({msg: error.message});
     }
 })
 
