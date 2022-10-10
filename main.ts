@@ -1697,7 +1697,7 @@ app.get('/api/trainees/:id/transactions/:transId',async (req: Request, res: Resp
 })
 
 //View Transaction Masterlist (5.3)
-app.get('/api/trainees/:id/transactions/:transId',async (req: Request, res: Response) => {
+app.get('/api/trainees/:id/transactions',async (req: Request, res: Response) => {
     const {paymentAmount,courseId} = req.body;
     try{
         const transact = await prisma.transactions.findMany({
