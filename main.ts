@@ -1765,14 +1765,22 @@ app.get('/api/trainees/:id/transactions',async (req: Request, res: Response) => 
             },
         })
 
+        const payAmounts = await prisma.transactions.aggregate({
+            _sum: {
+                paymentAmount: true
+            },
+        })
+
+        payAmounts['totalPaymentAmount'] = payAmounts._sum.paymentAmount ?? 0;
         payables['tuition'] = tuition._sum.payableCost ?? 0;       
 
         const trytuition = tuition._sum.payableCost
-        const trybalance = Number(trytuition)-paymentAmount;
+        const trypayamount = payAmounts._sum.paymentAmount
+        const trybalance = Number(trytuition)-Number(trypayamount);
 
         payables['balance'] = trybalance ?? 0;
         
-        res.status(200).json({transact, trytuition, trybalance, payables})
+        res.status(200).json({transact, trytuition, trypayamount, trybalance, payables})
         //res.status(200).json({course,transact})
     }
     catch(error){
