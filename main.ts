@@ -1432,6 +1432,7 @@ app.get('/api/batches/all/max',async(req:Request,res:Response)=>{
 app.post('/api/payables',async(req:Request,res:Response) =>{
     const {courseId, payableName, payableCost} = req.body;
     try{
+        
         const payable = await prisma.payables.create({
             data: {
                 payableName: payableName,
@@ -1443,7 +1444,6 @@ app.post('/api/payables',async(req:Request,res:Response) =>{
                 }
             }
         });
-
         res.status(201).json(payable);
     }
     catch(error){
@@ -1483,7 +1483,7 @@ app.get('/api/payables/:id', async (req: Request, res: Response) => {
 
 // Edit payable (?)
 app.put('/api/payables/:id', async (req: Request, res: Response) => {
-    const {payableName, payableCost} = req.body;
+    const {courseId, payableName, payableCost} = req.body;
     try {
         const payable = await prisma.payables.update({
             where: {
@@ -1491,7 +1491,12 @@ app.put('/api/payables/:id', async (req: Request, res: Response) => {
             },
             data: {
                 payableName: payableName,
-                payableCost: payableCost
+                payableCost: payableCost,
+                course:{
+                    connect:{
+                        courseId:courseId,
+                    }
+                }
             }
         })
 
@@ -1645,41 +1650,109 @@ app.get('/api/payables/all/max', async (req: Request, res: Response) => {
 /*TRAINEE ACCOUNT MANAGEMENT*/
 
 //Create new payment (5.1)
-app.post('/api/payments', async (req: Request, res: Response) => {
+app.post('/api/courses/:courseId/transactions', async (req: Request, res: Response) => {
     const { paymentAmount, paymentMethod, registrationId } = req.body;
     try {
-        await prisma.transactions.create({
+        const transact = await prisma.transactions.create({
             data: {
                 paymentAmount: paymentAmount,
                 paymentMethod: paymentMethod,
-                registration: {
-                    connect: {
-                        registrationNumber: registrationId
+                Registrations:{
+                    connect:{
+                        registrationNumber:registrationId
                     }
                 }
             }
         })
 
-        res.status(200);
+        res.status(200).json(transact)
     }
     catch (error) {
         res.status(400).json({msg: error.message});
     }
 })
 
-//View account details (5.2)
+//View Transaction (5.2)
+app.get('/api/courses/:courseId/transactions/:transId',async (req: Request, res: Response) => {
+    try{
+        const transact = await prisma.transactions.findUnique({
+            where:{
+                transactionId:Number(req.params.transId)
+            }
+        })
+        res.status(200).json(transact)
+    }
+    catch(error){
+        res.status(400).json({msg: error.message});
+    }
+})
 
+//View Transaction Masterlist (5.3)
+app.get('/api/courses/:courseId/transactions/:transId',async (req: Request, res: Response) => {
+    const { paymentAmount} = req.body;
+    try{
+        const transact = await prisma.transactions.findMany({})
+        
+        const payables = await prisma.courses.findUnique({
+            where: {
+                courseId: Number(req.params.courseId)
+            },
+            select: {
+                courseId: true,
+                courseName: true,
+                trainingYears: {
+                    select: {
+                        trainingYearId: true,
+                        trainingYearSpan: true
+                    }
+                },
+                payables: {
+                    select: {
+                        payableId: true,
+                        payableName: true,
+                        payableCost: true
+                    }
+                }
+            }
+        })
 
-// app.get('/api/transactions/:id',async(req:Request,res:Response)=>{
-//     try{
-//         const payables = await prisma.transactions.findMany({})
-//         res.status(200).json(payables);
-//     }
-//     catch(error){
-//         res.status(400).json({msg: error.message});
-//     }
-// });
+        const tuition = await prisma.payables.aggregate({
+            where: {
+                courseId: Number(req.params.courseId)
+            },
+            _sum: {
+                payableCost: true
+            },
+        })
 
+        payables['tuition'] = tuition._sum.payableCost ?? 0;       
+
+        const trytuition = tuition._sum.payableCost
+        const trybalance = Number(trytuition)-paymentAmount;
+
+        payables['balance'] = trybalance ?? 0;
+        
+        res.status(200).json({transact, trytuition, trybalance, payables})
+    }
+    catch(error){
+    }
+})
+
+//Delete Transaction (5.4)
+app.delete('/api/courses/:courseId/transactions/:transId', async (req: Request, res: Response) => {
+    try{
+        const transact = await prisma.transactions.delete({
+            where:{
+                transactionId:Number(req.params.transId)
+            }
+        })
+        res.status(200).json(transact)
+        
+    }
+    catch(error){
+        res.status(400).json({msg: error.message});
+    }
+})
 
 /*EMPLOYEE MANAGEMENT*/
 
