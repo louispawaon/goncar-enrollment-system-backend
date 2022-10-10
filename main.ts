@@ -1650,16 +1650,16 @@ app.get('/api/payables/all/max', async (req: Request, res: Response) => {
 /*TRAINEE ACCOUNT MANAGEMENT*/
 
 //Create new payment (5.1)
-app.post('/api/courses/:courseId/transactions', async (req: Request, res: Response) => {
-    const { paymentAmount, paymentMethod, registrationId } = req.body;
+app.post('/api/trainees/:id/transactions', async (req: Request, res: Response) => {
+    const { paymentAmount, paymentMethod} = req.body;
     try {
         const transact = await prisma.transactions.create({
             data: {
                 paymentAmount: paymentAmount,
                 paymentMethod: paymentMethod,
-                Registrations:{
+                Trainees:{
                     connect:{
-                        registrationNumber:registrationId
+                        traineeId:Number(req.params.id)
                     }
                 }
             }
@@ -1673,11 +1673,20 @@ app.post('/api/courses/:courseId/transactions', async (req: Request, res: Respon
 })
 
 //View Transaction (5.2)
-app.get('/api/courses/:courseId/transactions/:transId',async (req: Request, res: Response) => {
+app.get('/api/trainees/:id/transactions/:transId',async (req: Request, res: Response) => {
     try{
-        const transact = await prisma.transactions.findUnique({
+        const transact = await prisma.transactions.findMany({
             where:{
-                transactionId:Number(req.params.transId)
+                AND:[
+                    {
+                        transactionId:Number(req.params.regid)
+                    
+                    },
+                    {
+                        traineeId:Number(req.params.id)
+                    
+                    },
+                ]
             }
         })
         res.status(200).json(transact)
@@ -1688,14 +1697,27 @@ app.get('/api/courses/:courseId/transactions/:transId',async (req: Request, res:
 })
 
 //View Transaction Masterlist (5.3)
-app.get('/api/courses/:courseId/transactions/:transId',async (req: Request, res: Response) => {
-    const { paymentAmount} = req.body;
+app.get('/api/trainees/:id/transactions/:transId',async (req: Request, res: Response) => {
+    const {paymentAmount,courseId} = req.body;
     try{
-        const transact = await prisma.transactions.findMany({})
+        const transact = await prisma.transactions.findMany({
+            where:{
+                AND:[
+                    {
+                        transactionId:Number(req.params.regid)
+                    
+                    },
+                    {
+                        traineeId:Number(req.params.id)
+                    
+                    },
+                ]
+            }
+        })
         
         const payables = await prisma.courses.findUnique({
             where: {
-                courseId: Number(req.params.courseId)
+                courseId: courseId
             },
             select: {
                 courseId: true,
@@ -1739,7 +1761,7 @@ app.get('/api/courses/:courseId/transactions/:transId',async (req: Request, res:
 })
 
 //Delete Transaction (5.4)
-app.delete('/api/courses/:courseId/transactions/:transId', async (req: Request, res: Response) => {
+app.delete('/api/trainees/:id/transactions/:transId', async (req: Request, res: Response) => {
     try{
         const transact = await prisma.transactions.delete({
             where:{
