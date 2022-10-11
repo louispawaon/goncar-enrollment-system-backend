@@ -2084,6 +2084,27 @@ app.get('/api/employees/all/teacher', async(req: Request, res: Response) => {
     }
 })
 
+// GET ALL CASHIER EMPLOYEES (?)
+app.get('/api/employees/all/cashier', async(req: Request, res: Response) => {
+    try {
+        const cashiers = await prisma.employees.findMany({
+            where: {
+                AND: [
+                    {role: {roleName: "Cashier"}},
+                    {
+                        hasActiveBatch: false,
+                        employeeStatus: "Active"
+                    }
+                ]
+            }
+        })
+        res.status(200).json(cashiers);
+    }
+    catch(error){
+        res.status(400).json({msg: error.message});
+    }
+})
+
 //MAX employee ID (6.11)
 
 app.get('/api/employees/all/max',async(req:Request,res:Response)=>{
