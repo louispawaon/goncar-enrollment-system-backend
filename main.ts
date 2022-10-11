@@ -1693,10 +1693,12 @@ app.get('/api/trainees/:id/transactions/:transId',async (req: Request, res: Resp
 
 //View Transaction Masterlist (5.3)
 app.get('/api/trainees/:id/transactions',async (req: Request, res: Response) => {
-    const {paymentAmount} = req.body;
     let tempCourse=0;
-    try{
+    let trybalance=0;
+    let trytuition:Number;
+    let trypayamount=0;
 
+    try{
         const course = await prisma.registrations.findMany({
             where:{
                 AND:[
@@ -1718,6 +1720,8 @@ app.get('/api/trainees/:id/transactions',async (req: Request, res: Response) => 
             
         })
 
+        console.log(course)
+
         for(let i = 0; i < course.length; i++) {
             let obj = course[i];
         
@@ -1725,58 +1729,69 @@ app.get('/api/trainees/:id/transactions',async (req: Request, res: Response) => 
         }
 
         console.log(tempCourse)
-        const transact = await prisma.transactions.findMany({})
-        
-        
-        const payables = await prisma.courses.findUnique({
-            where: {
-                courseId: Number(tempCourse)
-            },
-            select: {
-                courseId: true,
-                courseName: true,
-                trainingYears: {
-                    select: {
-                        trainingYearId: true,
-                        trainingYearSpan: true
-                    }
-                },
-                payables: {
-                    select: {
-                        payableId: true,
-                        payableName: true,
-                        payableCost: true
-                    }
-                }
+        const transact = await prisma.transactions.findMany({
+            where:{
+                traineeId:Number(req.params.id)
             }
         })
-
-        const tuition = await prisma.payables.aggregate({
-            where: {
-                courseId: Number(tempCourse)
-            },
-            _sum: {
-                payableCost: true
-            },
-        })
-
-        const payAmounts = await prisma.transactions.aggregate({
-            _sum: {
-                paymentAmount: true
-            },
-        })
-
-        payAmounts['totalPaymentAmount'] = payAmounts._sum.paymentAmount ?? 0;
-        payables['tuition'] = tuition._sum.payableCost ?? 0;       
-
-        const trytuition = tuition._sum.payableCost
-        const trypayamount = payAmounts._sum.paymentAmount
-        const trybalance = Number(trytuition)-Number(trypayamount);
-
-        payables['balance'] = trybalance ?? 0;
         
-        res.status(200).json({transact, trytuition, trypayamount, trybalance, payables})
-        //res.status(200).json({course,transact})
+        if(tempCourse==0){
+            res.status(200).json({transact, trytuition, trypayamount, trybalance})
+        }
+        else{
+            const payables = await prisma.courses.findUnique({
+                where: {
+                    courseId: Number(tempCourse)
+                },
+                select: {
+                    courseId: true,
+                    courseName: true,
+                    trainingYears: {
+                        select: {
+                            trainingYearId: true,
+                            trainingYearSpan: true
+                        }
+                    },
+                    payables: {
+                        select: {
+                            payableId: true,
+                            payableName: true,
+                            payableCost: true
+                        }
+                    }
+                }
+            })
+
+            const tuition = await prisma.payables.aggregate({
+                where: {
+                    courseId: Number(tempCourse)
+                },
+                _sum: {
+                    payableCost: true
+                }
+            })
+
+            const payAmounts = await prisma.transactions.aggregate({
+                where:{
+                    traineeId:Number(req.params.id)
+                },
+                _sum: {
+                    paymentAmount: true
+                },
+            })
+
+            
+            payables['tuition'] = tuition._sum.payableCost ?? 0; 
+            trytuition = Number(tuition._sum.payableCost)
+            payAmounts['totalPaymentAmount'] = payAmounts._sum.paymentAmount ?? 0;
+                
+            trypayamount = payAmounts._sum.paymentAmount
+            trybalance = Number(trytuition)-Number(trypayamount);
+
+            payables['balance'] = trybalance ?? 0;
+            
+            res.status(200).json({transact, trytuition, trypayamount, trybalance, payables})
+        }
     }
     catch(error){
         res.status(400).json({msg: error.message});
