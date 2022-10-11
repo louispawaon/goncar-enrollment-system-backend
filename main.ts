@@ -1483,7 +1483,7 @@ app.get('/api/payables/:id', async (req: Request, res: Response) => {
 
 // Edit payable (?)
 app.put('/api/payables/:id', async (req: Request, res: Response) => {
-    const {courseId, payableName, payableCost} = req.body;
+    const {payableName, payableCost} = req.body;
     try {
         const payable = await prisma.payables.update({
             where: {
@@ -1491,12 +1491,7 @@ app.put('/api/payables/:id', async (req: Request, res: Response) => {
             },
             data: {
                 payableName: payableName,
-                payableCost: payableCost,
-                course:{
-                    connect:{
-                        courseId:courseId,
-                    }
-                }
+                payableCost: payableCost
             }
         })
 
