@@ -135,7 +135,7 @@ app.post('/api/trainees/:id/registrations/',async(req:Request,res:Response)=>{
             where:{
                 traineeId:Number(req.params.id),
                 registrations:{
-                    every:{
+                    some:{
                         registrationStatus:"Unpaid"
                     }
                 }
@@ -154,6 +154,8 @@ app.post('/api/trainees/:id/registrations/',async(req:Request,res:Response)=>{
             hasUnpaidReg = true
             throw "hasUnpaidReg"
         }
+
+        hasUnpaidReg=true;
 
         const trainee = prisma.trainees.update({
             where:{
