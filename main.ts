@@ -200,7 +200,7 @@ app.post('/api/trainees/:id/registrations/',async(req:Request,res:Response)=>{
         }
         else if (error == "hasUnpaidReg")
         {
-            res.status(409).json({msg:"hasUnpaidReg"});
+            res.status(410).json({msg:"hasUnpaidReg"});
         }
         else {
             res.status(400).json({msg: error.message});
@@ -1034,40 +1034,67 @@ app.get('/api/courses/all/max',async(req:Request,res:Response)=>{
 //Create New Course Batch(3.1)
 app.post('/api/batches',async(req:Request,res:Response)=>{
     const {courseId, batchStatus, laNumber,batchName,startDate,endDate,maxStudents, employeeId} = req.body;
+    let isUniqueName=false;
     try{
-        const batch = await prisma.batch.create({
-            data:{
-                laNumber:laNumber,
-                batchName:batchName,
-                startDate: startDate,
-                endDate: endDate,
-                maxStudents: maxStudents,
-                batchStatus: batchStatus,
-                courses:{ //dle ko sure dre
-                    connect:{
-                        courseId:courseId
-                    }
-                },
-                employee: {
-                    connect: {
-                        employeeId: employeeId
-                    }
-                }
-            }
-        });
 
-        const instructor = await prisma.employees.update({
-            where: {
-                employeeId: employeeId
+        const uniqueName = await prisma.batch.aggregate({
+            where:{
+                batchName:String(batchName)
             },
-            data: {
-                hasActiveBatch: true
+            _count:{
+                batchName:true
             }
         })
-        res.status(201).json(batch);
+
+        console.log(uniqueName._count.batchName)
+
+        if(uniqueName._count.batchName==0){
+            const batch = await prisma.batch.create({
+                data:{
+                    laNumber:laNumber,
+                    batchName:batchName,
+                    startDate: startDate,
+                    endDate: endDate,
+                    maxStudents: maxStudents,
+                    batchStatus: batchStatus,
+                    courses:{ //dle ko sure dre
+                        connect:{
+                            courseId:courseId
+                        }
+                    },
+                    employee: {
+                        connect: {
+                            employeeId: employeeId
+                        }
+                    }
+                }
+            });
+
+            const instructor = await prisma.employees.update({
+                where: {
+                    employeeId: employeeId
+                },
+                data: {
+                    hasActiveBatch: true
+                }
+            })
+
+       
+            res.status(201).json(batch);
+        }
+        else{
+            isUniqueName=true;
+            throw "isUniqueName"
+
+        }
     }
     catch(error){
-        res.status(400).json({msg: error.message});
+        if(error=="isUniqueName"){
+            res.status(409).json({msg:error})
+        }
+        else{
+            res.status(400).json({msg: error.message});
+        }
     }
 });
 
