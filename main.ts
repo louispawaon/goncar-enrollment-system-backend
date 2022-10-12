@@ -1145,6 +1145,16 @@ app.put('/api/batches/:id',async(req:Request,res:Response)=>{
             if (!proceed && employeeIdOfBatchActive.employee.hasActiveBatch === true) {
                 throw "hasActiveBatch"
             }
+            
+            // SINCE ALL CHECKS PASSED, UPDATE TO EMPLOYEE hasActiveBatch to TRUE
+            await prisma.employees.update({
+                where: {
+                    employeeId: employeeIdOfBatchActive.employee.employeeId
+                },
+                data: {
+                    hasActiveBatch: true
+                }
+            })
         }
 
         // IF INSTRUCTOR IS CHANGED 
