@@ -1901,10 +1901,10 @@ app.get('/api/trainees/:id/transactions',async (req: Request, res: Response) => 
 
             
             payables['tuition'] = tuition._sum.payableCost ?? 0; 
-            trytuition = Number(tuition._sum.payableCost)
+            trytuition = Number(tuition._sum.payableCost) ?? 0;
             payAmounts['totalPaymentAmount'] = payAmounts._sum.paymentAmount ?? 0;
                 
-            trypayamount = payAmounts._sum.paymentAmount
+            trypayamount = Number(payAmounts._sum.paymentAmount) ?? 0;
             trybalance = Number(trytuition)-Number(trypayamount);
 
             payables['balance'] = trybalance ?? 0;
