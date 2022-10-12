@@ -101,6 +101,7 @@ app.post('/api/trainees/:id/registrations/',async(req:Request,res:Response)=>{
         // CHECK IF INCOMING REG IS SET TO ACTIVE AND IF THERE IS AN EXISTING ACTIVE REG INSIDE TRAINEE
         // ELSE CONTINUE
         let hasActiveReg = false;
+        let hasUnpaidReg = false;
         if (registrationStatus.toUpperCase() === "ACTIVE") {
             // CHECK IF THERE EXISTS A REGISTRATION THAT IS CURRENTLY ACTIVE
             const activeRegInTrainee = await prisma.trainees.findMany({
@@ -128,6 +129,30 @@ app.post('/api/trainees/:id/registrations/',async(req:Request,res:Response)=>{
             }
 
             hasActiveReg = true
+        }
+
+        const unpaidReg = await prisma.trainees.findMany({
+            where:{
+                traineeId:Number(req.params.id),
+                registrations:{
+                    every:{
+                        registrationStatus:"Unpaid"
+                    }
+                }
+            },
+            select: {
+                traineeId: true,
+                registrations: {
+                    select: {
+                        registrationNumber: true,
+                    }
+                }
+            }
+        })
+
+        if (unpaidReg.length !== 0) {
+            hasUnpaidReg = true
+            throw "hasUnpaidReg"
         }
 
         const trainee = prisma.trainees.update({
@@ -170,6 +195,10 @@ app.post('/api/trainees/:id/registrations/',async(req:Request,res:Response)=>{
     catch(error){
         if (error === "hasActiveReg") {
             res.status(409).json({msg: "hasActiveReg"});
+        }
+        else if (error == "hasUnpaidReg")
+        {
+            res.status(409).json({msg:"hasUnpaidReg"});
         }
         else {
             res.status(400).json({msg: error.message});
