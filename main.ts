@@ -1736,34 +1736,6 @@ app.get('/api/trainees/:id/transactions',async (req: Request, res: Response) => 
     let trypayamount=0;
 
     try{
-        const course = await prisma.registrations.findMany({
-            where:{
-                AND:[
-                    {
-                        traineeId:Number(req.params.id)
-                    },
-                    {
-                        registrationStatus:"Active"
-                    }
-                ]
-            },
-            select:{
-                batch:{
-                    select:{
-                        courseId:true
-                    }
-                }
-            }
-            
-        })
-
-        console.log(course)
-
-        for(let i = 0; i < course.length; i++) {
-            let obj = course[i];
-        
-            tempCourse=(obj.batch.courseId);
-        }
 
         const registration = await prisma.registrations.findMany({
             where:{
@@ -1795,6 +1767,38 @@ app.get('/api/trainees/:id/transactions',async (req: Request, res: Response) => 
             tempBatch=(obj.batch.batchId);
         }
 
+        const course = await prisma.registrations.findMany({
+            where:{
+                AND:[
+                    {
+                        traineeId:Number(req.params.id)
+                    },
+                    {
+                        registrationNumber:Number(tempReg)
+                    }
+                    ,
+                    {
+                        registrationStatus:"Active"
+                    }
+                ]
+            },
+            select:{
+                batch:{
+                    select:{
+                        courseId:true
+                    }
+                }
+            }
+        })
+
+        console.log(course)
+
+        for(let i = 0; i < course.length; i++) {
+            let obj = course[i];
+        
+            tempCourse=(obj.batch.courseId);
+        }
+
         console.log("tempReg:"+tempReg)
         console.log("tempBatch:"+tempBatch)
 
@@ -1820,7 +1824,14 @@ app.get('/api/trainees/:id/transactions',async (req: Request, res: Response) => 
         console.log(tempCourse)
         const transact = await prisma.transactions.findMany({
             where:{
-                traineeId:Number(req.params.id)
+                traineeId:Number(req.params.id),
+                Trainees:{
+                    registrations:{
+                        every:{
+                            registrationNumber:Number(tempReg)
+                        }
+                    }
+                }
             },
             select:{
                 transactionId:true,
