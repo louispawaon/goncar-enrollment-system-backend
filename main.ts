@@ -1699,6 +1699,9 @@ app.get('/api/trainees/:id/transactions/:transId',async (req: Request, res: Resp
 //View Transaction Masterlist (5.3)
 app.get('/api/trainees/:id/transactions',async (req: Request, res: Response) => {
     let tempCourse=0;
+    let tempReg=0;
+    let tempBatch=0;
+    let tempBatchName:String="";
     let trybalance=0;
     let trytuition:Number=0;
     let trypayamount=0;
@@ -1733,6 +1736,58 @@ app.get('/api/trainees/:id/transactions',async (req: Request, res: Response) => 
             tempCourse=(obj.batch.courseId);
         }
 
+        const registration = await prisma.registrations.findMany({
+            where:{
+                AND:[
+                    {
+                        traineeId:Number(req.params.id)
+                    },
+                    {
+                        registrationStatus:"Active"
+                    }
+                ]
+            },
+            select:{
+                registrationNumber:true,
+                batch:{
+                    select:{
+                        batchId:true
+                    }
+                }
+            }
+        })
+
+        console.log(registration)
+
+        for(let i = 0; i < registration.length; i++) {
+            let obj = registration[i];
+        
+            tempReg=(obj.registrationNumber);
+            tempBatch=(obj.batch.batchId);
+        }
+
+        console.log("tempReg:"+tempReg)
+        console.log("tempBatch:"+tempBatch)
+
+
+        const batch = await prisma.batch.findMany({
+            where:{
+                batchId:Number(tempBatch)
+            },
+            select:{
+                batchName:true
+            }
+        })
+
+        console.log(batch)
+
+        for(let i = 0; i < batch.length; i++) {
+            let obj = batch[i];
+        
+            tempBatchName=(obj.batchName);
+           
+        }
+        
         console.log(tempCourse)
         const transact = await prisma.transactions.findMany({
             where:{
@@ -1753,7 +1808,7 @@ app.get('/api/trainees/:id/transactions',async (req: Request, res: Response) => 
         })
         
         if(tempCourse==0){
-            res.status(200).json({transact, trytuition, trypayamount, trybalance})
+            res.status(200).json({transact, tempReg, tempBatchName, trytuition, trypayamount, trybalance})
         }
         else{
             const payables = await prisma.courses.findUnique({
@@ -1807,7 +1862,7 @@ app.get('/api/trainees/:id/transactions',async (req: Request, res: Response) => 
 
             payables['balance'] = trybalance ?? 0;
             
-            res.status(200).json({transact, trytuition, trypayamount, trybalance, payables})
+            res.status(200).json({transact, tempReg, tempBatchName, trytuition, trypayamount, trybalance, payables})
         }
     }
     catch(error){
