@@ -1090,7 +1090,7 @@ app.post('/api/batches',async(req:Request,res:Response)=>{
     }
     catch(error){
         if(error=="isUniqueName"){
-            res.status(409).json({msg:error})
+            res.status(410).json({msg:error})
         }
         else{
             res.status(400).json({msg: error.message});
