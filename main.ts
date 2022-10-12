@@ -1646,7 +1646,7 @@ app.get('/api/payables/all/max', async (req: Request, res: Response) => {
 
 //Create new payment (5.1)
 app.post('/api/trainees/:id/transactions', async (req: Request, res: Response) => {
-    const { paymentAmount, paymentMethod} = req.body;
+    const { paymentAmount, paymentMethod, employeeId} = req.body;
     try {
         const transact = await prisma.transactions.create({
             data: {
@@ -1655,6 +1655,11 @@ app.post('/api/trainees/:id/transactions', async (req: Request, res: Response) =
                 Trainees:{
                     connect:{
                         traineeId:Number(req.params.id)
+                    }
+                },
+                employees:{
+                    connect:{
+                        employeeId:Number(employeeId)
                     }
                 }
             }
@@ -1695,7 +1700,7 @@ app.get('/api/trainees/:id/transactions/:transId',async (req: Request, res: Resp
 app.get('/api/trainees/:id/transactions',async (req: Request, res: Response) => {
     let tempCourse=0;
     let trybalance=0;
-    let trytuition:Number;
+    let trytuition:Number=0;
     let trypayamount=0;
 
     try{

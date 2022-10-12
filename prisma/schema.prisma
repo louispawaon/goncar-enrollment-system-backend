@@ -91,11 +91,13 @@ model courses {
 //finance module
 
 model transactions {
-  transactionId Int       @id @default(autoincrement())
+  transactionId Int        @id @default(autoincrement())
   paymentMethod String
   paymentAmount Float
-  Trainees      Trainees? @relation(fields: [traineeId], references: [traineeId])
+  Trainees      Trainees?  @relation(fields: [traineeId], references: [traineeId])
   traineeId     Int?
+  employees     employees? @relation(fields: [employeeId], references: [employeeId])
+  employeeId    Int?
 }
 
 model payables {
@@ -109,11 +111,11 @@ model payables {
 //administrative module
 
 model employees {
-  employeeId     Int      @id @default(autoincrement())
+  employeeId     Int            @id @default(autoincrement())
   firstName      String
   middleName     String?
   lastName       String
-  birthDay       DateTime @db.Date
+  birthDay       DateTime       @db.Date
   sex            String
   emailAdd       String
   cpNum          String
@@ -121,10 +123,11 @@ model employees {
   address        String
   dateHired      DateTime
   maritalStatus  String
-  role           roles    @relation(fields: [roleId], references: [roleId])
+  role           roles          @relation(fields: [roleId], references: [roleId])
   roleId         Int
   batch          batch[]
-  hasActiveBatch Boolean  @default(false)
+  transactions   transactions[]
+  hasActiveBatch Boolean        @default(false)
 }
 
 model roles {
