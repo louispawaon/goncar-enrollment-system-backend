@@ -1737,6 +1737,18 @@ app.get('/api/trainees/:id/transactions',async (req: Request, res: Response) => 
         const transact = await prisma.transactions.findMany({
             where:{
                 traineeId:Number(req.params.id)
+            },
+            select:{
+                transactionId:true,
+                paymentAmount:true,
+                paymentMethod:true,
+                employees:{
+                    select:{
+                        employeeId:true,
+                        firstName:true,
+                        lastName:true
+                    }
+                }
             }
         })
         
