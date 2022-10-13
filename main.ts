@@ -1065,6 +1065,12 @@ app.get('/api/courses/all/max',async(req:Request,res:Response)=>{
 app.post('/api/batches',async(req:Request,res:Response)=>{
     const {courseId, batchStatus, laNumber,batchName,startDate,endDate,maxStudents, employeeId} = req.body;
     let isUniqueName=false;
+    let hasActiveBatchStatus = true;
+
+    if (batchStatus === "Inactive") {
+        hasActiveBatchStatus = false;
+    }
+
     try{
 
         const uniqueName = await prisma.batch.aggregate({
@@ -1105,7 +1111,7 @@ app.post('/api/batches',async(req:Request,res:Response)=>{
                     employeeId: employeeId
                 },
                 data: {
-                    hasActiveBatch: true
+                    hasActiveBatch: hasActiveBatchStatus
                 }
             })
 
