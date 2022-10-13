@@ -155,8 +155,6 @@ app.post('/api/trainees/:id/registrations/',async(req:Request,res:Response)=>{
             throw "hasUnpaidReg"
         }
 
-        hasUnpaidReg=true;
-
         const trainee = prisma.trainees.update({
             where:{
                 traineeId:Number(req.params.id)
@@ -293,6 +291,7 @@ app.put('/api/trainees/:id/registrations/:regid/',async(req:Request,res:Response
                 traineeId:Number(req.params.id),
                 registrations:{
                     some:{
+                        registrationNumber:Number(req.params.regId),
                         registrationStatus:"Unpaid"
                     }
                 }
@@ -311,8 +310,6 @@ app.put('/api/trainees/:id/registrations/:regid/',async(req:Request,res:Response
             hasUnpaidReg = true
             throw "hasUnpaidReg"
         }
-
-        hasUnpaidReg=true;
 
         const trainee = prisma.trainees.update({
             where:{
