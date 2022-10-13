@@ -1132,6 +1132,8 @@ app.post('/api/batches',async(req:Request,res:Response)=>{
 app.put('/api/batches/:id',async(req:Request,res:Response)=>{
     const {laNumber, batchStatus, batchName,startDate,endDate,maxStudents, courseId, employeeId} = req.body;
     let isUniqueName=false;
+    let uniqueResult=false;
+    let eachResult=false;
     try{
         // FIND EMPLOYEE ID OF BATCH CURRENTLY UPDATING
         const employeeIdOfBatch = await prisma.batch.findUnique({
@@ -1277,17 +1279,29 @@ app.put('/api/batches/:id',async(req:Request,res:Response)=>{
             }
         }
 
-        const uniqueName = await prisma.batch.aggregate({
+        const realityCheck = await prisma.batch.findUnique({
             where:{
-                batchName:String(batchName)
+                batchId:Number(req.params.id)
             },
-            _count:{
+            select:{
                 batchName:true
             }
         })
 
+        const everyName = await prisma.batch.findMany({
+            select:{
+                batchName:true
+            }
+        })
 
-        if(uniqueName._count.batchName==1||uniqueName._count.batchName==0){
+        for(let i = 0; i < everyName.length; i++) {
+            let obj = everyName[i];
+            if(obj.batchName===batchName){
+                uniqueResult=true;
+            }
+        }
+
+        if(realityCheck.batchName===batchName){
             const batch = await prisma.batch.update({
                 where:{
                     batchId:Number(req.params.id)
@@ -1315,9 +1329,12 @@ app.put('/api/batches/:id',async(req:Request,res:Response)=>{
             res.status(200).json(batch);
         }
         else{
-            isUniqueName=true;
-            throw "isUniqueName"
+            if(uniqueResult===true){
+                isUniqueName=true;
+                throw "isUniqueName"
+            }
         }
+
     }
     catch(error){
         if (error === "hasActiveBatch") {
