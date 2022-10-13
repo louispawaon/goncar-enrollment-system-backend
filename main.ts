@@ -325,7 +325,8 @@ app.put('/api/trainees/:id/registrations/:regid/',async(req:Request,res:Response
             }
         })
 
-        if (unpaidReg.registrations.length !== 0) {
+        console.log(unpaidReg.registrations.length)
+        if (unpaidReg.registrations.length === 0) {
             hasUnpaidReg = true
             throw "hasUnpaidReg"
         }
