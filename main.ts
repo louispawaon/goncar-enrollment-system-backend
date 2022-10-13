@@ -2021,7 +2021,7 @@ app.delete('/api/trainees/:id/transactions/:transId', async (req: Request, res: 
 })
 
 //Max Transaction ID (5.5)
-app.get('/api/trainees/:id/transactions/max',async(req:Request, res:Response)=>{
+app.get('/api/transactions/max',async(req:Request, res:Response)=>{
     try{
         const aggregate = await prisma.transactions.aggregate({
             _max:{
