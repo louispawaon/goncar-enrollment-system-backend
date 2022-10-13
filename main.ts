@@ -291,7 +291,7 @@ app.put('/api/trainees/:id/registrations/:regid/',async(req:Request,res:Response
                 traineeId:Number(req.params.id),
                 registrations:{
                     some:{
-                        registrationNumber:Number(req.params.regId),
+                        registrationNumber:Number(req.params.regid),
                         registrationStatus:"Unpaid"
                     }
                 }
