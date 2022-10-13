@@ -1287,7 +1287,7 @@ app.put('/api/batches/:id',async(req:Request,res:Response)=>{
         })
 
 
-        if(uniqueName._count.batchName==1){
+        if(uniqueName._count.batchName==1||uniqueName._count.batchName==0){
             const batch = await prisma.batch.update({
                 where:{
                     batchId:Number(req.params.id)
