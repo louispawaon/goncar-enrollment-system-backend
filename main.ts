@@ -211,6 +211,7 @@ app.post('/api/trainees/:id/registrations/',async(req:Request,res:Response)=>{
 //Update Specific Trainee Registration (1.5)
 app.put('/api/trainees/:id/registrations/:regid/',async(req:Request,res:Response)=>{
     const {SSSNum,TINNum,SGLicense,expiryDate,dateEnrolled,registrationStatus, batchId} = req.body;
+    let hasUnpaidReg=false;
     try{
         // // CHECK IF INCOMING REG IS SET TO ACTIVE AND IF THERE IS AN EXISTING ACTIVE REG INSIDE TRAINEE
         // // ELSE CONTINUE
@@ -286,6 +287,32 @@ app.put('/api/trainees/:id/registrations/:regid/',async(req:Request,res:Response
 
             hasActiveReg = true
         }
+
+        const unpaidReg = await prisma.trainees.findMany({
+            where:{
+                traineeId:Number(req.params.id),
+                registrations:{
+                    some:{
+                        registrationStatus:"Unpaid"
+                    }
+                }
+            },
+            select: {
+                traineeId: true,
+                registrations: {
+                    select: {
+                        registrationNumber: true,
+                    }
+                }
+            }
+        })
+
+        if (unpaidReg.length !== 0) {
+            hasUnpaidReg = true
+            throw "hasUnpaidReg"
+        }
+
+        hasUnpaidReg=true;
 
         const trainee = prisma.trainees.update({
             where:{
@@ -384,6 +411,9 @@ app.put('/api/trainees/:id/registrations/:regid/',async(req:Request,res:Response
     catch(error){
         if (error === "hasActiveReg") {
             res.status(409).json({msg: "hasActiveReg"});
+        }
+        else if (error === "hasUnpaidReg"){
+            res.status(410).json({msg:error});
         }
         else {
             res.status(400).json({msg: error.message});
@@ -1089,7 +1119,7 @@ app.post('/api/batches',async(req:Request,res:Response)=>{
         }
     }
     catch(error){
-        if(error=="isUniqueName"){
+        if(error==="isUniqueName"){
             res.status(410).json({msg:error})
         }
         else{
@@ -1101,6 +1131,7 @@ app.post('/api/batches',async(req:Request,res:Response)=>{
 //Update Course Batch Details (3.2)
 app.put('/api/batches/:id',async(req:Request,res:Response)=>{
     const {laNumber, batchStatus, batchName,startDate,endDate,maxStudents, courseId, employeeId} = req.body;
+    let isUniqueName=false;
     try{
         // FIND EMPLOYEE ID OF BATCH CURRENTLY UPDATING
         const employeeIdOfBatch = await prisma.batch.findUnique({
@@ -1246,35 +1277,54 @@ app.put('/api/batches/:id',async(req:Request,res:Response)=>{
             }
         }
 
-        const batch = await prisma.batch.update({
+        const uniqueName = await prisma.batch.aggregate({
             where:{
-                batchId:Number(req.params.id)
+                batchName:String(batchName)
             },
-            data:{
-                laNumber:laNumber,
-                batchName:batchName,
-                startDate: startDate,
-                endDate: endDate,
-                maxStudents: maxStudents,
-                batchStatus: batchStatus,
-                courses:{ //dle ko sure dre 
-                    connect:{
-                        courseId:courseId
-                    }
+            _count:{
+                batchName:true
+            }
+        })
+
+
+        if(uniqueName._count.batchName==0){
+            const batch = await prisma.batch.update({
+                where:{
+                    batchId:Number(req.params.id)
                 },
-                employee: {
-                    connect: {
-                        employeeId: employeeId
+                data:{
+                    laNumber:laNumber,
+                    batchName:batchName,
+                    startDate: startDate,
+                    endDate: endDate,
+                    maxStudents: maxStudents,
+                    batchStatus: batchStatus,
+                    courses:{ //dle ko sure dre 
+                        connect:{
+                            courseId:courseId
+                        }
+                    },
+                    employee: {
+                        connect: {
+                            employeeId: employeeId
+                        }
                     }
                 }
-            }
-        });
+            });
 
-        res.status(200).json(batch);
+            res.status(200).json(batch);
+        }
+        else{
+            isUniqueName=true;
+            throw "isUniqueName"
+        }
     }
     catch(error){
         if (error === "hasActiveBatch") {
             res.status(409).json({msg: error});
+        }
+        else if(error === "isUniqueName"){
+            res.status(410).json({msg:error})
         }
         else {
             res.status(400).json({msg: error.message});
@@ -1964,6 +2014,22 @@ app.delete('/api/trainees/:id/transactions/:transId', async (req: Request, res: 
         })
         res.status(200).json(transact)
         
+    }
+    catch(error){
+        res.status(400).json({msg: error.message});
+    }
+})
+
+//Max Transaction ID (5.5)
+app.get('/api/trainees/:id/transactions/max',async(req:Request, res:Response)=>{
+    try{
+        const aggregate = await prisma.transactions.aggregate({
+            _max:{
+                transactionId:true
+            }
+        })
+        console.log(aggregate);
+        res.status(200).json(aggregate);
     }
     catch(error){
         res.status(400).json({msg: error.message});
