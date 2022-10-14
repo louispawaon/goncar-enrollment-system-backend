@@ -91,13 +91,14 @@ model courses {
 //finance module
 
 model transactions {
-  transactionId Int        @id @default(autoincrement())
-  paymentMethod String
-  paymentAmount Float
-  Trainees      Trainees?  @relation(fields: [traineeId], references: [traineeId])
-  traineeId     Int?
-  employees     employees? @relation(fields: [employeeId], references: [employeeId])
-  employeeId    Int?
+  transactionId   Int        @id @default(autoincrement())
+  paymentMethod   String
+  paymentAmount   Float
+  transactionDate DateTime?  @db.Date
+  Trainees        Trainees?  @relation(fields: [traineeId], references: [traineeId])
+  traineeId       Int?
+  employees       employees? @relation(fields: [employeeId], references: [employeeId])
+  employeeId      Int?
 }
 
 model payables {
