@@ -2121,7 +2121,7 @@ app.get('/api/trainees/:id/transactions',async (req: Request, res: Response) => 
 
                 payables['balance'] = trybalance ?? 0;
                 
-                res.status(200).json({transact, trytuition, trypayamount, trybalance, payables})
+                res.status(200).json({transact, trytuition, trypayamount, trybalance, tempReg, payables})
             }
         }
 
