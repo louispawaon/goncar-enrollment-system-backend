@@ -2049,6 +2049,7 @@ app.get('/api/trainees/:id/transactions',async (req: Request, res: Response) => 
                 },
                 select:{
                     transactionId:true,
+                    transactionDate:true,
                     paymentAmount:true,
                     paymentMethod:true,
                     employees:{
