@@ -1954,14 +1954,16 @@ app.get('/api/trainees/:id/transactions',async (req: Request, res: Response) => 
                     AND:[
                         {
                             traineeId:Number(req.params.id)
-                        },
-                        {
-                            registrationStatus:"Active" || "Unpaid"
                         }
+                    ],
+                    OR:[
+                        {registrationStatus:"Unpaid"},
+                        {registrationStatus:"Active"}   
                     ]
                 },
                 select:{
                     registrationNumber:true,
+                    registrationStatus:true,
                     batch:{
                         select:{
                             batchId:true
@@ -1969,6 +1971,8 @@ app.get('/api/trainees/:id/transactions',async (req: Request, res: Response) => 
                     }
                 }
             })
+
+            console.log(registration)
 
             for(let i = 0; i < registration.length; i++) {
                 let obj = registration[i];
@@ -1986,10 +1990,10 @@ app.get('/api/trainees/:id/transactions',async (req: Request, res: Response) => 
                         {
                             registrationNumber:Number(tempReg)
                         }
-                        ,
-                        {
-                            registrationStatus:"Active" || "Unpaid"
-                        }
+                    ],
+                    OR:[
+                        {registrationStatus:"Unpaid"},
+                        {registrationStatus:"Active"}   
                     ]
                 },
                 select:{
