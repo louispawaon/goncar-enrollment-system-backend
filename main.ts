@@ -424,6 +424,41 @@ app.put('/api/trainees/:id/registrations/:regid/',async(req:Request,res:Response
                 await prisma.$transaction([trainee,traineeReg]);   
             }    
         }
+        else{
+            const trainee = prisma.trainees.update({
+                where:{
+                    traineeId:Number(req.params.id)
+                },
+                data:{
+                    SSSNum: SSSNum,
+                    TINNum: TINNum,
+                    SGLicense: SGLicense,
+                    expiryDate: expiryDate ? new Date(expiryDate) : null
+                }
+            });
+    
+            const traineeReg = prisma.registrations.update({
+                where:{
+                    registrationNumber:Number(req.params.regid)
+                },
+                data:{
+                    dateEnrolled: dateEnrolled,
+                    registrationStatus: registrationStatus,
+                    trainees:{
+                        connect:{
+                            traineeId:Number(req.params.id)
+                        }
+                    },
+                    batch:{
+                        connect:{
+                            batchId:batchId
+                        }
+                    }
+                }
+            });
+    
+            await prisma.$transaction([trainee,traineeReg]); 
+        }
     
         // set hasActiveRegistration to FALSE in trainee IF NO ACTIVE REG
         const activeReg = await prisma.trainees.findMany({
