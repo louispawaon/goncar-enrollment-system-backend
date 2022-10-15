@@ -341,7 +341,8 @@ app.put('/api/trainees/:id/registrations/:regid/',async(req:Request,res:Response
 
             hasActiveReg = true
         }
-        else if(registrationStatus.toUpperCase()==="UNPAID"){
+        
+        if(registrationStatus.toUpperCase()==="UNPAID"){
             const unpaidReg = await prisma.registrations.findMany({
                 where:{
                     AND:[
@@ -482,7 +483,6 @@ app.put('/api/trainees/:id/registrations/:regid/',async(req:Request,res:Response
             })
         }
 
-        
     }
     catch(error){
         if (error === "hasActiveReg") {
