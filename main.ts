@@ -201,7 +201,6 @@ app.post('/api/trainees/:id/registrations/',async(req:Request,res:Response)=>{
         }
 
         if(tempFinishBatch==="Finished"||tempFinishBatch==="Active"){
-            console.log("gg boi")
             hasFinishedBatch=true;
             throw "hasFinishedBatch"
         }
@@ -252,7 +251,7 @@ app.post('/api/trainees/:id/registrations/',async(req:Request,res:Response)=>{
             res.status(410).json({msg:"hasUnpaidReg"});
         }
         else if(error==="hasFinishedBatch"){
-            res.status(410).json({msg:"hasFinishedBatch"});
+            res.status(411).json({msg:"hasFinishedBatch"});
         }
         else {
             res.status(400).json({msg: error.message});
