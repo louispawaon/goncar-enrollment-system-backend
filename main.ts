@@ -346,31 +346,47 @@ app.put('/api/trainees/:id/registrations/:regid/',async(req:Request,res:Response
                     }
                     
                 })
-        
-                const transact = await prisma.$transaction([trainee,traineeReg,traineeRegActive]);   
-                res.status(200).json(transact);
+                
+                await prisma.$transaction([trainee,traineeReg,traineeRegActive]);   
             }
 
             hasActiveReg = true
         }
         
-        if(registrationStatus.toUpperCase()==="UNPAID"){
-            const unpaidReg = await prisma.registrations.findMany({
-                where:{
-                    AND:[
-                        {registrationNumber:Number(req.params.regid)},
-                        {registrationStatus:"Unpaid"}
-                    ]
+        else if(registrationStatus.toUpperCase()==="UNPAID"){
+            const unpaidReg = await prisma.trainees.findMany({
+                where: {
+                    traineeId: Number(req.params.id),
+                    registrations: {
+                        some: {
+                            registrationStatus: "Unpaid"
+                        }
+                    }
                 },
                 select: {
-                    registrationStatus:true
+                    traineeId: true,
+                    registrations: {
+                        select: {
+                            registrationNumber: true,
+                        }
+                    }
                 }
             })
-    
-            console.log(unpaidReg)
-            if (unpaidReg.length!==0) {
-                hasUnpaidReg = true
-                throw "hasUnpaidReg"
+            
+            let isCurrent = false;
+            if (unpaidReg.length !== 0) {
+                // CHECK IF ITS CURRENTLY THE REG BEING UPDATED
+                for (let trainee of unpaidReg) {
+                    for (let reg of trainee.registrations) {
+                        if (reg.registrationNumber === Number(req.params.regid)) {
+                            isCurrent = true;
+                        }
+                    }
+                }
+                if (!isCurrent) {
+                    hasUnpaidReg = true
+                    throw "hasUnpaidReg"
+                }
             }
             else{
                 const trainee = prisma.trainees.update({
@@ -404,58 +420,10 @@ app.put('/api/trainees/:id/registrations/:regid/',async(req:Request,res:Response
                         }
                     }
                 });
-                
-                const traineeRegActive = prisma.registrations.updateMany({
-                    where:{
-                        AND:[
-                            {
-                                registrationNumber:Number(req.params.id)
-                            },
-                            {
-                                registrationStatus:"Active"
-                            }
-                        ]
-                    },
-                    data:{
-                        SSSNumCopy:SSSNum,
-                        TINNumCopy:TINNum,
-                        SGLicenseCopy:SGLicense,
-                        expiryDateCopy:expiryDate ? new Date(expiryDate) : null
-                    }
-                    
-                })
         
-                const transact = await prisma.$transaction([trainee,traineeReg,traineeRegActive]);   
-                res.status(200).json(transact);
+                await prisma.$transaction([trainee,traineeReg]);   
             }    
         }
-
-        /*const unpaidReg = await prisma.trainees.findMany({
-            where:{
-                traineeId:Number(req.params.id),
-                registrations:{
-                    some:{
-                        registrationNumber:Number(req.params.regid),
-                        registrationStatus:"Unpaid"
-                    }
-                }
-            },
-            select: {
-                traineeId: true,
-                registrations: {
-                    select: {
-                        registrationNumber: true,
-                    }
-                }
-            }
-        })
-
-        if (unpaidReg.length !== 0) {
-            hasUnpaidReg = true
-            throw "hasUnpaidReg"
-        }*/
-
-        //if unpaid na daan
     
         // set hasActiveRegistration to FALSE in trainee IF NO ACTIVE REG
         const activeReg = await prisma.trainees.findMany({
