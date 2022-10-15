@@ -97,10 +97,12 @@ app.get('/api/trainees/:id',async(req:Request,res:Response)=>{
 //Create Trainee Registration (1.4)
 app.post('/api/trainees/:id/registrations/',async(req:Request,res:Response)=>{
     const {batchId,SSSNum,TINNum,SGLicense,expiryDate,dateEnrolled,registrationStatus} = req.body;
+    let tempFinishedID=0;
     try{
         // CHECK IF INCOMING REG IS SET TO ACTIVE AND IF THERE IS AN EXISTING ACTIVE REG INSIDE TRAINEE
         // ELSE CONTINUE
         let hasActiveReg = false;
+        let hasFinishedBatch = false;
         let hasUnpaidReg = false;
         if (registrationStatus.toUpperCase() === "ACTIVE") {
             // CHECK IF THERE EXISTS A REGISTRATION THAT IS CURRENTLY ACTIVE
@@ -155,6 +157,54 @@ app.post('/api/trainees/:id/registrations/',async(req:Request,res:Response)=>{
             throw "hasUnpaidReg"
         }
 
+        //dre start
+        let tempFinishBatch="";
+        const traineeWithFinished = await prisma.trainees.findUnique({
+            where:{
+                traineeId:Number(req.params.id)
+            },
+            select:{
+                registrations:{
+                    where:{
+                        registrationStatus:"Finished"
+                    },
+                    select:{
+                        registrationNumber:true
+                    }
+                }
+            }
+        })
+
+        for (let trainee of traineeWithFinished.registrations){
+            tempFinishedID=trainee.registrationNumber;
+        }
+
+        const finishedReg = await prisma.registrations.findMany({
+            where:{  
+                AND:[
+                    {registrationStatus:"Finished" },
+                    {registrationNumber:tempFinishedID}
+                ]
+                
+            },
+            select:{
+                    batch:{
+                        select:{
+                            batchStatus:true
+                        }
+                    }
+                }
+        })
+
+        for(let reg of finishedReg){
+            tempFinishBatch=reg.batch.batchStatus
+        }
+
+        if(tempFinishBatch==="Finished"){
+            hasFinishedBatch=true;
+            throw "hasFinishedBatch"
+        }
+
         const trainee = prisma.trainees.update({
             where:{
                 traineeId:Number(req.params.id)
@@ -196,9 +246,12 @@ app.post('/api/trainees/:id/registrations/',async(req:Request,res:Response)=>{
         if (error === "hasActiveReg") {
             res.status(409).json({msg: "hasActiveReg"});
         }
-        else if (error == "hasUnpaidReg")
+        else if (error === "hasUnpaidReg")
         {
             res.status(410).json({msg:"hasUnpaidReg"});
+        }
+        else if(error==="hasFinishedBatch"){
+            res.status(411).json({msg:"hasFinishedBatch"});
         }
         else {
             res.status(400).json({msg: error.message});
@@ -517,6 +570,7 @@ app.put('/api/trainees/:id/registrations/:regid/',async(req:Request,res:Response
 //Display Specific Trainee Registration (1.6)
 app.get('/api/trainees/:id/registrations/:regid',async(req:Request,res:Response)=>{
     try{
+
         const traineeReg = await prisma.registrations.findMany({
             where:{
                 AND:[
@@ -582,6 +636,7 @@ app.delete('/api/trainees/:id/registrations/:regid',async(req:Request,res:Respon
 //Trainee Masterlist (1.9)
 app.get('/api/trainees',async(req:Request,res:Response)=>{
     try{
+
         const trainee = await prisma.trainees.findMany({
             select:{
                 traineeId:true,
@@ -1965,6 +2020,7 @@ app.get('/api/trainees/:id/transactions',async (req: Request, res: Response) => 
         }
 
         if(checkStatsVerdict===true){*/
+
             const registration = await prisma.registrations.findMany({
                 where:{
                     AND:[
