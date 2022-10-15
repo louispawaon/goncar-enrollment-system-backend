@@ -278,9 +278,21 @@ app.put('/api/trainees/:id/registrations/:regid/',async(req:Request,res:Response
                 }
             })
 
+            let isCurrent = false;
             if (activeRegInTrainee.length !== 0) {
-                hasActiveReg = true
-                throw "hasActiveReg"
+                // CHECK IF ITS CURRENTLY THE REG BEING UPDATED
+                for (let trainee of activeRegInTrainee) {
+                    for (let reg of trainee.registrations) {
+                        if (reg.registrationNumber === Number(req.params.regid)) {
+                            isCurrent = true;
+                        }
+                    }
+                }
+                
+                if (!isCurrent) {
+                    hasActiveReg = true
+                    throw "hasActiveReg"
+                }
             }
             else{
                 const trainee = prisma.trainees.update({
@@ -482,7 +494,7 @@ app.put('/api/trainees/:id/registrations/:regid/',async(req:Request,res:Response
             })
         }
 
-        
+        res.status(200).json(activeReg);
     }
     catch(error){
         if (error === "hasActiveReg") {
