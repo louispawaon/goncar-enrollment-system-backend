@@ -1934,7 +1934,7 @@ app.get('/api/payables/all/max', async (req: Request, res: Response) => {
 
 //Create new payment (5.1)
 app.post('/api/trainees/:id/transactions', async (req: Request, res: Response) => {
-    const { paymentAmount, paymentMethod, employeeId, transactionDate} = req.body;
+    const { paymentAmount, paymentMethod, employeeId, transactionDate, registrationNumber} = req.body;
     try {
         const transact = await prisma.transactions.create({
             data: {
@@ -1950,6 +1950,11 @@ app.post('/api/trainees/:id/transactions', async (req: Request, res: Response) =
                     connect:{
                         employeeId:Number(employeeId)
                     }
+                },
+                Registrations:{
+                    connect:{
+                        registrationNumber:Number(registrationNumber)
+                    }
                 }
             }
         })
@@ -1961,7 +1966,7 @@ app.post('/api/trainees/:id/transactions', async (req: Request, res: Response) =
     }
 })
 
-//View Transaction (5.2)
+//View Transaction (5.2) - not really used - to be deleted
 app.get('/api/trainees/:id/transactions/:transId',async (req: Request, res: Response) => {
     try{
         const transact = await prisma.transactions.findMany({
@@ -1994,211 +1999,183 @@ app.get('/api/trainees/:id/transactions',async (req: Request, res: Response) => 
     let trybalance=0;
     let trytuition:Number=0;
     let trypayamount=0;
-    let checkStatsVerdict=false;
 
     try{
-        //if active
-        /*
-        const checkStats = await prisma.registrations.findMany({
+
+        const registration = await prisma.registrations.findMany({
             where:{
-                traineeId:Number(req.params.id)
+                AND:[
+                    {
+                        traineeId:Number(req.params.id)
+                    }
+                ],
+                OR:[
+                    {registrationStatus:"Unpaid"},
+                    {registrationStatus:"Active"}   
+                ]
             },
             select:{
-                registrationStatus:true
+                registrationNumber:true,
+                registrationStatus:true,
+                batch:{
+                    select:{
+                        batchId:true
+                    }
+                }
             }
         })
 
-        for(let i = 0; i < checkStats.length; i++) {
-            let obj = checkStats[i];
+        console.log(registration)
+
+        for(let i = 0; i < registration.length; i++) {
+            let obj = registration[i];
         
-            if(obj.registrationStatus.includes("Active")===true){
-                checkStatsVerdict=true;
-            }
-            else if(obj.registrationStatus.includes("Unpaid")===true){
-                checkStatsVerdict=false;
-            }
+            tempReg=(obj.registrationNumber);
+            tempBatch=(obj.batch.batchId);
         }
 
-        if(checkStatsVerdict===true){*/
-
-            const registration = await prisma.registrations.findMany({
-                where:{
-                    AND:[
-                        {
-                            traineeId:Number(req.params.id)
-                        }
-                    ],
-                    OR:[
-                        {registrationStatus:"Unpaid"},
-                        {registrationStatus:"Active"}   
-                    ]
-                },
-                select:{
-                    registrationNumber:true,
-                    registrationStatus:true,
-                    batch:{
-                        select:{
-                            batchId:true
-                        }
-                    }
-                }
-            })
-
-            console.log(registration)
-
-            for(let i = 0; i < registration.length; i++) {
-                let obj = registration[i];
-            
-                tempReg=(obj.registrationNumber);
-                tempBatch=(obj.batch.batchId);
-            }
-
-            const course = await prisma.registrations.findMany({
-                where:{
-                    AND:[
-                        {
-                            traineeId:Number(req.params.id)
-                        },
-                        {
-                            registrationNumber:Number(tempReg)
-                        }
-                    ],
-                    OR:[
-                        {registrationStatus:"Unpaid"},
-                        {registrationStatus:"Active"}   
-                    ]
-                },
-                select:{
-                    batch:{
-                        select:{
-                            courseId:true
-                        }
-                    }
-                }
-            })
-
-            console.log(course)
-
-            for(let i = 0; i < course.length; i++) {
-                let obj = course[i];
-            
-                tempCourse=(obj.batch.courseId);
-            }
-
-            console.log("tempReg:"+tempReg)
-            console.log("tempBatch:"+tempBatch)
-
-
-            const batch = await prisma.batch.findMany({
-                where:{
-                    batchId:Number(tempBatch)
-                },
-                select:{
-                    batchName:true
-                }
-            })
-
-            console.log(batch)
-
-            for(let i = 0; i < batch.length; i++) {
-                let obj = batch[i];
-            
-                tempBatchName=(obj.batchName);
-            
-            }
-            
-            console.log(tempCourse)
-            const transact = await prisma.transactions.findMany({
-                where:{
-                    traineeId:Number(req.params.id),
-                    Trainees:{
-                        registrations:{
-                            some:{
-                                registrationNumber:Number(tempReg)
-                            }
-                        }
-                    }
-                },
-                select:{
-                    transactionId:true,
-                    transactionDate:true,
-                    paymentAmount:true,
-                    paymentMethod:true,
-                    employees:{
-                        select:{
-                            employeeId:true,
-                            firstName:true,
-                            lastName:true
-                        }
-                    }
-                }
-            })
-            
-            for (let transaction of transact){
-                transaction['regId']=tempReg;
-                transaction['batchName']=tempBatchName;
-            }
-
-            if(tempCourse==0){
-                res.status(200).json({transact, trytuition, trypayamount, trybalance})
-            }
-            else{
-                const payables = await prisma.courses.findUnique({
-                    where: {
-                        courseId: Number(tempCourse)
-                    },
-                    select: {
-                        courseId: true,
-                        courseName: true,
-                        trainingYears: {
-                            select: {
-                                trainingYearId: true,
-                                trainingYearSpan: true
-                            }
-                        },
-                        payables: {
-                            select: {
-                                payableId: true,
-                                payableName: true,
-                                payableCost: true
-                            }
-                        }
-                    }
-                })
-
-                const tuition = await prisma.payables.aggregate({
-                    where: {
-                        courseId: Number(tempCourse)
-                    },
-                    _sum: {
-                        payableCost: true
-                    }
-                })
-
-                const payAmounts = await prisma.transactions.aggregate({
-                    where:{
+        const course = await prisma.registrations.findMany({
+            where:{
+                AND:[
+                    {
                         traineeId:Number(req.params.id)
                     },
-                    _sum: {
-                        paymentAmount: true
-                    },
-                })
-
-                
-                payables['tuition'] = tuition._sum.payableCost ?? 0; 
-                trytuition = Number(tuition._sum.payableCost) ?? 0;
-                payAmounts['totalPaymentAmount'] = payAmounts._sum.paymentAmount ?? 0;
-                    
-                trypayamount = Number(payAmounts._sum.paymentAmount) ?? 0;
-                trybalance = Number(trytuition)-Number(trypayamount);
-
-                payables['balance'] = trybalance ?? 0;
-                
-                res.status(200).json({transact, trytuition, trypayamount, trybalance, tempReg, payables})
+                    {
+                        registrationNumber:Number(tempReg)
+                    }
+                ],
+                OR:[
+                    {registrationStatus:"Unpaid"},
+                    {registrationStatus:"Active"}   
+                ]
+            },
+            select:{
+                batch:{
+                    select:{
+                        courseId:true
+                    }
+                }
             }
+        })
+
+        console.log(course)
+
+        for(let i = 0; i < course.length; i++) {
+            let obj = course[i];
+        
+            tempCourse=(obj.batch.courseId);
         }
 
-    //}
+        console.log("tempReg:"+tempReg)
+        console.log("tempBatch:"+tempBatch)
+
+
+        const batch = await prisma.batch.findMany({
+            where:{
+                batchId:Number(tempBatch)
+            },
+            select:{
+                batchName:true
+            }
+        })
+
+        console.log(batch)
+
+        for(let i = 0; i < batch.length; i++) {
+            let obj = batch[i];
+        
+            tempBatchName=(obj.batchName);
+        
+        }
+        
+        console.log(tempCourse)
+        const transact = await prisma.transactions.findMany({
+            where:{
+                
+                traineeId:Number(req.params.id),
+                registrationNumber:Number(tempReg)
+                
+            },
+            select:{
+                transactionId:true,
+                registrationNumber:true,
+                transactionDate:true,
+                paymentAmount:true,
+                paymentMethod:true,
+                employees:{
+                    select:{
+                        employeeId:true,
+                        firstName:true,
+                        lastName:true
+                    }
+                }
+            }
+        })
+        
+        for (let transaction of transact){
+            transaction['regId']=tempReg;
+            transaction['batchName']=tempBatchName;
+        }
+
+        if(tempCourse==0){
+            res.status(200).json({transact, trytuition, trypayamount, trybalance})
+        }
+        else{
+            const payables = await prisma.courses.findUnique({
+                where: {
+                    courseId: Number(tempCourse)
+                },
+                select: {
+                    courseId: true,
+                    courseName: true,
+                    trainingYears: {
+                        select: {
+                            trainingYearId: true,
+                            trainingYearSpan: true
+                        }
+                    },
+                    payables: {
+                        select: {
+                            payableId: true,
+                            payableName: true,
+                            payableCost: true
+                        }
+                    }
+                }
+            })
+
+            const tuition = await prisma.payables.aggregate({
+                where: {
+                    courseId: Number(tempCourse)
+                },
+                _sum: {
+                    payableCost: true
+                }
+            })
+
+            const payAmounts = await prisma.transactions.aggregate({
+                where:{
+                    traineeId:Number(req.params.id)
+                },
+                _sum: {
+                    paymentAmount: true
+                },
+            })
+
+            
+            payables['tuition'] = tuition._sum.payableCost ?? 0; 
+            trytuition = Number(tuition._sum.payableCost) ?? 0;
+            payAmounts['totalPaymentAmount'] = payAmounts._sum.paymentAmount ?? 0;
+                
+            trypayamount = Number(payAmounts._sum.paymentAmount) ?? 0;
+            trybalance = Number(trytuition)-Number(trypayamount);
+
+            payables['balance'] = trybalance ?? 0;
+            
+            res.status(200).json({transact, trytuition, trypayamount, trybalance, tempReg, payables})
+        }
+    }
+
     catch(error){
         res.status(400).json({msg: error.message});
     }
@@ -2241,6 +2218,21 @@ app.get('/api/transactions/all',async(req:Request, res:Response)=>{
         const aggregate = await prisma.transactions.findMany({})
         console.log(aggregate);
         res.status(200).json(aggregate);
+    }
+    catch(error){
+        res.status(400).json({msg: error.message});
+    }
+})
+
+app.delete('/api/trainees/:id/transactions/delete/all', async (req: Request, res: Response) => {
+    try{
+        const transact = await prisma.transactions.deleteMany({
+            where:{
+                traineeId:Number(req.params.id)
+            }
+        })
+        res.status(200).json(transact)
+        
     }
     catch(error){
         res.status(400).json({msg: error.message});
