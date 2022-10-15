@@ -2113,7 +2113,7 @@ app.get('/api/trainees/:id/transactions',async (req: Request, res: Response) => 
                     traineeId:Number(req.params.id),
                     Trainees:{
                         registrations:{
-                            every:{
+                            some:{
                                 registrationNumber:Number(tempReg)
                             }
                         }
@@ -2228,6 +2228,17 @@ app.get('/api/transactions/max',async(req:Request, res:Response)=>{
                 transactionId:true
             }
         })
+        console.log(aggregate);
+        res.status(200).json(aggregate);
+    }
+    catch(error){
+        res.status(400).json({msg: error.message});
+    }
+})
+
+app.get('/api/transactions/all',async(req:Request, res:Response)=>{
+    try{
+        const aggregate = await prisma.transactions.findMany({})
         console.log(aggregate);
         res.status(200).json(aggregate);
     }
