@@ -85,10 +85,9 @@ The Backend Framework for Goncar Security Training Academy's Enrollment System I
 | USE CASE ID | HTTP METHOD | Description | Route |
 | ------------| ----------- | ----------- |----------|
 | 5.1 | POST | Create New Transaction  |```/api/trainees/:id/transactions/```  |
-| 5.2 | GET | View Specific Transaction |```/api/trainees/:id/transactions/:transId```|
-| 5.3 | GET | View Transaction Masterlist |```/api/trainees/:id/transactions```|
-| 5.4 | DELETE | Delete Transaction |```/api/trainees/:id/transactions/:transId```|
-| 5.5 | GET | Max Transaction ID |```/api/transactions/max```|
+| 5.2 | GET | View Transaction Masterlist |```/api/trainees/:id/transactions```|
+| 5.3 | DELETE | Delete Transaction |```/api/trainees/:id/transactions/:transId```|
+| 5.4 | GET | Max Transaction ID |```/api/transactions/max```|
 
 >EMPLOYEE MANAGEMENT 
 

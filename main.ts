@@ -1966,31 +1966,7 @@ app.post('/api/trainees/:id/transactions', async (req: Request, res: Response) =
     }
 })
 
-//View Transaction (5.2) - not really used - to be deleted
-app.get('/api/trainees/:id/transactions/:transId',async (req: Request, res: Response) => {
-    try{
-        const transact = await prisma.transactions.findMany({
-            where:{
-                AND:[
-                    {
-                        transactionId:Number(req.params.transId)
-                    
-                    },
-                    {
-                        traineeId:Number(req.params.id)
-                    
-                    },
-                ]
-            }
-        })
-        res.status(200).json(transact)
-    }
-    catch(error){
-        res.status(400).json({msg: error.message});
-    }
-})
-
-//View Transaction Masterlist (5.3)
+//View Transaction Masterlist (5.2)
 app.get('/api/trainees/:id/transactions',async (req: Request, res: Response) => {
     let tempCourse=0;
     let tempReg=0;
@@ -2113,7 +2089,6 @@ app.get('/api/trainees/:id/transactions',async (req: Request, res: Response) => 
         })
         
         for (let transaction of transact){
-            transaction['regId']=tempReg;
             transaction['batchName']=tempBatchName;
         }
 
@@ -2181,7 +2156,7 @@ app.get('/api/trainees/:id/transactions',async (req: Request, res: Response) => 
     }
 })
 
-//Delete Transaction (5.4)
+//Delete Transaction (5.3)
 app.delete('/api/trainees/:id/transactions/:transId', async (req: Request, res: Response) => {
     try{
         const transact = await prisma.transactions.delete({
@@ -2197,7 +2172,7 @@ app.delete('/api/trainees/:id/transactions/:transId', async (req: Request, res: 
     }
 })
 
-//Max Transaction ID (5.5)
+//Max Transaction ID (5.4)
 app.get('/api/transactions/max',async(req:Request, res:Response)=>{
     try{
         const aggregate = await prisma.transactions.aggregate({
@@ -2224,6 +2199,7 @@ app.get('/api/transactions/all',async(req:Request, res:Response)=>{
     }
 })
 
+//additional ra- backend purposes
 app.delete('/api/trainees/:id/transactions/delete/all', async (req: Request, res: Response) => {
     try{
         const transact = await prisma.transactions.deleteMany({
