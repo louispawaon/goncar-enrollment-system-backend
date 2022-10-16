@@ -2010,6 +2010,7 @@ app.get('/api/trainees/:id/transactions',async (req: Request, res: Response) => 
             tempBatch=(obj.batch.batchId);
         }
 
+        
         const course = await prisma.registrations.findMany({
             where:{
                 AND:[
@@ -2096,6 +2097,7 @@ app.get('/api/trainees/:id/transactions',async (req: Request, res: Response) => 
             res.status(200).json({transact, trytuition, trypayamount, trybalance})
         }
         else{
+            //change
             const payables = await prisma.courses.findUnique({
                 where: {
                     courseId: Number(tempCourse)
@@ -2130,14 +2132,17 @@ app.get('/api/trainees/:id/transactions',async (req: Request, res: Response) => 
 
             const payAmounts = await prisma.transactions.aggregate({
                 where:{
-                    traineeId:Number(req.params.id)
+                    AND:[
+                        {traineeId:Number(req.params.id)},
+                        {registrationNumber:Number(tempReg)}
+                    ]
                 },
                 _sum: {
                     paymentAmount: true
                 },
             })
 
-            
+            console.log(JSON.stringify(payables))
             payables['tuition'] = tuition._sum.payableCost ?? 0; 
             trytuition = Number(tuition._sum.payableCost) ?? 0;
             payAmounts['totalPaymentAmount'] = payAmounts._sum.paymentAmount ?? 0;
