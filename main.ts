@@ -928,11 +928,12 @@ app.get('/api/courses/:id',async(req:Request,res:Response)=>{
 
 //Create New Training Year (2.4)
 app.post('/api/trainingYears',async(req:Request,res:Response)=>{
-    const {trainingYearSpan} = req.body;
+    const {trainingYearSpan, trainingYearStatus} = req.body;
     try{
         const trainingYr = await prisma.trainingYears.create({
             data:{
-                trainingYearSpan:trainingYearSpan
+                trainingYearSpan:trainingYearSpan,
+                trainingYearStatus: trainingYearStatus
             }
         });
         res.status(201).json(trainingYr);
