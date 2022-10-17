@@ -1521,7 +1521,8 @@ app.put('/api/batches/:id',async(req:Request,res:Response)=>{
                 throw "isUniqueName"
             }
         }
-        res.status(200);
+        
+        res.status(200).json();
     }
     catch(error){
         if (error === "hasActiveBatch") {
