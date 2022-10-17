@@ -161,60 +161,84 @@ app.post('/api/trainees/:id/registrations/',async(req:Request,res:Response)=>{
         }
 
         //dre start
-        
-        const traineeWithFinished = await prisma.trainees.findUnique({
-            where:{
-                traineeId:Number(req.params.id)
+        const traineeHasFinished = await prisma.registrations.findMany({
+            where: {
+                registrationStatus: "Finished",
+                traineeId: Number(req.params.id)
             },
-            select:{
-                registrations:{
-                    where:{
-                        registrationStatus:"Finished"
-                    },
-                    select:{
-                        registrationNumber:true
+            select: {
+                registrationNumber: true,
+                batch: {
+                    select: {
+                        batchId: true,
+                        courseId: true
                     }
-                }
+                },
+                
             }
         })
 
-        for (let trainee of traineeWithFinished.registrations){
-            tempFinishedID=trainee.registrationNumber;
-        }
-
-        const finishedReg = await prisma.registrations.findMany({
-            where:{  
-                AND:[
-                    {registrationStatus:"Finished" },
-                    {registrationNumber:tempFinishedID}
-                ]
-                
-            },
-            select:{
-                    batch:{
-                        select:{
-                            batchStatus:true,
-                            courses:{
-                                select:{
-                                    courseStatus:true
-                                }
-                            }
-                        }
-                    }
+        if (traineeHasFinished.length !== 0) {
+            for (let finishedRegs of traineeHasFinished) {
+                if (finishedRegs.batch.batchId === Number(batchId)) {
+                    throw "hasFinishedBatch";
                 }
-        })
-
-        for(let reg of finishedReg){
-            console.log(reg.batch.courses.courseStatus)
-            console.log(reg.batch.batchStatus)
-            tempFinishCourse=reg.batch.batchStatus
-            tempFinishBatch=reg.batch.batchStatus
+            }
         }
 
-        if(tempFinishBatch==="Finished"&&tempFinishCourse==="Finished"){
-            hasFinishedBatch=true;
-            throw "hasFinishedBatch"
-        }
+        // const traineeWithFinished = await prisma.trainees.findUnique({
+        //     where:{
+        //         traineeId:Number(req.params.id)
+        //     },
+        //     select:{
+        //         registrations:{
+        //             where:{
+        //                 registrationStatus:"Finished"
+        //             },
+        //             select:{
+        //                 registrationNumber:true
+        //             }
+        //         }
+        //     }
+        // })
+
+        // for (let trainee of traineeWithFinished.registrations){
+        //     tempFinishedID=trainee.registrationNumber;
+        // }
+
+        // const finishedReg = await prisma.registrations.findMany({
+        //     where:{  
+        //         AND:[
+        //             {registrationStatus:"Finished" },
+        //             {registrationNumber:tempFinishedID}
+        //         ]
+                
+        //     },
+        //     select:{
+        //             batch:{
+        //                 select:{
+        //                     batchStatus:true,
+        //                     courses:{
+        //                         select:{
+        //                             courseStatus:true
+        //                         }
+        //                     }
+        //                 }
+        //             }
+        //         }
+        // })
+
+        // for(let reg of finishedReg){
+        //     console.log(reg.batch.courses.courseStatus)
+        //     console.log(reg.batch.batchStatus)
+        //     tempFinishCourse=reg.batch.batchStatus
+        //     tempFinishBatch=reg.batch.batchStatus
+        // }
+
+        // if(tempFinishBatch==="Finished"&&tempFinishCourse==="Finished"){
+        //     hasFinishedBatch=true;
+        //     throw "hasFinishedBatch"
+        // }
 
         const trainee = prisma.trainees.update({
             where:{
