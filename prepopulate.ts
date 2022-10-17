@@ -54,15 +54,15 @@ function populateTraineeRegistration(traineeID, data) {
 /* ===== POPULATE HERE ===== */
 
 // REQUIRED TO POPULATE ROLES IN BACKEND
-populateRoles({
-    roleName: "Teacher"
-})
-populateRoles({
-    roleName: "Cashier"
-})
-populateRoles({
-    roleName: "Registrar"
-})
+// populateRoles({
+//     roleName: "Teacher"
+// })
+// populateRoles({
+//     roleName: "Cashier"
+// })
+// populateRoles({
+//     roleName: "Registrar"
+// })
 
 // populateTrainingYears({
 //     trainingYearSpan: "2019-2020"

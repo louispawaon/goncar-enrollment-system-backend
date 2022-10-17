@@ -1514,8 +1514,6 @@ app.put('/api/batches/:id',async(req:Request,res:Response)=>{
                     }
                 }
             });
-
-            res.status(200).json(batch);
         }
         else{
             if(uniqueResult===true){
@@ -1523,7 +1521,7 @@ app.put('/api/batches/:id',async(req:Request,res:Response)=>{
                 throw "isUniqueName"
             }
         }
-
+        res.status(200);
     }
     catch(error){
         if (error === "hasActiveBatch") {
