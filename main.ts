@@ -98,10 +98,13 @@ app.get('/api/trainees/:id',async(req:Request,res:Response)=>{
 app.post('/api/trainees/:id/registrations/',async(req:Request,res:Response)=>{
     const {batchId,SSSNum,TINNum,SGLicense,expiryDate,dateEnrolled,registrationStatus} = req.body;
     let tempFinishedID=0;
+    
     try{
         // CHECK IF INCOMING REG IS SET TO ACTIVE AND IF THERE IS AN EXISTING ACTIVE REG INSIDE TRAINEE
         // ELSE CONTINUE
         let hasActiveReg = false;
+        let tempFinishBatch="";
+        let tempFinishCourse="";
         let hasFinishedBatch = false;
         let hasUnpaidReg = false;
         if (registrationStatus.toUpperCase() === "ACTIVE") {
@@ -158,7 +161,7 @@ app.post('/api/trainees/:id/registrations/',async(req:Request,res:Response)=>{
         }
 
         //dre start
-        let tempFinishBatch="";
+        
         const traineeWithFinished = await prisma.trainees.findUnique({
             where:{
                 traineeId:Number(req.params.id)
@@ -190,17 +193,25 @@ app.post('/api/trainees/:id/registrations/',async(req:Request,res:Response)=>{
             select:{
                     batch:{
                         select:{
-                            batchStatus:true
+                            batchStatus:true,
+                            courses:{
+                                select:{
+                                    courseStatus:true
+                                }
+                            }
                         }
                     }
                 }
         })
 
         for(let reg of finishedReg){
+            console.log(reg.batch.courses.courseStatus)
+            console.log(reg.batch.batchStatus)
+            tempFinishCourse=reg.batch.batchStatus
             tempFinishBatch=reg.batch.batchStatus
         }
 
-        if(tempFinishBatch==="Finished"||tempFinishBatch==="Active"){
+        if(tempFinishBatch==="Finished"&&tempFinishCourse==="Finished"){
             hasFinishedBatch=true;
             throw "hasFinishedBatch"
         }
