@@ -469,9 +469,6 @@ app.put('/api/trainees/:id/registrations/:regid/',async(req:Request,res:Response
                         },
                         {
                             registrationNumber:Number(req.params.regid)
-                        },
-                        {
-                            registrationStatus:"Finished"
                         }
                     ]
                 },
@@ -514,7 +511,7 @@ app.put('/api/trainees/:id/registrations/:regid/',async(req:Request,res:Response
                     }
                 }
             })
-
+            console.log(tempCourse)
             const checkTuition= await prisma.payables.aggregate({
                 where: {
                     courseId: Number(tempCourse)
@@ -528,7 +525,7 @@ app.put('/api/trainees/:id/registrations/:regid/',async(req:Request,res:Response
                 where:{
                     AND:[
                         {traineeId:Number(req.params.id)},
-                        {registrationNumber:Number(req.params.id)}
+                        {registrationNumber:Number(req.params.regid)}
                     ]
                 },
                 _sum: {
@@ -536,9 +533,12 @@ app.put('/api/trainees/:id/registrations/:regid/',async(req:Request,res:Response
                 },
             })
 
+            console.log(checkTuition)
+            console.log(payAmounts)
             let testSubtract = Number(checkTuition._sum.payableCost)-Number(payAmounts._sum.paymentAmount)
+            console.log(testSubtract)
 
-            if(testSubtract!==0){
+            if(testSubtract>0){
                 hasRemainingBalance=true;
                 throw "hasRemainingBalance"
             }
