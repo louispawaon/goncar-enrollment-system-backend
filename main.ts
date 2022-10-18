@@ -628,7 +628,7 @@ app.put('/api/trainees/:id/registrations/:regid/',async(req:Request,res:Response
             res.status(410).json({msg:error});
         }
         else if (error === "hasRemainingBalance"){
-            res.status(411).json({msg:error});
+            res.status(412).json({msg:error});
         }
         else {
             res.status(400).json({msg: error.message});
