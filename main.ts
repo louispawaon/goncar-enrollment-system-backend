@@ -186,60 +186,6 @@ app.post('/api/trainees/:id/registrations/',async(req:Request,res:Response)=>{
             }
         }
 
-        // const traineeWithFinished = await prisma.trainees.findUnique({
-        //     where:{
-        //         traineeId:Number(req.params.id)
-        //     },
-        //     select:{
-        //         registrations:{
-        //             where:{
-        //                 registrationStatus:"Finished"
-        //             },
-        //             select:{
-        //                 registrationNumber:true
-        //             }
-        //         }
-        //     }
-        // })
-
-        // for (let trainee of traineeWithFinished.registrations){
-        //     tempFinishedID=trainee.registrationNumber;
-        // }
-
-        // const finishedReg = await prisma.registrations.findMany({
-        //     where:{  
-        //         AND:[
-        //             {registrationStatus:"Finished" },
-        //             {registrationNumber:tempFinishedID}
-        //         ]
-                
-        //     },
-        //     select:{
-        //             batch:{
-        //                 select:{
-        //                     batchStatus:true,
-        //                     courses:{
-        //                         select:{
-        //                             courseStatus:true
-        //                         }
-        //                     }
-        //                 }
-        //             }
-        //         }
-        // })
-
-        // for(let reg of finishedReg){
-        //     console.log(reg.batch.courses.courseStatus)
-        //     console.log(reg.batch.batchStatus)
-        //     tempFinishCourse=reg.batch.batchStatus
-        //     tempFinishBatch=reg.batch.batchStatus
-        // }
-
-        // if(tempFinishBatch==="Finished"&&tempFinishCourse==="Finished"){
-        //     hasFinishedBatch=true;
-        //     throw "hasFinishedBatch"
-        // }
-
         const trainee = prisma.trainees.update({
             where:{
                 traineeId:Number(req.params.id)
@@ -298,6 +244,7 @@ app.post('/api/trainees/:id/registrations/',async(req:Request,res:Response)=>{
 app.put('/api/trainees/:id/registrations/:regid/',async(req:Request,res:Response)=>{
     const {SSSNum,TINNum,SGLicense,expiryDate,dateEnrolled,registrationStatus, batchId} = req.body;
     let hasUnpaidReg=false;
+    let hasRemainingBalance=true;
     try{
         // // CHECK IF INCOMING REG IS SET TO ACTIVE AND IF THERE IS AN EXISTING ACTIVE REG INSIDE TRAINEE
         // // ELSE CONTINUE
@@ -512,6 +459,91 @@ app.put('/api/trainees/:id/registrations/:regid/',async(req:Request,res:Response
                 await prisma.$transaction([trainee,traineeReg]);   
             }    
         }
+        //para ni sa if ang balance kay naa pa pero mag update sya to finished
+        else if(registrationStatus.toUpperCase()==="FINISHED"){
+            const course = await prisma.registrations.findMany({
+                where:{
+                    AND:[
+                        {
+                            traineeId:Number(req.params.id)
+                        },
+                        {
+                            registrationNumber:Number(req.params.regid)
+                        },
+                        {
+                            registrationStatus:"Finished"
+                        }
+                    ]
+                },
+                select:{
+                    batch:{
+                        select:{
+                            courseId:true
+                        }
+                    }
+                }
+            })
+    
+            console.log(course)
+            let tempCourse=0
+            for(let i = 0; i < course.length; i++) {
+                let obj = course[i];
+            
+                tempCourse=(obj.batch.courseId);
+            }
+
+            await prisma.courses.findUnique({
+                where: {
+                    courseId: Number(tempCourse)
+                },
+                select: {
+                    courseId: true,
+                    courseName: true,
+                    trainingYears: {
+                        select: {
+                            trainingYearId: true,
+                            trainingYearSpan: true
+                        }
+                    },
+                    payables: {
+                        select: {
+                            payableId: true,
+                            payableName: true,
+                            payableCost: true
+                        }
+                    }
+                }
+            })
+
+            const checkTuition= await prisma.payables.aggregate({
+                where: {
+                    courseId: Number(tempCourse)
+                },
+                _sum: {
+                    payableCost: true
+                }
+            })
+
+            const payAmounts = await prisma.transactions.aggregate({
+                where:{
+                    AND:[
+                        {traineeId:Number(req.params.id)},
+                        {registrationNumber:Number(req.params.id)}
+                    ]
+                },
+                _sum: {
+                    paymentAmount: true
+                },
+            })
+
+            let testSubtract = Number(checkTuition._sum.payableCost)-Number(payAmounts._sum.paymentAmount)
+
+            if(testSubtract!==0){
+                hasRemainingBalance=true;
+                throw "hasRemainingBalance"
+            }
+
+        } //dre mag end
         else{
             const trainee = prisma.trainees.update({
                 where:{
@@ -594,6 +626,9 @@ app.put('/api/trainees/:id/registrations/:regid/',async(req:Request,res:Response
         }
         else if (error === "hasUnpaidReg"){
             res.status(410).json({msg:error});
+        }
+        else if (error === "hasRemainingBalance"){
+            res.status(411).json({msg:error});
         }
         else {
             res.status(400).json({msg: error.message});
