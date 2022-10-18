@@ -1525,39 +1525,38 @@ app.put('/api/batches/:id',async(req:Request,res:Response)=>{
             }
         }
 
-        if(realityCheck.batchName===batchName){
-            const batch = await prisma.batch.update({
-                where:{
-                    batchId:Number(req.params.id)
-                },
-                data:{
-                    laNumber:laNumber,
-                    batchName:batchName,
-                    startDate: startDate,
-                    endDate: endDate,
-                    maxStudents: maxStudents,
-                    batchStatus: batchStatus,
-                    courses:{ //dle ko sure dre 
-                        connect:{
-                            courseId:courseId
-                        }
-                    },
-                    employee: {
-                        connect: {
-                            employeeId: employeeId
-                        }
-                    }
-                }
-            });
-        }
-        else{
+        if(realityCheck.batchName!==batchName){
             if(uniqueResult===true){
                 isUniqueName=true;
                 throw "isUniqueName"
             }
         }
+
+        const batch = await prisma.batch.update({
+            where:{
+                batchId:Number(req.params.id)
+            },
+            data:{
+                laNumber:laNumber,
+                batchName:batchName,
+                startDate: startDate,
+                endDate: endDate,
+                maxStudents: maxStudents,
+                batchStatus: batchStatus,
+                courses:{ //dle ko sure dre 
+                    connect:{
+                        courseId:courseId
+                    }
+                },
+                employee: {
+                    connect: {
+                        employeeId: employeeId
+                    }
+                }
+            }
+        });
         
-        res.status(200).json();
+        res.status(200).json(batch);
     }
     catch(error){
         if (error === "hasActiveBatch") {
